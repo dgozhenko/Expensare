@@ -1,0 +1,2 @@
+# Expensare
+Expense Sharing App
