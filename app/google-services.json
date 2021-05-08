@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "911793341909",
+    "project_id": "expensare",
+    "storage_bucket": "expensare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911793341909:android:c2350ae9aa5a69b4eea95c",
+        "android_client_info": {
+          "package_name": "com.example.expensare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911793341909-t3erft02v67hr2bvb626h9icspk5bkhu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6B1XLp-jQ1k60baqEGPEJPtBEGsnaJ7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911793341909-t3erft02v67hr2bvb626h9icspk5bkhu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
