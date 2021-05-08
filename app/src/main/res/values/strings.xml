@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Expensare</string>
+    <string name="authorization_toolbar_title">Authorization</string>
+    <string name="e_mail_hint">E-mail</string>
+    <string name="login_hint">Login</string>
+    <string name="forgot_a_password_text">Forgot a Password?</string>
+    <string name="don_t_have_an_account_text">Don\'t have an account?</string>
+    <string name="password_hint">Password</string>
 </resources>
