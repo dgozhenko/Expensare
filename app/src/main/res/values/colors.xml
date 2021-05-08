@@ -11,4 +11,6 @@
     <color name="button_red">#D65353</color>
     <color name="light_blue">#00C2FF</color>
     <color name="opacity_black">#80121212</color>
+    <color name="hint_color">#40333333</color>
+    <color name="light_black">#121212</color>
 </resources>
