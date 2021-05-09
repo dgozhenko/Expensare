@@ -75,4 +75,7 @@ dependencies {
     // Firebase
     implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // Circle Image View
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

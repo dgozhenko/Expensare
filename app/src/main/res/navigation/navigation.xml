@@ -27,5 +27,30 @@
             app:exitAnim="@anim/to_right"
             app:popUpTo="@id/registrationFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registrationFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"
+            app:popUpTo="@id/registrationFragment"
+            app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/chooseNameFragment"
+        android:name="com.example.expensare.ui.auth.avatar.ChooseNameFragment"
+        android:label="ChooseNameFragment" >
+        <action
+            android:id="@+id/action_chooseNameFragment_to_avatarPickerFragment"
+            app:destination="@id/avatarPickerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/avatarPickerFragment"
+        android:name="com.example.expensare.ui.auth.avatar.AvatarPickerFragment"
+        android:label="AvatarPickerFragment" />
 </navigation>

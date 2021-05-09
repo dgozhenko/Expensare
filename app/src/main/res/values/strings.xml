@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Expensare</string>
     <string name="authorization_toolbar_title">Authorization</string>
     <string name="e_mail_hint">E-mail</string>
@@ -11,4 +11,8 @@
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="splash_screen_desc">Splash Screen</string>
     <string name="app_subname">Expense Sharing app</string>
+    <string name="who_are_you_title">Who are you?</string>
+    <string name="that_s_me_text">That\'s me</string>
+    <string name="avatar_picker_title">Avatar Picker</string>
+    <string name="avatar_text">Choose an avatar that describes you in the best way!</string>
 </resources>

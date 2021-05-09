@@ -23,5 +23,8 @@ class RegistrationFragment: BaseFragment() {
         binding.alreadyHaveAnAccountText.setOnClickListener {
             findNavController().navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
         }
+        binding.registerButton.setOnClickListener {
+            findNavController().navigate(RegistrationFragmentDirections.actionRegistrationFragmentToChooseNameFragment())
+        }
     }
 }
