@@ -6,4 +6,7 @@
     <string name="forgot_a_password_text">Forgot a Password?</string>
     <string name="don_t_have_an_account_text">Don\'t have an account?</string>
     <string name="password_hint">Password</string>
+    <string name="register_text">Register</string>
+    <string name="already_have_an_account_text">Already have an account?</string>
+    <string name="confirm_password_hint">Confirm Password</string>
 </resources>
