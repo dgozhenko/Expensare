@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/dashboard"
+            android:icon="@drawable/ic_dashboard_24"
+            android:title="@string/dashboard_title" />
+        <item
+            android:id="@+id/grocery_items"
+            android:icon="@drawable/ic_shopping_cart_24"
+            android:title="@string/my_grocery_items_text" />
+        <item
+            android:id="@+id/group_management"
+            android:icon="@drawable/ic_groups_24"
+            android:title="@string/group_management_text" />
+        <item
+            android:id="@+id/change_group"
+            android:icon="@drawable/ic_round_change_circle_24"
+            android:title="@string/change_group_text" />
+        <item
+            android:id="@+id/debt_request"
+            android:icon="@drawable/ic_baseline_card_membership_24"
+            android:title="@string/debt_requests_text" />
+    </group>
+
+    <item android:title="@string/controls_title">
+        <menu>
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_baseline_settings_24"
+                android:title="@string/settings_text" />
+
+            <item
+                android:id="@+id/log_out"
+                android:icon="@drawable/ic_baseline_logout_24"
+                android:title="@string/log_out_text" />
+        </menu>
+
+    </item>
+
+</menu>
