@@ -1,5 +1,6 @@
 package com.example.expensare.ui.dashboard
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,22 @@ class DashboardFragment: BaseFragment() {
         val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         toolbar.setNavigationOnClickListener {
             drawer.openDrawer(GravityCompat.START)
+        }
+        binding.listButton.setOnClickListener {
+            binding.listButton.setBackgroundResource(R.drawable.rounded_button_left_chosen)
+            binding.historyButton.setBackgroundResource(R.drawable.square_button)
+            binding.historyRecyclerView.visibility = View.GONE
+            binding.noHistoryText.visibility = View.GONE
+            binding.noListText.visibility = View.VISIBLE
+            binding.addNewItem.visibility = View.VISIBLE
+        }
+
+        binding.historyButton.setOnClickListener {
+            binding.listButton.setBackgroundResource(R.drawable.rounded_button_left)
+            binding.historyButton.setBackgroundResource(R.drawable.square_button_chosen)
+            binding.noHistoryText.visibility = View.VISIBLE
+            binding.noListText.visibility = View.GONE
+            binding.addNewItem.visibility = View.GONE
         }
     }
 }
