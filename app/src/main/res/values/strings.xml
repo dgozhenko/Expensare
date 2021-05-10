@@ -15,4 +15,15 @@
     <string name="that_s_me_text">That\'s me</string>
     <string name="avatar_picker_title">Avatar Picker</string>
     <string name="avatar_text">Choose an avatar that describes you in the best way!</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="there_no_expense_history_yet_text">There no expense history yet</string>
+    <string name="my_grocery_items_text">My Grocery Items</string>
+    <string name="group_management_text">Group Management</string>
+    <string name="change_group_text">Change Group</string>
+    <string name="debt_requests_text">Debt Requests</string>
+    <string name="controls_title">Controls</string>
+    <string name="settings_text">Settings</string>
+    <string name="log_out_text">Log Out</string>
+    <string name="name_text">Daniil Hozhenko</string>
+    <string name="status_text">Faceless HQ - Owner</string>
 </resources>

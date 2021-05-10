@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.expensare.R
 import com.example.expensare.databinding.FragmentNameRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textview.MaterialTextView
 
 class ChooseNameFragment: BaseFragment() {
     private var _binding: FragmentNameRegistrationBinding? = null
@@ -21,6 +24,10 @@ class ChooseNameFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.chooseAvatar.setOnClickListener {
             findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment())
+        }
+
+        binding.thatsMeButton.setOnClickListener {
+            findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToDashboardFragment())
         }
     }
 }

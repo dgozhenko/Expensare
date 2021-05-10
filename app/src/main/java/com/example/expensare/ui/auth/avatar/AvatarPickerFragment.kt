@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.expensare.R
 import com.example.expensare.databinding.FragmentAvatarPickerBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textview.MaterialTextView
 
 class AvatarPickerFragment: BaseFragment() {
     private var _binding: FragmentAvatarPickerBinding? = null
@@ -19,6 +22,6 @@ class AvatarPickerFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     }
 }
