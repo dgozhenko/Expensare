@@ -46,4 +46,11 @@
     <string name="debt_for_text">Debt For</string>
     <string name="debt_amount_text">Debt Amount in $</string>
     <string name="submit_button_text">Submit</string>
+    <string name="exact_amount_of_debt_text">Exact amount of debt</string>
+    <string name="test_name">Daniil</string>
+    <string name="pay_via_debt_button_text">Pay via debt</string>
+    <string name="pay_via_money_button_text">Pay via money</string>
+    <string name="debt_for_content_text">Something</string>
+    <string name="debt_for_title">Debt For:</string>
+    <string name="debt_payed_button">Debt Payed</string>
 </resources>
