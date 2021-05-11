@@ -63,5 +63,17 @@
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.expensare.ui.dashboard.DashboardFragment"
-        android:label="DashboardFragment" />
+        android:label="DashboardFragment" >
+        <action
+            android:id="@+id/action_dashboardFragment_to_addExpensesFragment"
+            app:destination="@id/addExpensesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/addExpensesFragment"
+        android:name="com.example.expensare.ui.addexpenses.AddExpensesFragment"
+        android:label="AddExpensesFragment" />
 </navigation>
