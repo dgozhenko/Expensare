@@ -41,4 +41,9 @@
     <string name="how_exactly_you_wanna_pay_text">How exactly you want to pay?</string>
     <string name="pay_via_money_button">Pay via money</string>
     <string name="my_debts_title">My Debts</string>
+    <string name="create_debt_title">Create Debt</string>
+    <string name="compare_arrows_desc">compare arrows</string>
+    <string name="debt_for_text">Debt For</string>
+    <string name="debt_amount_text">Debt Amount in $</string>
+    <string name="submit_button_text">Submit</string>
 </resources>

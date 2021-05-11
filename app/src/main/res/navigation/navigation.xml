@@ -14,7 +14,9 @@
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right" />
+            app:popExitAnim="@anim/to_right"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -86,5 +88,17 @@
     <fragment
         android:id="@+id/myDebtsFragment"
         android:name="com.example.expensare.ui.mydebts.MyDebtsFragment"
-        android:label="MyDebtsFragment" />
+        android:label="MyDebtsFragment" >
+        <action
+            android:id="@+id/action_myDebtsFragment_to_createDebtFragment"
+            app:destination="@id/createDebtFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/createDebtFragment"
+        android:name="com.example.expensare.ui.mydebts.create_debt.CreateDebtFragment"
+        android:label="CreateDebtFragment" />
 </navigation>

@@ -25,6 +25,14 @@ class MyDebtsFragment : BaseFragment() {
     super.onViewCreated(view, savedInstanceState)
     binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     binding.absToolbar.inflateMenu(R.menu.my_debts_menu)
+    binding.absToolbar.setOnMenuItemClickListener {
+      when (it.itemId) {
+        R.id.create_debt_menu_button -> {
+          findNavController().navigate(MyDebtsFragmentDirections.actionMyDebtsFragmentToCreateDebtFragment())
+          true
+        } else -> false
+      }
+    }
     val tabLayout = binding.myDebtsTabLayout
     tabLayout.addTab(tabLayout.newTab().setText("To me"))
     tabLayout.addTab(tabLayout.newTab().setText("From me"))
