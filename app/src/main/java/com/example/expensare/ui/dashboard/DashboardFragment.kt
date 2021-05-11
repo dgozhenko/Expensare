@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.base.BaseFragment
@@ -36,6 +37,7 @@ class DashboardFragment: BaseFragment() {
             binding.noHistoryText.visibility = View.GONE
             binding.noListText.visibility = View.VISIBLE
             binding.addNewItem.visibility = View.VISIBLE
+            binding.addExpensesButton.visibility = View.GONE
         }
 
         binding.historyButton.setOnClickListener {
@@ -44,6 +46,11 @@ class DashboardFragment: BaseFragment() {
             binding.noHistoryText.visibility = View.VISIBLE
             binding.noListText.visibility = View.GONE
             binding.addNewItem.visibility = View.GONE
+            binding.addExpensesButton.visibility = View.VISIBLE
+        }
+
+        binding.addExpensesButton.setOnClickListener {
+            findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToAddExpensesFragment())
         }
     }
 }

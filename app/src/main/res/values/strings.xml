@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Expensare</string>
     <string name="authorization_toolbar_title">Authorization</string>
     <string name="e_mail_hint">E-mail</string>
@@ -26,4 +26,18 @@
     <string name="log_out_text">Log Out</string>
     <string name="name_text">Daniil Hozhenko</string>
     <string name="status_text">Faceless HQ - Owner</string>
+    <string name="history_money">-$175</string>
+    <string name="history_name_text">Daniil</string>
+    <string name="date_text">17.04.2021</string>
+    <string name="quantity_history_item">1.5 kg</string>
+    <string name="history_item_price">-$17</string>
+    <string name="history_item_name">Potato</string>
+    <string name="list_price">$17</string>
+    <string name="add_expenses_title">Add Expenses</string>
+    <string name="name_of_expense_text">Name of expense</string>
+    <string name="amount_text">Amount in $</string>
+    <string name="divide_expense_for_text">Divide expense for</string>
+    <string name="save_expense_menu_title">Save Expense</string>
+    <string name="how_exactly_you_wanna_pay_text">How exactly you want to pay?</string>
+    <string name="pay_via_money_button">Pay via money</string>
 </resources>
