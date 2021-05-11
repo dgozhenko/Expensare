@@ -40,4 +40,5 @@
     <string name="save_expense_menu_title">Save Expense</string>
     <string name="how_exactly_you_wanna_pay_text">How exactly you want to pay?</string>
     <string name="pay_via_money_button">Pay via money</string>
+    <string name="my_debts_title">My Debts</string>
 </resources>

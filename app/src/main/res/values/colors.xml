@@ -13,4 +13,5 @@
     <color name="opacity_black">#80121212</color>
     <color name="hint_color">#40333333</color>
     <color name="light_black">#121212</color>
+    <color name="opacity_light_black">#212121</color>
 </resources>

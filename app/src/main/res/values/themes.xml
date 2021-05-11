@@ -45,4 +45,10 @@
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextColor">@color/hint_color</item>
     </style>
+
+    <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabBackground">@color/opacity_light_black</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/button_red</item>
+    </style>
 </resources>
