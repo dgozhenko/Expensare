@@ -56,5 +56,9 @@ class DashboardFragment: BaseFragment() {
         binding.debtButton.setOnClickListener {
             findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToMyDebtsFragment())
         }
+
+        binding.addNewItem.setOnClickListener {
+            findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToAddToListFragment())
+        }
     }
 }
