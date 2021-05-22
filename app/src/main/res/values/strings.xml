@@ -70,4 +70,11 @@
     <string name="quantity_text">Quantity</string>
     <string name="add_new_item_text">Add new item</string>
     <string name="grocery_list_is_empty_text">Grocery List is empty</string>
+    <string name="choose_group_title">Choose Group</string>
+    <string name="group_members">Daniil, Olya, Ilya, Roman</string>
+    <string name="create_group_title">Create Group</string>
+    <string name="create_group_text">Create Group</string>
+    <string name="group_type_text">Group type</string>
+    <string name="group_name_text">Group name</string>
+    <string name="next_test_button_text">Next</string>
 </resources>

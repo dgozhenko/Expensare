@@ -27,7 +27,7 @@ class ChooseNameFragment: BaseFragment() {
         }
 
         binding.thatsMeButton.setOnClickListener {
-            findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToDashboardFragment())
+            findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToChooseGroupFragment())
         }
     }
 }
