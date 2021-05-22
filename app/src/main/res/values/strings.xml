@@ -52,7 +52,7 @@
     <string name="pay_via_money_button_text">Pay via money</string>
     <string name="debt_for_content_text">Something</string>
     <string name="debt_for_title">Debt For:</string>
-    <string name="debt_payed_button">Debt Payed</string>
+    <string name="debt_payed_button">Debt Paid</string>
     <string name="add_list_item_title">Add list item</string>
     <string name="item_name_text">Item name</string>
     <string name="item_category_text">Item category</string>
@@ -60,4 +60,14 @@
     <string name="select_store_text">Select Store</string>
     <string name="you_can_enter_it_later_text">You can enter it later</string>
     <string name="add_to_list_button">Add to list</string>
+    <string name="finish_shopping_session_button">Finish shopping session</string>
+    <string name="add_expenses_button">Add Expenses</string>
+    <string name="finalizing_title">Finalizing</string>
+    <string name="finalize_text">This items need exact price and quantity</string>
+    <string name="confirm_text">Confirm</string>
+    <string name="potato_text">Potato</string>
+    <string name="price_text">Price</string>
+    <string name="quantity_text">Quantity</string>
+    <string name="add_new_item_text">Add new item</string>
+    <string name="grocery_list_is_empty_text">Grocery List is empty</string>
 </resources>

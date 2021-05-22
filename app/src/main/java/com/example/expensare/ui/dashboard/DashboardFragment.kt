@@ -37,6 +37,7 @@ class DashboardFragment: BaseFragment() {
             binding.noHistoryText.visibility = View.GONE
             binding.noListText.visibility = View.VISIBLE
             binding.addNewItem.visibility = View.VISIBLE
+            binding.finalizeButton.visibility = View.VISIBLE
             binding.addExpensesButton.visibility = View.GONE
         }
 
@@ -46,6 +47,7 @@ class DashboardFragment: BaseFragment() {
             binding.noHistoryText.visibility = View.VISIBLE
             binding.noListText.visibility = View.GONE
             binding.addNewItem.visibility = View.GONE
+            binding.finalizeButton.visibility = View.GONE
             binding.addExpensesButton.visibility = View.VISIBLE
         }
 
@@ -59,6 +61,10 @@ class DashboardFragment: BaseFragment() {
 
         binding.addNewItem.setOnClickListener {
             findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToAddToListFragment())
+        }
+
+        binding.finalizeButton.setOnClickListener {
+            findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToFinishShopSessionFragment())
         }
     }
 }
