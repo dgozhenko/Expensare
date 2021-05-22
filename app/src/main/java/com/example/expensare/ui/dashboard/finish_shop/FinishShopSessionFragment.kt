@@ -30,7 +30,7 @@ class FinishShopSessionFragment: BaseFragment() {
             }
         }
         binding.confirmButton.setOnClickListener {
-            findNavController().navigate(FinishShopSessionFragmentDirections.actionFinishShopSessionFragmentToDashboardFragment())
+            findNavController().navigate(FinishShopSessionFragmentDirections.actionFinishShopSessionFragmentToFinishShopDebtDividerFragment())
         }
     }
 }

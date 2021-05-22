@@ -129,10 +129,10 @@
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
         <action
-            android:id="@+id/action_finishShopSessionFragment_to_dashboardFragment"
-            app:destination="@id/dashboardFragment"
-            app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right"
+            android:id="@+id/action_finishShopSessionFragment_to_finishShopDebtDividerFragment"
+            app:destination="@id/finishShopDebtDividerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
             app:popUpTo="@id/finishShopSessionFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -140,4 +140,16 @@
         android:id="@+id/addAdditionalItemFragment"
         android:name="com.example.expensare.ui.dashboard.finish_shop.AddAdditionalItemFragment"
         android:label="AddAdditionalItemFragment" />
+    <fragment
+        android:id="@+id/finishShopDebtDividerFragment"
+        android:name="com.example.expensare.ui.dashboard.finish_shop.FinishShopDebtDividerFragment"
+        android:label="FinishShopDebtDividerFragment" >
+        <action
+            android:id="@+id/action_finishShopDebtDividerFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/finishShopDebtDividerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
