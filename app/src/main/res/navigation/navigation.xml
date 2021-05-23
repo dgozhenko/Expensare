@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation"
-    app:startDestination="@id/dashboardFragment">
+    app:startDestination="@id/requestsViewPagerFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -109,6 +109,13 @@
         <action
             android:id="@+id/action_dashboardFragment_to_chooseGroupFragment"
             app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/dashboardFragment"
@@ -242,6 +249,13 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/groupManagementFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/groupMembersFragment"
@@ -279,6 +293,39 @@
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestsViewPagerFragment"
+        android:name="com.example.expensare.ui.requests.RequestsViewPagerFragment"
+        android:label="RequestsViewPagerFragment" >
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_groupManagementFragment"
+            app:destination="@id/groupManagementFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

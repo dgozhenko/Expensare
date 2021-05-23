@@ -96,4 +96,10 @@
     <string name="change_your_avatar_text">Change your avatar</string>
     <string name="change_app_theme_text">Change app theme</string>
     <string name="change_your_name_text">Change your name</string>
+    <string name="money_text">Money</string>
+    <string name="via_text">Via:</string>
+    <string name="for_text">For:</string>
+    <string name="accept_text">Accept</string>
+    <string name="decline_text">Decline</string>
+    <string name="requests_title">Requests</string>
 </resources>
