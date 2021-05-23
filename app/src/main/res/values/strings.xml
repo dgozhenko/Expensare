@@ -22,7 +22,6 @@
     <string name="change_group_text">Change Group</string>
     <string name="debt_requests_text">Debt Requests</string>
     <string name="controls_title">Controls</string>
-    <string name="settings_text">Settings</string>
     <string name="log_out_text">Log Out</string>
     <string name="name_text">Daniil Hozhenko</string>
     <string name="status_text">Faceless HQ - Owner</string>
@@ -77,4 +76,21 @@
     <string name="group_type_text">Group type</string>
     <string name="group_name_text">Group name</string>
     <string name="next_test_button_text">Next</string>
+    <string name="settings_text">Settings</string>
+    <string name="debt_text">Debt</string>
+    <string name="members_text">Members</string>
+    <string name="expenses_text">Expenses</string>
+    <string name="delete_text">Delete Faceless HQ group</string>
+    <string name="change_group_photo_text">Change group photo</string>
+    <string name="change_group_currency_text">Change group currency</string>
+    <string name="change_your_color_text">Change your color</string>
+    <string name="change_group_name_text">Change group name</string>
+    <string name="group_settings_text">Group Settings</string>
+    <string name="status_content_text">(Owner)</string>
+    <string name="kick_text">Kick</string>
+    <string name="change_status_text">Change status</string>
+    <string name="group_debt_title">Group Debt</string>
+    <string name="debt_group_text">$300</string>
+    <string name="to_olya_text">To Olya:</string>
+    <string name="faceless_hq_title">Faceless HQ</string>
 </resources>
