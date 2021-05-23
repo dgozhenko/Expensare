@@ -93,4 +93,7 @@
     <string name="debt_group_text">$300</string>
     <string name="to_olya_text">To Olya:</string>
     <string name="faceless_hq_title">Faceless HQ</string>
+    <string name="change_your_avatar_text">Change your avatar</string>
+    <string name="change_app_theme_text">Change app theme</string>
+    <string name="change_your_name_text">Change your name</string>
 </resources>
