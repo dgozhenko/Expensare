@@ -102,4 +102,20 @@
     <string name="accept_text">Accept</string>
     <string name="decline_text">Decline</string>
     <string name="requests_title">Requests</string>
+    <string name="select_a_store_text">Select a Store</string>
+    <string name="stores_text">Stores</string>
+    <string name="add_store_text">Add Store</string>
+    <string name="store_name_text">Store Name</string>
+    <string name="add_your_favorite_store_text">Add your favorite store</string>
+    <string name="select_a_category_text">Select a category</string>
+    <string name="categories_title">Categories</string>
+    <string name="add_item_title">Add Item</string>
+    <string name="add_grocery_item_text">Add grocery item</string>
+    <string name="add_text">Add</string>
+    <string name="item_quantity_text">Item Quantity</string>
+    <string name="item_type_text">Item Type</string>
+    <string name="vegetable_items_title">Vegetable Items</string>
+    <string name="add_vegetable_item_title">Add Vegetable Item</string>
+    <string name="walmart_text">Walmart</string>
+    <string name="price_per_quantity_text">$15/kg</string>
 </resources>

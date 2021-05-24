@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation"
-    app:startDestination="@id/requestsViewPagerFragment">
+    app:startDestination="@id/savedStoreFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -116,6 +116,13 @@
         <action
             android:id="@+id/action_dashboardFragment_to_requestsViewPagerFragment"
             app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/dashboardFragment"
@@ -256,6 +263,13 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/groupManagementFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/groupMembersFragment"
@@ -301,6 +315,13 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/settingsFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/requestsViewPagerFragment"
@@ -327,5 +348,102 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/requestsViewPagerFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedStoreFragment"
+        android:name="com.example.expensare.ui.grocery_items.store.SavedStoreFragment"
+        android:label="SavedStoreFragment" >
+        <action
+            android:id="@+id/action_savedStoreFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_groupManagementFragment"
+            app:destination="@id/groupManagementFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_addStoreFragment"
+            app:destination="@id/addStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/addStoreFragment"
+        android:name="com.example.expensare.ui.grocery_items.store.AddStoreFragment"
+        android:label="AddStoreFragment" />
+    <fragment
+        android:id="@+id/addGroceryItemFromCategoryFragment"
+        android:name="com.example.expensare.ui.grocery_items.category.AddGroceryItemFromCategoryFragment"
+        android:label="AddGroceryItemFromCategoryFragment" />
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.example.expensare.ui.grocery_items.category.CategoryFragment"
+        android:label="CategoryFragment" >
+        <action
+            android:id="@+id/action_categoryFragment_to_addGroceryItemFromCategoryFragment"
+            app:destination="@id/addGroceryItemFromCategoryFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_categoryFragment_to_groceryItemsFragment"
+            app:destination="@id/groceryItemsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/addGroceryItemFragment"
+        android:name="com.example.expensare.ui.grocery_items.item.AddGroceryItemFragment"
+        android:label="AddGroceryItemFragment" />
+    <fragment
+        android:id="@+id/groceryItemsFragment"
+        android:name="com.example.expensare.ui.grocery_items.item.GroceryItemsFragment"
+        android:label="GroceryItemsFragment" >
+        <action
+            android:id="@+id/action_groceryItemsFragment_to_addGroceryItemFragment"
+            app:destination="@id/addGroceryItemFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
 </navigation>
