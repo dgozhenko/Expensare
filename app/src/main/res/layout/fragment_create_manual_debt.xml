@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Expensare">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/abs_toolbar"
+        style="@style/Widget.Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:navigationIcon="@drawable/ic_arrow_back_30"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/abs_toolbar_title"
+            style="@style/ToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_debt_title" />
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/from_user_avatar"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:civ_border_width="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintTop_toBottomOf="@id/abs_toolbar"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+        android:id="@+id/compare_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_compare_arrows_24"
+        app:layout_constraintTop_toTopOf="@id/to_user_avatar"
+        app:layout_constraintBottom_toBottomOf="@id/to_user_avatar"
+        app:layout_constraintStart_toEndOf="@id/from_user_avatar"
+        app:layout_constraintEnd_toStartOf="@id/to_user_avatar"
+        android:contentDescription="@string/compare_arrows_desc" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/to_user_avatar"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:civ_border_width="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintTop_toBottomOf="@id/abs_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/from_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/history_name_text"
+        android:textSize="24sp"
+        android:textColor="@color/button_red"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/from_user_avatar"
+        app:layout_constraintStart_toStartOf="@id/from_user_avatar"
+        app:layout_constraintEnd_toEndOf="@id/from_user_avatar"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/to_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/history_name_text"
+        android:textSize="24sp"
+        android:textColor="@color/blue"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/to_user_avatar"
+        app:layout_constraintStart_toStartOf="@id/to_user_avatar"
+        app:layout_constraintEnd_toEndOf="@id/to_user_avatar"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/debt_for_text_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/debt_for_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintTop_toBottomOf="@id/to_user_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/debt_for_edit_text"
+            android:textSize="22sp"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/debt_amount_text_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/debt_amount_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/debt_for_text_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/debt_amount_edit_text"
+            android:textSize="22sp"
+            android:layout_width="match_parent"
+            android:inputType="numberDecimal"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/submit_button_text"
+        app:cornerRadius="9dp"
+        android:textSize="24sp"
+        android:padding="10dp"
+        android:fontFamily="@font/noah_bold"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/debt_amount_text_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

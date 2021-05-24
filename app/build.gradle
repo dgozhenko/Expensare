@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.expensare"
-        minSdkVersion 23
+        minSdkVersion 27
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -75,4 +75,10 @@ dependencies {
     // Firebase
     implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // Circle Image View
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Pie Chart
+    implementation 'com.androidplot:androidplot-core:1.5.7'
 }

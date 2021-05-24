@@ -1,19 +1,54 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Expensare" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="Theme.Expensare" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/white</item>
-        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:background">@color/white</item>
         <item name="android:navigationBarColor">?attr/colorSecondary</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationIcon">@color/black</item>
         <item name="android:fontFamily">@font/noah_regular</item>
+    </style>
+
+    <style name="Theme.Expensare.Splash">
+        <item name="android:navigationBarColor">@color/light_black</item>
+    </style>
+
+    <style name="Theme.Expensare.ErrorTextAppearance" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <style name="Theme.Expensare.HelperTextAppearance" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <style name="Theme.Expensare.EditTextThemeOverlay" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="helperTextTextAppearance">@style/Theme.Expensare.HelperTextAppearance</item>
+        <item name="errorTextAppearance">@style/Theme.Expensare.ErrorTextAppearance</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">@color/hint_color</item>
+    </style>
+
+    <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabBackground">@color/opacity_light_black</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/button_red</item>
     </style>
 </resources>
