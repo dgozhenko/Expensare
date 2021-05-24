@@ -3,6 +3,7 @@ package com.example.expensare.ui.dashboard
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
@@ -12,9 +13,10 @@ import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
 
-class DashboardFragment: BaseFragment() {
+class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
 
@@ -30,6 +32,9 @@ class DashboardFragment: BaseFragment() {
         toolbar.setNavigationOnClickListener {
             drawer.openDrawer(GravityCompat.START)
         }
+        val navigationView = requireActivity().findViewById<NavigationView>(R.id.navigation_view)
+        navigationView.setNavigationItemSelectedListener(this)
+
         binding.listButton.setOnClickListener {
             binding.listButton.setBackgroundResource(R.drawable.rounded_button_left_chosen)
             binding.historyButton.setBackgroundResource(R.drawable.square_button)
@@ -66,5 +71,36 @@ class DashboardFragment: BaseFragment() {
         binding.finalizeButton.setOnClickListener {
             findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToFinishShopSessionFragment())
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        when(item.itemId) {
+            R.id.dashboard -> {
+                drawer.closeDrawer(GravityCompat.START)
+            }
+            R.id.grocery_items -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToSavedStoreFragment())
+            }
+            R.id.group_management -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToGroupManagementFragment())
+            }
+            R.id.change_group -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToChooseGroupFragment())
+            }
+            R.id.debt_request -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToRequestsViewPagerFragment())
+            }
+            R.id.settings -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToSettingsFragment())
+            }
+            else -> false
+        }
+        return true
     }
 }

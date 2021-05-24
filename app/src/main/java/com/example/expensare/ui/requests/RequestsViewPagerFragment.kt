@@ -2,21 +2,25 @@ package com.example.expensare.ui.requests
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDebtRequestsBinding
 import com.example.expensare.databinding.FragmentMyRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.manage_group.GroupManagementFragmentDirections
 import com.example.expensare.ui.mydebts.FromMeDebtsFragment
 import com.example.expensare.ui.mydebts.MyDebtsFragmentViewPagerAdapter
 import com.example.expensare.ui.mydebts.ToMeDebtsFragment
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 
-class RequestsViewPagerFragment: BaseFragment() {
+class RequestsViewPagerFragment: BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
     private var _binding: FragmentDebtRequestsBinding? = null
     private val binding get() = _binding!!
 
@@ -29,6 +33,10 @@ class RequestsViewPagerFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         val toolbar = binding.absToolbar
         val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+
+        val navigationView = requireActivity().findViewById<NavigationView>(R.id.navigation_view)
+        navigationView.setNavigationItemSelectedListener(this)
+
         toolbar.setNavigationOnClickListener {
             drawer.openDrawer(GravityCompat.START)
         }
@@ -62,5 +70,36 @@ class RequestsViewPagerFragment: BaseFragment() {
             }
 
         })
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        when(item.itemId) {
+            R.id.dashboard -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(RequestsViewPagerFragmentDirections.actionRequestsViewPagerFragmentToDashboardFragment())
+            }
+            R.id.grocery_items -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(RequestsViewPagerFragmentDirections.actionRequestsViewPagerFragmentToSavedStoreFragment())
+            }
+            R.id.group_management -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(RequestsViewPagerFragmentDirections.actionRequestsViewPagerFragmentToGroupManagementFragment())
+            }
+            R.id.change_group -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(RequestsViewPagerFragmentDirections.actionRequestsViewPagerFragmentToChooseGroupFragment())
+            }
+            R.id.debt_request -> {
+                drawer.closeDrawer(GravityCompat.START)
+            }
+            R.id.settings -> {
+                drawer.closeDrawer(GravityCompat.START)
+                findNavController().navigate(RequestsViewPagerFragmentDirections.actionRequestsViewPagerFragmentToSettingsFragment())
+            }
+            else -> false
+        }
+        return true
     }
 }
