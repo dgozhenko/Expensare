@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email_edit_text"
+            android:id="@+id/login_email_edit_text"
             android:textSize="22sp"
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"

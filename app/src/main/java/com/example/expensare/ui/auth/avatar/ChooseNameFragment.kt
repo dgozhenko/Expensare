@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentNameRegistrationBinding
@@ -14,6 +15,8 @@ import com.google.android.material.textview.MaterialTextView
 class ChooseNameFragment: BaseFragment() {
     private var _binding: FragmentNameRegistrationBinding? = null
     private val binding get() = _binding!!
+
+    private val chooseNameViewModel: ChooseNameViewModel by lazy { ViewModelProvider(this).get(ChooseNameViewModel::class.java) }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentNameRegistrationBinding.inflate(inflater)
@@ -27,6 +30,8 @@ class ChooseNameFragment: BaseFragment() {
         }
 
         binding.thatsMeButton.setOnClickListener {
+            val username = binding.nameEditText.text.toString()
+            chooseNameViewModel.createUserInDatabase(username)
             findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToChooseGroupFragment())
         }
     }

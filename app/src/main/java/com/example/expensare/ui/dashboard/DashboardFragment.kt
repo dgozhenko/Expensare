@@ -15,6 +15,7 @@ import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.auth.FirebaseAuth
 
 class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
     private var _binding: FragmentDashboardBinding? = null
@@ -98,6 +99,11 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
             R.id.settings -> {
                 drawer.closeDrawer(GravityCompat.START)
                 findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToSettingsFragment())
+            }
+            R.id.log_out -> {
+                drawer.closeDrawer(GravityCompat.START)
+                FirebaseAuth.getInstance().signOut()
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToLoginFragment())
             }
             else -> false
         }
