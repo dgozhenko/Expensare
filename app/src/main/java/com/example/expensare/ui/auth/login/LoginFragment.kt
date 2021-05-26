@@ -46,9 +46,14 @@ class LoginFragment: BaseFragment() {
     }
 
     private fun loginButtonClicked() {
+        val progressBar = binding.loginProgress
+        progressBar.trackColor = resources.getColor(R.color.light_black)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
+            progressBar.visibility = View.VISIBLE
             it.hideKeyboard()
             when {
                 email.isEmpty() -> {
@@ -59,11 +64,12 @@ class LoginFragment: BaseFragment() {
                 }
                 else -> {
                     loginViewModel.loginUser(email, password)
-                    loginViewModel.userLiveData.observe(viewLifecycleOwner, {
-                        if (it != null) {
+                    loginViewModel.userLiveData.observe(viewLifecycleOwner, { user ->
+                        if (user != null) {
+                            progressBar.visibility = View.GONE
                             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
-
                         } else {
+                            progressBar.visibility = View.GONE
                             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment())
                         }
                     })

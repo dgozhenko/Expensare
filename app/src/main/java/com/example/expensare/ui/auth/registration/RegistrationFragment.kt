@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.expensare.R
 import com.example.expensare.databinding.FragmentRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
@@ -38,10 +39,16 @@ class RegistrationFragment : BaseFragment() {
   }
 
     private fun registrationButtonClicked() {
+        val progressBar = binding.registrationProgress
+        progressBar.trackColor = resources.getColor(R.color.light_black)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+
         binding.registerButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
             val passwordConfirm = binding.confirmPasswordEditText.text.toString()
+            progressBar.visibility = View.VISIBLE
+
             it.hideKeyboard()
             when {
                 email.isEmpty() -> {
@@ -59,6 +66,7 @@ class RegistrationFragment : BaseFragment() {
                     registrationViewModel.registerUser(email, password)
                     registrationViewModel.isRegisterComplete.observe(viewLifecycleOwner, { complete ->
                         if (complete) {
+                            progressBar.visibility = View.GONE
                             findNavController()
                                 .navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
                             Snackbar.make(this.requireView(), "Verification E-mail sent to you", Snackbar.LENGTH_SHORT).show()
