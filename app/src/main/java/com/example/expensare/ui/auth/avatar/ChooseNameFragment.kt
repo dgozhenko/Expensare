@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
+import com.example.expensare.data.Avatar
 import com.example.expensare.databinding.FragmentNameRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -31,7 +32,8 @@ class ChooseNameFragment: BaseFragment() {
 
         binding.thatsMeButton.setOnClickListener {
             val username = binding.nameEditText.text.toString()
-            chooseNameViewModel.createUserInDatabase(username)
+            val avatar = Avatar(1)
+            chooseNameViewModel.createUserInDatabase(username, avatar)
             findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToChooseGroupFragment())
         }
     }
