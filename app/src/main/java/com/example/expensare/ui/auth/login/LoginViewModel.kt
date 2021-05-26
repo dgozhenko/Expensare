@@ -25,6 +25,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
           if (FirebaseAuth.getInstance().currentUser!!.isEmailVerified) {
             val uid = FirebaseAuth.getInstance().uid ?: ""
             val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users/")
+            var userIsExisted: Boolean = false
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -32,15 +33,17 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     val user = it.getValue(User::class.java)
                     if (user != null) {
                       if (user.uid == uid) {
-                        _userLiveData.postValue(FirebaseAuth.getInstance().currentUser)
-                      } else {
-                        _userLiveData.postValue(null)
+                        userIsExisted = true
                       }
                     }
                   }
 
-                } else {
-                  _userLiveData.postValue(null)
+                  if (userIsExisted) {
+                    _userLiveData.postValue(FirebaseAuth.getInstance().currentUser)
+                  } else {
+                    _userLiveData.postValue(null)
+                  }
+
                 }
               }
 

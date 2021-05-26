@@ -1,9 +1,11 @@
 package com.example.expensare.ui.auth.login
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -47,7 +49,7 @@ class LoginFragment: BaseFragment() {
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
-
+            it.hideKeyboard()
             when {
                 email.isEmpty() -> {
                     Toast.makeText(requireContext(), "Missing e-mail", Toast.LENGTH_SHORT).show()
@@ -69,4 +71,10 @@ class LoginFragment: BaseFragment() {
             }
         }
     }
+
+    fun View.hideKeyboard() {
+        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+
 }
