@@ -1,6 +1,7 @@
 package com.example.expensare.ui.auth.login
 
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.math.log
 
 class LoginFragment: BaseFragment() {
 
@@ -55,26 +57,56 @@ class LoginFragment: BaseFragment() {
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
+            var errorFree = false
+            var verificationErrorFree = false
             progressBar.visibility = View.VISIBLE
             it.hideKeyboard()
             when {
                 email.isEmpty() -> {
-                    Toast.makeText(requireContext(), "Missing e-mail", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    binding.loginEmailEditText.error = "Missing E-mail"
                 }
                 password.isEmpty() -> {
-                    Toast.makeText(requireContext(), "Missing password", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    binding.passwordEditText.error = "Missing password"
                 }
                 else -> {
                     loginViewModel.loginUser(email, password)
+                    loginViewModel.verificationError.observe(viewLifecycleOwner, { verificationError ->
+                        if (verificationError != null) {
+                            if (verificationError) {
+                                progressBar.visibility = View.GONE
+                                Toast.makeText(requireContext(), "Verify E-mail was sent", Toast.LENGTH_SHORT).show()
+                            } else {
+                                verificationErrorFree = true
+                            }
+                            loginViewModel.verificationErrorComplete()
+                        }
+                    })
+                    loginViewModel.error.observe(viewLifecycleOwner, { error ->
+                        if (error != null) {
+                            progressBar.visibility = View.GONE
+                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
+                            loginViewModel.errorComplete()
+                        }  else {
+                            errorFree = true
+                        }
+                    })
                     loginViewModel.userLiveData.observe(viewLifecycleOwner, { user ->
-                        if (user != null) {
-                            progressBar.visibility = View.GONE
-                            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
+                        if (verificationErrorFree) {
+                            if (errorFree) {
+                                if (user != null) {
+                                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
+                                } else {
+                                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
+                                        Avatar(Uri.EMPTY, false)
+                                    ))
+                                }
+                            } else {
+                                loginViewModel.errorComplete()
+                            }
                         } else {
-                            progressBar.visibility = View.GONE
-                            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
-                                Avatar(Uri.EMPTY, false)
-                            ))
+                            loginViewModel.verificationErrorComplete()
                         }
                     })
                 }

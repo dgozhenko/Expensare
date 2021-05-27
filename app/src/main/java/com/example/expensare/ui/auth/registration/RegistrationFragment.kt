@@ -47,33 +47,46 @@ class RegistrationFragment : BaseFragment() {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
             val passwordConfirm = binding.confirmPasswordEditText.text.toString()
+            var errorFree = true
             progressBar.visibility = View.VISIBLE
 
             it.hideKeyboard()
             when {
                 email.isEmpty() -> {
-                    Toast.makeText(context, "Missing e-mail", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    binding.emailEditText.error = "Missing E-mail"
                 }
                 password.isEmpty() -> {
-                    Toast.makeText(context, "Missing username", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    binding.passwordEditText.error = "Missing password"
                 }
                 passwordConfirm.isEmpty() || passwordConfirm != password -> {
-                    Toast.makeText(context, "Passwords are not the same", Toast.LENGTH_SHORT)
-                        .show()
+                    progressBar.visibility = View.GONE
+                    binding.confirmPasswordEditText.error = "Passwords are not the same"
                 }
 
                 else -> {
                     registrationViewModel.registerUser(email, password)
-                    registrationViewModel.isRegisterComplete.observe(viewLifecycleOwner, { complete ->
-                        if (complete) {
+                    registrationViewModel.error.observe(viewLifecycleOwner, { error ->
+                        if (error != null) {
+                            errorFree = false
                             progressBar.visibility = View.GONE
-                            findNavController()
-                                .navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
-                            Snackbar.make(this.requireView(), "Verification E-mail sent to you", Snackbar.LENGTH_SHORT).show()
-                            registrationViewModel.registerCompleted()
+                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
                         }
                     })
-
+                    registrationViewModel.isRegisterComplete.observe(viewLifecycleOwner, { complete ->
+                        if (errorFree) {
+                            if (complete) {
+                                progressBar.visibility = View.GONE
+                                findNavController()
+                                    .navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
+                                Snackbar.make(this.requireView(), "Verification E-mail sent to you", Snackbar.LENGTH_SHORT).show()
+                                registrationViewModel.registerCompleted()
+                            }
+                        } else {
+                            registrationViewModel.errorCompleted()
+                        }
+                    })
                 }
             }
 

@@ -12,20 +12,29 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
   private val _userLiveData = MutableLiveData<FirebaseUser>()
   val userLiveData: LiveData<FirebaseUser>
     get() = _userLiveData
 
+  private val _verificationError = MutableLiveData<Boolean>()
+  val verificationError: LiveData<Boolean> get() = _verificationError
+
+  private val _error = MutableLiveData<Exception>()
+  val error: LiveData<Exception> get() = _error
+
   fun loginUser(email: String, password: String) {
     viewModelScope.launch(Dispatchers.IO) {
       FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+        _error.postValue(null)
         if (task.isSuccessful) {
           if (FirebaseAuth.getInstance().currentUser!!.isEmailVerified) {
+            _verificationError.postValue(false)
             val uid = FirebaseAuth.getInstance().uid ?: ""
             val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users/")
-            var userIsExisted: Boolean = false
+            var userIsExisted = false
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -54,23 +63,28 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             })
 
           } else {
-            Toast.makeText(
-                    getApplication<Application>().baseContext,
-                    "Verify your e-mail",
-                    Toast.LENGTH_SHORT)
-                .show()
+            _verificationError.postValue(true)
+            FirebaseAuth.getInstance().signOut()
           }
         } else {
           return@addOnCompleteListener
         }
       }
         .addOnFailureListener {
-          Toast.makeText(getApplication<Application>().applicationContext,
-            "Failed to login: ${it.message}", Toast.LENGTH_SHORT).show()
+          _error.postValue(it)
+          return@addOnFailureListener
         }
     }
   }
   fun loginComplete() {
     _userLiveData.value = null
+  }
+
+  fun errorComplete() {
+    _error.value = null
+  }
+
+  fun verificationErrorComplete() {
+    _verificationError.value = null
   }
 }

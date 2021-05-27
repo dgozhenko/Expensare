@@ -6,11 +6,15 @@ import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class RegistrationViewModel(application: Application): AndroidViewModel(application) {
 
     private val _isRegisterComplete = MutableLiveData<Boolean>()
     val isRegisterComplete: LiveData<Boolean> get() = _isRegisterComplete
+
+    private val _error = MutableLiveData<Exception>()
+    val error: LiveData<Exception> get() = _error
 
     fun registerUser(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -25,13 +29,17 @@ class RegistrationViewModel(application: Application): AndroidViewModel(applicat
                     }
                 }
                 .addOnFailureListener {
-                    _isRegisterComplete.postValue(false)
-                    Toast.makeText(getApplication<Application>().baseContext, it.message, Toast.LENGTH_SHORT).show()
+                    _error.postValue(it)
+                    return@addOnFailureListener
                 }
         }
     }
 
     fun registerCompleted() {
         _isRegisterComplete.postValue(null)
+    }
+
+    fun errorCompleted() {
+        _error.postValue(null)
     }
 }
