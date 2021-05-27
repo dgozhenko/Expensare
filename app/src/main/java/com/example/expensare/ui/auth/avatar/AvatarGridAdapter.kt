@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AvatarGridAdapter(val onClickListener: OnClickListener): RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
