@@ -1,11 +1,13 @@
 package com.example.expensare.ui.auth.avatar
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -51,9 +53,15 @@ class AvatarViewModel: ViewModel() {
                 R.drawable.avatar28
             )
             images.forEach {
-                imagesArrayList.add(Avatar(it))
+                imagesArrayList.add(Avatar(Uri.parse("android.resource://com.example.expensare/drawable/$it"), true))
             }
+            uploadExclusiveAvatars(imagesArrayList)
             _avatarList.postValue(imagesArrayList)
+        }
+    }
+    private fun uploadExclusiveAvatars(imagesArrayList: ArrayList<Avatar>) {
+        if (FirebaseAuth.getInstance().uid == "ZukjAziJ56ezbm57PqxVL2dQZZa2") {
+            imagesArrayList.add(Avatar(Uri.parse("android.resource://com.example.expensare/drawable/" + R.drawable.exclusive_avatar), true))
         }
     }
 }

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,8 +31,9 @@ class AvatarPickerFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-
-        val adapter = AvatarGridAdapter()
+        val adapter = AvatarGridAdapter(OnClickListener {
+            findNavController().navigate(AvatarPickerFragmentDirections.actionAvatarPickerFragmentToChooseNameFragment(it))
+        })
         binding.avatarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.avatarRecyclerView.adapter = adapter
 

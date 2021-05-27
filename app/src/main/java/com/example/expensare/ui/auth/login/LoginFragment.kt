@@ -1,6 +1,7 @@
 package com.example.expensare.ui.auth.login
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
+import com.example.expensare.data.Avatar
 import com.example.expensare.databinding.FragmentLoginBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -70,7 +72,9 @@ class LoginFragment: BaseFragment() {
                             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
                         } else {
                             progressBar.visibility = View.GONE
-                            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment())
+                            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
+                                Avatar(Uri.EMPTY, false)
+                            ))
                         }
                     })
                 }
@@ -81,6 +85,12 @@ class LoginFragment: BaseFragment() {
     fun View.hideKeyboard() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private fun crashTest() {
+        binding.forgotPasswordText.setOnClickListener {
+            throw RuntimeException("Test Crash")
+        }
     }
 
 }

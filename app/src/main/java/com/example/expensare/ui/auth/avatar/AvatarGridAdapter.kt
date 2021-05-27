@@ -10,7 +10,7 @@ import com.example.expensare.R
 import com.example.expensare.data.Avatar
 import de.hdodenhof.circleimageview.CircleImageView
 
-class AvatarGridAdapter: RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
+class AvatarGridAdapter(val onClickListener: OnClickListener): RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
 
   private var itemAvatar = arrayListOf<Avatar>()
 
@@ -20,6 +20,9 @@ class AvatarGridAdapter: RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
   }
 
   override fun onBindViewHolder(holder: AvatarGridAdapter.ViewHolder, position: Int) {
+    holder.itemView.setOnClickListener {
+      onClickListener.onClick(itemAvatar[position])
+    }
     return holder.bind(itemAvatar[position])
   }
 
@@ -35,8 +38,11 @@ class AvatarGridAdapter: RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
   class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bind(avatar: Avatar) {
       val imageView = itemView.findViewById<CircleImageView>(R.id.avatar_recycler_item)
-      imageView.setImageResource(avatar.avatar )
+      imageView.setImageURI(avatar.avatar)
     }
   }
+}
 
+class OnClickListener(val clickListener: (avatar: Avatar) -> Unit) {
+  fun onClick(avatar: Avatar) = clickListener(avatar)
 }
