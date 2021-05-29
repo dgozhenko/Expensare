@@ -1,6 +1,7 @@
 package com.example.expensare.ui.dashboard
 
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -8,17 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
+import com.example.expensare.data.User
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
+
+    lateinit var navigationView: NavigationView
+
+    private val dashboardViewModel: DashboardViewModel by lazy { ViewModelProvider(this).get(DashboardViewModel::class.java) }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentDashboardBinding.inflate(inflater)
@@ -27,12 +37,14 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         val toolbar = binding.absToolbar
         val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         toolbar.setNavigationOnClickListener {
             drawer.openDrawer(GravityCompat.START)
         }
-        val navigationView = requireActivity().findViewById<NavigationView>(R.id.navigation_view)
+        navigationView = requireActivity().findViewById(R.id.navigation_view)
         navigationView.setNavigationItemSelectedListener(this)
 
         binding.listButton.setOnClickListener {
@@ -55,6 +67,8 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
             binding.finalizeButton.visibility = View.GONE
             binding.addExpensesButton.visibility = View.VISIBLE
         }
+
+        getUserInfo()
 
         binding.addExpensesButton.setOnClickListener {
             findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToAddExpensesFragment())
@@ -99,8 +113,25 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
                 drawer.closeDrawer(GravityCompat.START)
                 findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToSettingsFragment())
             }
+            R.id.log_out -> {
+                drawer.closeDrawer(GravityCompat.START)
+                FirebaseAuth.getInstance().signOut()
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToLoginFragment())
+            }
             else -> false
         }
         return true
+    }
+
+    private fun getUserInfo() {
+        val header = navigationView.getHeaderView(0)
+        dashboardViewModel.user.observe(viewLifecycleOwner, {
+            val drawerHeaderNameText = header.findViewById<MaterialTextView>(R.id.user_name)
+            drawerHeaderNameText.text = it.username
+            val drawerImageView = header.findViewById<CircleImageView>(R.id.user_avatar)
+            Picasso.with(requireContext()).load(it.avatar).into(drawerImageView)
+            val drawerStatusText = header.findViewById<MaterialTextView>(R.id.user_status)
+            drawerStatusText.text = "Faceless HQ - Owner"
+        })
     }
 }

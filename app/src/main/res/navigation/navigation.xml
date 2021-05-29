@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation"
-    app:startDestination="@id/dashboardFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -15,6 +15,20 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_bottom"
+            app:exitAnim="@anim/to_top"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -57,11 +71,24 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/chooseNameFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="avatar"
+            app:argType="com.example.expensare.data.Avatar"/>
+
     </fragment>
     <fragment
         android:id="@+id/avatarPickerFragment"
         android:name="com.example.expensare.ui.auth.avatar.AvatarPickerFragment"
-        android:label="AvatarPickerFragment" />
+        android:label="AvatarPickerFragment" >
+        <action
+            android:id="@+id/action_avatarPickerFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/avatarPickerFragment"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.expensare.ui.dashboard.DashboardFragment"
@@ -123,6 +150,13 @@
         <action
             android:id="@+id/action_dashboardFragment_to_savedStoreFragment"
             app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/dashboardFragment"
