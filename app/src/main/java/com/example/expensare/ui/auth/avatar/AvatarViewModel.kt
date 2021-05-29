@@ -62,6 +62,8 @@ class AvatarViewModel: ViewModel() {
     private fun uploadExclusiveAvatars(imagesArrayList: ArrayList<Avatar>) {
         if (FirebaseAuth.getInstance().uid == "ZukjAziJ56ezbm57PqxVL2dQZZa2") {
             imagesArrayList.add(Avatar(Uri.parse("android.resource://com.example.expensare/drawable/" + R.drawable.exclusive_avatar), true))
+        } else if (FirebaseAuth.getInstance().uid == "HzezA120ZgP1KjMk4zt63mjxrbC3") {
+            imagesArrayList.add(Avatar(Uri.parse("android.resource://com.example.expensare/drawable/" + R.drawable.exclusive_avaatar2), true))
         }
     }
 }
