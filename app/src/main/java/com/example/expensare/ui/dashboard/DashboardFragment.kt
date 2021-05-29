@@ -1,7 +1,5 @@
 package com.example.expensare.ui.dashboard
 
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -12,10 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
-import com.example.expensare.data.User
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
