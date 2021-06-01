@@ -39,7 +39,7 @@
         android:id="@+id/choose_avatar_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose your avatar"
+        android:text="@string/choose_your_avatar_text"
         android:textSize="22sp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="How should we call you?"
+        android:hint="@string/how_should_we_call_you_text"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
@@ -80,6 +80,17 @@
         android:padding="10dp"
         android:fontFamily="@font/noah_bold"
         android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorSize="70dp"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/name_text_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
