@@ -1,5 +1,6 @@
 package com.example.expensare.ui.dashboard
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -10,6 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
+import com.example.expensare.data.Avatar
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.navigation.NavigationView
@@ -33,8 +35,7 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
+        getUserInfo()
         val toolbar = binding.absToolbar
         val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         toolbar.setNavigationOnClickListener {
@@ -63,8 +64,6 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
             binding.finalizeButton.visibility = View.GONE
             binding.addExpensesButton.visibility = View.VISIBLE
         }
-
-        getUserInfo()
 
         binding.addExpensesButton.setOnClickListener {
             findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToAddExpensesFragment())
@@ -120,14 +119,21 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
     }
 
     private fun getUserInfo() {
-        val header = navigationView.getHeaderView(0)
         dashboardViewModel.user.observe(viewLifecycleOwner, {
-            val drawerHeaderNameText = header.findViewById<MaterialTextView>(R.id.user_name)
-            drawerHeaderNameText.text = it.username
-            val drawerImageView = header.findViewById<CircleImageView>(R.id.user_avatar)
-            Picasso.with(requireContext()).load(it.avatar).into(drawerImageView)
-            val drawerStatusText = header.findViewById<MaterialTextView>(R.id.user_status)
-            drawerStatusText.text = "Faceless HQ - Owner"
+            if (it == null) {
+                  findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToChooseNameFragment(
+                      Avatar(Uri.EMPTY, false)
+                  ))
+            } else {
+                val header = navigationView.getHeaderView(0)
+                val drawerHeaderNameText = header.findViewById<MaterialTextView>(R.id.user_name)
+                drawerHeaderNameText.text = it.username
+                val drawerImageView = header.findViewById<CircleImageView>(R.id.user_avatar)
+                Picasso.with(requireContext()).load(it.avatar).into(drawerImageView)
+                val drawerStatusText = header.findViewById<MaterialTextView>(R.id.user_status)
+                drawerStatusText.text = getString(R.string.owner)
+            }
+
         })
     }
 }

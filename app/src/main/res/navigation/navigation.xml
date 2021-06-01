@@ -161,6 +161,9 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/dashboardFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExpensesFragment"

@@ -34,12 +34,17 @@ class DashboardViewModel : ViewModel() {
           object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
               if (snapshot.exists()) {
+                var userIsExist = false
                 snapshot.children.forEach {
                   val userInfo = it.getValue(User::class.java)
                   if (userInfo != null) {
                     if (userInfo.uid == userId) {
+                      userIsExist = true
                       _user.postValue(userInfo)
-                    }
+                    } 
+                  }
+                  if (!userIsExist) {
+                    _user.postValue(null)
                   }
                 }
               }
