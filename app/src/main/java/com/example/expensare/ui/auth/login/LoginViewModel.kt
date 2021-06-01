@@ -75,6 +75,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                         }
                     }
                 }
+                .addOnFailureListener {
+                    _error.postValue(it)
+                }
         }
     }
     fun loginComplete() {
