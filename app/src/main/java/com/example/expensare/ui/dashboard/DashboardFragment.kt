@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
 import com.example.expensare.databinding.FragmentDashboardBinding
+import com.example.expensare.ui.auth.login.LoginFragmentDirections
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
@@ -35,7 +36,7 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getUserInfo()
+        userLoggedIn()
         val toolbar = binding.absToolbar
         val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         toolbar.setNavigationOnClickListener {
@@ -118,6 +119,14 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
         return true
     }
 
+    private fun userLoggedIn() {
+        if (FirebaseAuth.getInstance().uid == null) {
+            findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToLoginFragment())
+        } else {
+            getUserInfo()
+        }
+    }
+
     private fun getUserInfo() {
         dashboardViewModel.user.observe(viewLifecycleOwner, {
             if (it == null) {
@@ -133,7 +142,10 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
                 val drawerStatusText = header.findViewById<MaterialTextView>(R.id.user_status)
                 drawerStatusText.text = getString(R.string.owner)
             }
+        })
 
+        dashboardViewModel.group.observe(viewLifecycleOwner, {
+            binding.absToolbarTitle.text = it.groupName
         })
     }
 }

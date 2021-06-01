@@ -8,7 +8,7 @@ import com.example.expensare.R
 import com.example.expensare.data.Group
 import com.google.android.material.textview.MaterialTextView
 
-class ChooseGroupAdapter: RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() {
+class ChooseGroupAdapter(val onClickListener: OnClickListener): RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() {
 
     private var list = arrayListOf<Group>()
 
@@ -18,6 +18,9 @@ class ChooseGroupAdapter: RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(list[position])
+        }
         return holder.bind(list[position])
     }
 
@@ -41,4 +44,7 @@ class ChooseGroupAdapter: RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() 
             quantity.text = group.users.size.toString()
         }
     }
+}
+class OnClickListener(val clickListener: (group: Group) -> Unit) {
+    fun onClick(group: Group) = clickListener(group)
 }

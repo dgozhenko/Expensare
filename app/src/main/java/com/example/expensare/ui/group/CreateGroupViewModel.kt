@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 sealed class CreateGroupResult {
     object Success : CreateGroupResult()
@@ -25,6 +26,7 @@ class CreateGroupViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val uid = FirebaseAuth.getInstance().uid ?: ""
             val users = arrayListOf<String>()
+            val groupId = UUID.randomUUID().toString()
             users.add(uid)
             val reference =
                 FirebaseDatabase.getInstance(
@@ -32,7 +34,7 @@ class CreateGroupViewModel : ViewModel() {
                     )
                     .getReference("groups/")
                     .push()
-            val group = Group(groupName = groupName, groupType = groupType, users = users)
+            val group = Group(groupID = groupId, groupName = groupName, groupType = groupType, users = users)
             reference
                 .setValue(group)
                 .addOnCompleteListener { _createGroupResult.postValue(CreateGroupResult.Success) }

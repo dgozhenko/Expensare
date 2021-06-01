@@ -41,7 +41,11 @@ class ChooseGroupFragment: BaseFragment() {
     }
 
     private fun bindRecyclerView() {
-        val adapter = ChooseGroupAdapter()
+        val adapter = ChooseGroupAdapter(OnClickListener {
+            chooseGroupViewModel.saveGroupID(it.groupID)
+            findNavController().navigate(ChooseGroupFragmentDirections.actionChooseGroupFragmentToDashboardFragment())
+        })
+
         binding.groupRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.groupRecyclerView.adapter = adapter
         chooseGroupViewModel.listenForGroups()

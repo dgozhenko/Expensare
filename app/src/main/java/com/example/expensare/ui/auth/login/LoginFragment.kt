@@ -36,16 +36,9 @@ class LoginFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userLoggedIn()
         loginButtonClicked()
         binding.dontHaveAnAccountText.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegistrationFragment())
-        }
-    }
-
-    private fun userLoggedIn() {
-        if (FirebaseAuth.getInstance().uid != null) {
-            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
         }
     }
 
