@@ -51,6 +51,8 @@ class DashboardViewModel(private val getApplication: Application) : AndroidViewM
                     _user.postValue(null)
                   }
                 }
+              } else {
+                _user.postValue(null)
               }
             }
 

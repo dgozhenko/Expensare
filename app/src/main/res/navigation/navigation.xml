@@ -72,8 +72,9 @@
             app:popUpTo="@id/chooseNameFragment"
             app:popUpToInclusive="true" />
         <argument
-            android:name="avatar"
-            app:argType="com.example.expensare.data.Avatar"/>
+            android:name="input"
+            app:argType="com.example.expensare.data.Input"/>
+
 
     </fragment>
     <fragment
@@ -88,6 +89,9 @@
             app:popUpTo="@id/avatarPickerFragment"
             app:popUpToInclusive="true">
         </action>
+        <argument
+            android:name="email"
+            app:argType="string"/>
     </fragment>
     <fragment
         android:id="@+id/dashboardFragment"
@@ -310,7 +314,7 @@
     </fragment>
     <fragment
         android:id="@+id/groupMembersFragment"
-        android:name="com.example.expensare.ui.manage_group.GroupMembersFragment"
+        android:name="com.example.expensare.ui.manage_group.members.GroupMembersFragment"
         android:label="GroupMembersFragment" />
     <fragment
         android:id="@+id/groupSettingsFragment"

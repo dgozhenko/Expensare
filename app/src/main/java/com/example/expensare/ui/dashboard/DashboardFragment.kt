@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
+import com.example.expensare.data.Input
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.auth.login.LoginFragmentDirections
 import com.example.expensare.ui.base.BaseFragment
@@ -130,9 +131,8 @@ class DashboardFragment: BaseFragment(), NavigationView.OnNavigationItemSelected
     private fun getUserInfo() {
         dashboardViewModel.user.observe(viewLifecycleOwner, {
             if (it == null) {
-                  findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToChooseNameFragment(
-                      Avatar(Uri.EMPTY, false)
-                  ))
+                findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToLoginFragment())
+                FirebaseAuth.getInstance().signOut()
             } else {
                 val header = navigationView.getHeaderView(0)
                 val drawerHeaderNameText = header.findViewById<MaterialTextView>(R.id.user_name)

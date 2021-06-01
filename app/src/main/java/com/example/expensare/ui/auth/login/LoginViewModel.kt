@@ -61,6 +61,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                                             } else {
                                                 _userLiveData.postValue(false)
                                             }
+                                        } else {
+                                            _userLiveData.postValue(false)
                                         }
                                     }
 

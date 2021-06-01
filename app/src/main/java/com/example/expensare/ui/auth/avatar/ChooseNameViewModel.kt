@@ -25,9 +25,9 @@ class ChooseNameViewModel: ViewModel() {
     private val _chooseNameResult = MutableLiveData<ChooseNameResult>()
     val chooseNameResult: LiveData<ChooseNameResult> get() = _chooseNameResult
 
-        private fun createUserInDatabase(username: String, avatarUri: String) {
+        private fun createUserInDatabase(username: String, avatarUri: String, email: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val user = User(uid, username, avatarUri)
+        val user = User(uid, username, email, avatarUri)
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users/$uid")
         reference.setValue(user).addOnSuccessListener {
            _chooseNameResult.postValue(ChooseNameResult.Success)
@@ -37,13 +37,13 @@ class ChooseNameViewModel: ViewModel() {
             }
     }
 
-    fun uploadImage(uri: Uri, username: String) {
+    fun uploadImage(uri: Uri, username: String, email: String) {
         val filename = UUID.randomUUID().toString()
         val reference = FirebaseStorage.getInstance("gs://expensare.appspot.com").getReference("/avatars/$filename")
         reference.putFile(uri)
             .addOnSuccessListener {
                 reference.downloadUrl.addOnSuccessListener {
-                    createUserInDatabase(username, it.toString())
+                    createUserInDatabase(username, it.toString(), email)
                 }
             }
     }

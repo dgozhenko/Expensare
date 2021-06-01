@@ -34,8 +34,8 @@ class ChooseNameFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindButtons()
-        if (args.avatar.fromAvatarPicker) {
-            binding.chooseAvatar.setImageURI(args.avatar.avatar)
+        if (args.input.Avatar.fromAvatarPicker) {
+            binding.chooseAvatar.setImageURI(args.input.Avatar.avatar)
         }
     }
 
@@ -47,11 +47,11 @@ class ChooseNameFragment : BaseFragment() {
         binding.thatsMeButton.setOnClickListener {
             it.hideKeyboard()
             progressBar.visibility = View.VISIBLE
-            if (args.avatar.fromAvatarPicker) {
+            if (args.input.Avatar.fromAvatarPicker) {
                 val username = binding.nameEditText.text.toString()
-                val avatar = args.avatar
+                val avatar = args.input.Avatar
                 if (username.isNotEmpty()) {
-                    chooseNameViewModel.uploadImage(avatar.avatar, username)
+                    chooseNameViewModel.uploadImage(avatar.avatar, username, args.input.email)
                     chooseNameViewModel.chooseNameResult.observe(viewLifecycleOwner, { result ->
                         when (result) {
                             is ChooseNameResult.Error -> {
@@ -81,7 +81,7 @@ class ChooseNameFragment : BaseFragment() {
             it.hideKeyboard()
             findNavController()
                 .navigate(
-                    ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment()
+                    ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment(args.input.email)
                 )
         }
     }

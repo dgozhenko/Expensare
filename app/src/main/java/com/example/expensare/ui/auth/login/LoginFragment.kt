@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +16,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
+import com.example.expensare.data.Input
 import com.example.expensare.databinding.FragmentLoginBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.parcelize.Parcelize
 import kotlin.math.log
 
 class LoginFragment: BaseFragment() {
+
+
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -92,8 +97,7 @@ class LoginFragment: BaseFragment() {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
                                 } else {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
-                                        Avatar(Uri.EMPTY, false)
-                                    ))
+                                        Input(Avatar(Uri.EMPTY, false), email)))
                                 }
                             } else {
                                 loginViewModel.errorComplete()
