@@ -7,14 +7,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.expensare.R
 import com.example.expensare.databinding.FragmentCreateGroupBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.util.Extensions.hideKeyboard
 
-class CreateGroupFragment: BaseFragment() {
+class CreateGroupFragment : BaseFragment() {
     private var _binding: FragmentCreateGroupBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
-    val createGroupViewModel: CreateGroupViewModel by lazy { ViewModelProvider(this).get(CreateGroupViewModel::class.java) }
+    private val createGroupViewModel: CreateGroupViewModel by lazy {
+        ViewModelProvider(this).get(CreateGroupViewModel::class.java)
+    }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentCreateGroupBinding.inflate(inflater)
@@ -28,32 +33,37 @@ class CreateGroupFragment: BaseFragment() {
     }
 
     private fun createGroupButtonClicked() {
+        val progress = binding.progressBar
+        progress.trackColor = resources.getColor(R.color.light_black)
+        progress.setIndicatorColor(resources.getColor(R.color.red))
         binding.createGroupButton.setOnClickListener {
-            var errorFree = true
+            it.hideKeyboard()
+            progress.visibility = View.VISIBLE
             val groupNameEditText = binding.groupNameEditText.text.toString()
             when {
                 groupNameEditText.isEmpty() -> {
-                    Toast.makeText(requireContext(), "Group name cannot be empty", Toast.LENGTH_SHORT).show()
-                } else -> {
-                    createGroupViewModel.createGroup(groupNameEditText, "Home")
-                    createGroupViewModel.error.observe(viewLifecycleOwner, {
-                        if (it != null) {
-                            errorFree = false
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                            createGroupViewModel.errorDelivered()
-                        }
-                    })
-
-                if (errorFree) {
-                    createGroupViewModel.isComplete.observe(viewLifecycleOwner, {
-                        if (it) {
-                            findNavController().navigateUp()
-                            createGroupViewModel.completed()
-                        } else {
-                            Toast.makeText(requireContext(), "Some error appear", Toast.LENGTH_SHORT).show()
-                        }
-                    })
+                    Toast.makeText(
+                            requireContext(),
+                            "Group name cannot be empty",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    progress.visibility = View.GONE
                 }
+                else -> {
+                    createGroupViewModel.createGroup(groupNameEditText, "Home")
+                    createGroupViewModel.createGroupResult.observe(viewLifecycleOwner, { result ->
+                        when (result) {
+                            is CreateGroupResult.Error -> {
+                                Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT).show()
+                                progress.visibility = View.GONE
+                            }
+                            CreateGroupResult.Success -> {
+                                progress.visibility = View.GONE
+                                findNavController().navigateUp()
+                            }
+                        }
+                    })
                 }
             }
         }

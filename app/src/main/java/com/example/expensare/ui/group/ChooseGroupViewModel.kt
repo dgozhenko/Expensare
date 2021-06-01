@@ -13,7 +13,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ChooseGroupViewModel(application: Application): AndroidViewModel(application) {
+class ChooseGroupViewModel: ViewModel() {
 
     private val _groups = MutableLiveData<ArrayList<Group>>()
     val groups: LiveData<ArrayList<Group>> get() = _groups
@@ -29,22 +29,13 @@ class ChooseGroupViewModel(application: Application): AndroidViewModel(applicati
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
                             val group = it.getValue(Group::class.java)
-                            if (group != null) {
-                                group.users.forEach{ user ->
-                                    if (user == userID) {
-                                        allGroups.add(group)
-                                        _groups.postValue(allGroups)
-                                        Log.d("NOWCHECK", allGroups.toString())
-                                    } else {
-                                        Toast.makeText(getApplication<Application>().baseContext, "No USer", Toast.LENGTH_SHORT).show()
-                                    }
+                            group?.users?.forEach{ user ->
+                                if (user == userID) {
+                                    allGroups.add(group)
+                                    _groups.postValue(allGroups)
                                 }
-                            } else {
-                                Toast.makeText(getApplication<Application>().baseContext, "No group", Toast.LENGTH_SHORT).show()
                             }
                         }
-                    } else {
-                        Toast.makeText(getApplication<Application>().baseContext, "No snapshot", Toast.LENGTH_SHORT).show()
                     }
                 }
 

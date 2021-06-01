@@ -95,7 +95,7 @@ class LoginFragment: BaseFragment() {
                     loginViewModel.userLiveData.observe(viewLifecycleOwner, { user ->
                         if (verificationErrorFree) {
                             if (errorFree) {
-                                if (user != null) {
+                                if (user == true) {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
                                 } else {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(

@@ -12,23 +12,28 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import java.lang.Exception
 import java.util.*
+
+sealed class ChooseNameResult {
+    object Success: ChooseNameResult()
+    data class Error (val exception: Exception): ChooseNameResult()
+}
 
 class ChooseNameViewModel: ViewModel() {
 
-    private val _isComplete = MutableLiveData<Boolean>()
-    val isComplete: LiveData<Boolean> get() = _isComplete
+    private val _chooseNameResult = MutableLiveData<ChooseNameResult>()
+    val chooseNameResult: LiveData<ChooseNameResult> get() = _chooseNameResult
 
         private fun createUserInDatabase(username: String, avatarUri: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val user = User(uid, username, avatarUri)
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users/$uid")
         reference.setValue(user).addOnSuccessListener {
-            Log.d("Registration", "User created in database")
-            _isComplete.postValue(true)
+           _chooseNameResult.postValue(ChooseNameResult.Success)
         }
             .addOnFailureListener {
-                Log.d("Registration", it.message!!)
+                _chooseNameResult.postValue(ChooseNameResult.Error(it))
             }
     }
 
