@@ -73,30 +73,56 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
 
     private fun setupRecyclerView() {
         val adapter = AddExpenseAdapter(OnClickListener {
-            val amountEditText = binding.amountEditText.text.toString()
-            if (amountEditText.isNotEmpty()) {
-                if (divideAmount == 0) {
-                    fromUserId.add(it.uid)
-                    val bottomSheetDialog  =  AddExpenseBottomSheetDialog(amountEditText.toInt(), it)
-                    bottomSheetDialog.setTargetFragment(this, 0)
-                    bottomSheetDialog.show(parentFragmentManager, "")
-                } else {
-                    fromUserId.add(it.uid)
-                    val bottomSheetDialog  =  AddExpenseBottomSheetDialog(divideAmount, it)
-                    bottomSheetDialog.setTargetFragment(this, 0)
-                    bottomSheetDialog.show(parentFragmentManager, "")
+            if (debtsArray.isNotEmpty() || equalDebtsArray.isNotEmpty()) {
+                var noUserInDebtArray = true
+                var noUserInEqualDebtArray = true
+
+                debtsArray.forEach { debt->
+                    if (debt.from == it.uid) {
+                        Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
+                        noUserInDebtArray = false
+                    }
                 }
 
-            } else {
-                Toast.makeText(requireContext(), "Enter amount for dividing first", Toast.LENGTH_SHORT).show()
-            }
+                equalDebtsArray.forEach {equalDebt ->
+                    if (equalDebt.from == it.uid) {
+                        Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
+                        noUserInEqualDebtArray = false
+                    }
 
+                    if (noUserInDebtArray && noUserInEqualDebtArray) {
+                        callDialog(it)
+                    }
+                }
+            } else {
+                callDialog(it)
+            }
         })
         binding.userRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.userRecyclerView.adapter = adapter
         addExpenseViewModel.users.observe(viewLifecycleOwner, {
             adapter.getUsers(it)
         })
+    }
+
+    private fun callDialog(user: User) {
+        val amountEditText = binding.amountEditText.text.toString()
+        if (amountEditText.isNotEmpty()) {
+            if (divideAmount == 0) {
+                fromUserId.add(user.uid)
+                val bottomSheetDialog  =  AddExpenseBottomSheetDialog(amountEditText.toInt(), user)
+                bottomSheetDialog.setTargetFragment(this, 0)
+                bottomSheetDialog.show(parentFragmentManager, "")
+            } else {
+                fromUserId.add(user.uid)
+                val bottomSheetDialog  =  AddExpenseBottomSheetDialog(divideAmount, user)
+                bottomSheetDialog.setTargetFragment(this, 0)
+                bottomSheetDialog.show(parentFragmentManager, "")
+            }
+
+        } else {
+            Toast.makeText(requireContext(), "Enter amount for dividing first", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupToolbar() {
