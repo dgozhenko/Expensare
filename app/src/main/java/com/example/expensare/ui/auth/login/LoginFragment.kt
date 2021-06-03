@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +16,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
+import com.example.expensare.data.Input
 import com.example.expensare.databinding.FragmentLoginBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.parcelize.Parcelize
 import kotlin.math.log
 
 class LoginFragment: BaseFragment() {
+
+
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -36,16 +41,9 @@ class LoginFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userLoggedIn()
         loginButtonClicked()
         binding.dontHaveAnAccountText.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegistrationFragment())
-        }
-    }
-
-    private fun userLoggedIn() {
-        if (FirebaseAuth.getInstance().uid != null) {
-            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
         }
     }
 
@@ -95,12 +93,11 @@ class LoginFragment: BaseFragment() {
                     loginViewModel.userLiveData.observe(viewLifecycleOwner, { user ->
                         if (verificationErrorFree) {
                             if (errorFree) {
-                                if (user != null) {
+                                if (user == true) {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
                                 } else {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
-                                        Avatar(Uri.EMPTY, false)
-                                    ))
+                                        Input(Avatar(Uri.EMPTY, false), email)))
                                 }
                             } else {
                                 loginViewModel.errorComplete()

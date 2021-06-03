@@ -1,69 +1,88 @@
 package com.example.expensare.ui.auth.avatar
 
-import android.net.Uri
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
 import com.example.expensare.databinding.FragmentNameRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textview.MaterialTextView
+import com.example.expensare.util.Extensions.hideKeyboard
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 
-class ChooseNameFragment: BaseFragment() {
+class ChooseNameFragment : BaseFragment() {
     private var _binding: FragmentNameRegistrationBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
-    private val chooseNameViewModel: ChooseNameViewModel by lazy { ViewModelProvider(this).get(ChooseNameViewModel::class.java) }
+    private val chooseNameViewModel: ChooseNameViewModel by lazy {
+        ViewModelProvider(this).get(ChooseNameViewModel::class.java)
+    }
 
-    val args: ChooseNameFragmentArgs by navArgs()
+    private val args: ChooseNameFragmentArgs by navArgs()
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentNameRegistrationBinding.inflate(inflater)
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        FirebaseAuth.getInstance().signOut()
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (args.avatar.fromAvatarPicker) {
-            binding.chooseAvatar.setImageURI(args.avatar.avatar)
+        bindButtons()
+        if (args.input.Avatar.fromAvatarPicker) {
+            binding.chooseAvatar.setImageURI(args.input.Avatar.avatar)
         }
-        binding.chooseAvatar.setOnClickListener {
-            findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment())
-        }
+    }
+
+    private fun bindButtons() {
+        val progressBar = binding.progressBar
+        progressBar.trackColor = resources.getColor(R.color.light_black)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red))
 
         binding.thatsMeButton.setOnClickListener {
-            if (args.avatar.fromAvatarPicker) {
+            it.hideKeyboard()
+            progressBar.visibility = View.VISIBLE
+            if (args.input.Avatar.fromAvatarPicker) {
                 val username = binding.nameEditText.text.toString()
-                val avatar = args.avatar
+                val avatar = args.input.Avatar
                 if (username.isNotEmpty()) {
-                    chooseNameViewModel.uploadImage(avatar.avatar, username)
-                    chooseNameViewModel.isComplete.observe(viewLifecycleOwner, {
-                        if (it) {
-                            findNavController().navigate(ChooseNameFragmentDirections.actionChooseNameFragmentToChooseGroupFragment())
-                        } else {
-                            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                    chooseNameViewModel.uploadImage(avatar.avatar, username, args.input.email)
+                    chooseNameViewModel.chooseNameResult.observe(viewLifecycleOwner, { result ->
+                        when (result) {
+                            is ChooseNameResult.Error -> {
+                                Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT).show()
+                                progressBar.visibility = View.GONE
+                            }
+                            ChooseNameResult.Success -> {
+                                findNavController()
+                                    .navigate(
+                                        ChooseNameFragmentDirections
+                                           .actionChooseNameFragmentToChooseGroupFragment())
+                                progressBar.visibility = View.GONE
+                            }
                         }
                     })
-
-
+                } else {
+                    Toast.makeText(requireContext(), "How should we call you?", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
                 }
             } else {
                 Toast.makeText(requireContext(), "Choose avatar", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
             }
+        }
+
+        binding.chooseAvatar.setOnClickListener {
+            it.hideKeyboard()
+            findNavController()
+                .navigate(
+                    ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment(args.input.email)
+                )
         }
     }
 }

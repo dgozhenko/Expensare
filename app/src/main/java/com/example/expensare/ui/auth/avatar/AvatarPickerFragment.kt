@@ -8,10 +8,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
+import com.example.expensare.data.Input
 import com.example.expensare.databinding.FragmentAvatarPickerBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -28,11 +30,15 @@ class AvatarPickerFragment: BaseFragment() {
         return binding.root
     }
 
+    private val args: AvatarPickerFragmentArgs by navArgs()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         val adapter = AvatarGridAdapter(OnClickListener {
-            findNavController().navigate(AvatarPickerFragmentDirections.actionAvatarPickerFragmentToChooseNameFragment(it))
+            findNavController().navigate(AvatarPickerFragmentDirections.actionAvatarPickerFragmentToChooseNameFragment(
+                Input(it, args.email)
+            ))
         })
         binding.avatarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.avatarRecyclerView.adapter = adapter

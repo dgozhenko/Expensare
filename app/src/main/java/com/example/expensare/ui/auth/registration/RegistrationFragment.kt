@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.util.Extensions.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 
 class RegistrationFragment : BaseFragment() {
@@ -91,10 +92,5 @@ class RegistrationFragment : BaseFragment() {
             }
 
         }
-    }
-
-    fun View.hideKeyboard() {
-        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(windowToken, 0)
     }
 }

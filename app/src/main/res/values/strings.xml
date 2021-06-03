@@ -118,4 +118,7 @@
     <string name="add_vegetable_item_title">Add Vegetable Item</string>
     <string name="walmart_text">Walmart</string>
     <string name="price_per_quantity_text">$15/kg</string>
+    <string name="how_should_we_call_you_text">How should we call you?</string>
+    <string name="choose_your_avatar_text">Choose your avatar</string>
+    <string name="owner">Faceless HQ - Owner</string>
 </resources>
