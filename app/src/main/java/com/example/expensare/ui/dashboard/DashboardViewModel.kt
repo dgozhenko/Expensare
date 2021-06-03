@@ -2,6 +2,7 @@ package com.example.expensare.ui.dashboard
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.example.expensare.data.Expense
 import com.example.expensare.data.Group
 import com.example.expensare.data.User
 import com.example.expensare.ui.storage.Storage
@@ -22,9 +23,42 @@ class DashboardViewModel(private val getApplication: Application) : AndroidViewM
   private val _group = MutableLiveData<Group>()
   val group: LiveData<Group> get() = _group
 
+  private val _expenses = MutableLiveData<ArrayList<Expense>>()
+  val expense: LiveData<ArrayList<Expense>> get() = _expenses
+
   init {
     getUserInfo()
     getGroupByGroupId()
+    getGroupExpenses()
+  }
+
+  private fun getGroupExpenses() {
+    val storage = Storage(getApplication)
+    val groupId = storage.groupId
+    val expensesArrayList = arrayListOf<Expense>()
+    val reference = FirebaseDatabase.getInstance(
+      "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+      .getReference("/expenses/$groupId/")
+    viewModelScope.launch(Dispatchers.IO) {
+      reference.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+          if (snapshot.exists()) {
+            snapshot.children.forEach {
+              val expense = it.getValue(Expense::class.java)
+              if (expense != null) {
+                expensesArrayList.add(expense)
+              }
+            }
+            _expenses.postValue(expensesArrayList)
+          }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+          TODO("Not yet implemented")
+        }
+
+      })
+    }
   }
 
   private fun getUserInfo() {

@@ -32,7 +32,7 @@
     <string name="history_item_price">-$17</string>
     <string name="history_item_name">Potato</string>
     <string name="list_price">$17</string>
-    <string name="add_expenses_title">Add Expenses</string>
+    <string name="add_expense_title">Add Expense</string>
     <string name="name_of_expense_text">Name of expense</string>
     <string name="amount_text">Amount in $</string>
     <string name="divide_expense_for_text">Divide expense for</string>
@@ -121,4 +121,9 @@
     <string name="how_should_we_call_you_text">How should we call you?</string>
     <string name="choose_your_avatar_text">Choose your avatar</string>
     <string name="owner">Faceless HQ - Owner</string>
+    <string name="how_we_will_divide_it_text">How we will divide it?</string>
+    <string name="daniil_text">Daniil</string>
+    <string name="set_amount_text">Set Amount</string>
+    <string name="divide_equal_text">Divide equal</string>
+    <string name="enter_exact_amount_text">Enter Exact amount</string>
 </resources>

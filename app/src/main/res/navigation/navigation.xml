@@ -171,7 +171,7 @@
     </fragment>
     <fragment
         android:id="@+id/addExpensesFragment"
-        android:name="com.example.expensare.ui.addexpenses.AddExpensesFragment"
+        android:name="com.example.expensare.ui.addexpense.AddExpenseFragment"
         android:label="AddExpensesFragment" />
     <fragment
         android:id="@+id/myDebtsFragment"
