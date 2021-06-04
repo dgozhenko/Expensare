@@ -14,7 +14,6 @@ import com.example.expensare.data.Debt
 import com.example.expensare.data.User
 import com.example.expensare.databinding.FragmentAddExpensesBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.google.firebase.auth.FirebaseAuth
 
 
 class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMethodListener {
@@ -40,7 +39,7 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
         getUsers()
         setupToolbar()
         setupRecyclerView()
-        Log.d("TAGGGG", "created")
+        Log.d("TAG", "created")
     }
 
     override fun onDivideMethodListener(
@@ -50,17 +49,21 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
         startAmount: Int
     ) {
         this.divideEqually = divideEqually
-        val uid = FirebaseAuth.getInstance().uid
         var amount = startAmount
         this.divideAmount = amount
+
         if (divideEqually) {
-            val debt = Debt(uid!!, user.uid, amount )
-            equalDebtsArray.add(debt)
+            addExpenseViewModel.user.observe(viewLifecycleOwner, {
+                val debt = Debt(it, user, amount )
+                equalDebtsArray.add(debt)
+            })
         } else {
-            amount -= divideAmount
-            val debt = Debt(uid!!, user.uid, divideAmount)
-            debtsArray.add(debt)
-            this.divideAmount = amount
+            addExpenseViewModel.user.observe(viewLifecycleOwner, {
+                amount -= divideAmount
+                val debt = Debt(it, user, divideAmount)
+                debtsArray.add(debt)
+                this.divideAmount = amount
+            })
         }
 
     }
@@ -78,22 +81,24 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
                 var noUserInEqualDebtArray = true
 
                 debtsArray.forEach { debt->
-                    if (debt.from == it.uid) {
+                    if (debt.fromUser == it) {
                         Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
                         noUserInDebtArray = false
                     }
                 }
 
                 equalDebtsArray.forEach {equalDebt ->
-                    if (equalDebt.from == it.uid) {
+                    if (equalDebt.fromUser == it) {
                         Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
                         noUserInEqualDebtArray = false
                     }
-
-                    if (noUserInDebtArray && noUserInEqualDebtArray) {
-                        callDialog(it)
-                    }
                 }
+
+                if (noUserInDebtArray && noUserInEqualDebtArray) {
+                    callDialog(it)
+                }
+
+
             } else {
                 callDialog(it)
             }
@@ -127,8 +132,8 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
 
     private fun setupToolbar() {
         val progressBar = binding.progressBar
-        progressBar.trackColor = resources.getColor(R.color.light_black)
-        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+        progressBar.trackColor = resources.getColor(R.color.light_black, requireActivity().theme)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
         binding.absToolbar.inflateMenu(R.menu.add_expenses_menu)
         binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         binding.absToolbar.setOnMenuItemClickListener {
@@ -171,32 +176,28 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
                                             progressBar.visibility = View.GONE
                                             findNavController().navigateUp()
                                         } else {
-                                            if (debtsArray.isEmpty()) {
-
-                                            } else {
+                                            if (debtsArray.isNotEmpty()) {
                                                 debtsArray.forEach { debt ->
-                                                addExpenseViewModel.createDebt(debt.amount, debt.from)
-                                                addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
-                                                    when (debtResult) {
-                                                        is AddDebtResult.Error -> {
-                                                            Toast.makeText(requireContext(), debtResult.exception.message, Toast.LENGTH_SHORT).show()
-                                                            progressBar.visibility = View.GONE
+                                                    addExpenseViewModel.createDebt(debt.amount, debt.fromUser, debt.toUser)
+                                                    addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
+                                                        when (debtResult) {
+                                                            is AddDebtResult.Error -> {
+                                                                Toast.makeText(requireContext(), debtResult.exception.message, Toast.LENGTH_SHORT).show()
+                                                                progressBar.visibility = View.GONE
+                                                            }
+                                                            AddDebtResult.Success -> {
+
+                                                            }
                                                         }
-                                                        AddDebtResult.Success -> {
+                                                    })
 
-                                                        }
-                                                    }
-                                                })
-
-                                            }
+                                                }
                                             }
 
-                                            if (equalDebtsArray.isEmpty()) {
-
-                                            } else {
+                                            if (equalDebtsArray.isNotEmpty()) {
                                                 equalDebtsArray.forEach { debt ->
                                                     val equalAmount = divideAmount / (1 + equalDebtsArray.size)
-                                                    addExpenseViewModel.createDebt(equalAmount, debt.from)
+                                                    addExpenseViewModel.createDebt(equalAmount, debt.fromUser, debt.toUser)
                                                     addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
                                                         when (debtResult) {
                                                             is AddDebtResult.Error -> {

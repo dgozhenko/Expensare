@@ -51,28 +51,20 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
     val users: LiveData<ArrayList<User>>
         get() = _users
 
-    private val _test = MutableLiveData<Boolean>()
-    val test: LiveData<Boolean>
-    get() = _test
 
     init {
         getUserInfo()
         getGroupByGroupId()
     }
 
-    fun setupTest(equally: Boolean) {
-        _test.postValue(equally)
-    }
-
-    fun createDebt(amount: Int, from: String) {
-        val userId = FirebaseAuth.getInstance().uid
+    fun createDebt(amount: Int, fromUser: User, toUser: User) {
         val storage = Storage(getApplication())
         val groupId = storage.groupId
 
         viewModelScope.launch(Dispatchers.IO) {
             val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("group_debts/$groupId/$userId").push()
-            val debt = Debt(to = userId!!, from = from, amount = amount)
+                .getReference("group_debts/$groupId").push()
+            val debt = Debt(toUser = toUser, fromUser = fromUser, amount = amount)
             reference.setValue(debt)
                 .addOnSuccessListener {
                     _addDebtResult.postValue(AddDebtResult.Success)
@@ -174,8 +166,7 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                 userIdArrayList.add(it)
             }
         }
-        userIdArrayList.forEach {
-            val userId = it
+        userIdArrayList.forEach { currentUserId ->
             val reference =
                 FirebaseDatabase.getInstance(
                     "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -188,7 +179,7 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                                 snapshot.children.forEach {
                                     val userInfo = it.getValue(User::class.java)
                                     if (userInfo != null) {
-                                        if (userInfo.uid == userId) {
+                                        if (userInfo.uid == currentUserId) {
                                             userArrayList.add(userInfo)
                                         }
                                     }

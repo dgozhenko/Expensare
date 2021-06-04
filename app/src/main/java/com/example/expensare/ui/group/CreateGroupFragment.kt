@@ -34,8 +34,8 @@ class CreateGroupFragment : BaseFragment() {
 
     private fun createGroupButtonClicked() {
         val progress = binding.progressBar
-        progress.trackColor = resources.getColor(R.color.light_black)
-        progress.setIndicatorColor(resources.getColor(R.color.red))
+        progress.trackColor = resources.getColor(R.color.light_black, requireActivity().theme)
+        progress.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
         binding.createGroupButton.setOnClickListener {
             it.hideKeyboard()
             progress.visibility = View.VISIBLE

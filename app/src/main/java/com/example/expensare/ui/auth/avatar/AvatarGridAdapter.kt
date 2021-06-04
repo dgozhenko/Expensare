@@ -1,17 +1,14 @@
 package com.example.expensare.ui.auth.avatar
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.Avatar
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class AvatarGridAdapter(val onClickListener: OnClickListener): RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
+class AvatarGridAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
 
   private var itemAvatar = arrayListOf<Avatar>()
 
@@ -20,7 +17,7 @@ class AvatarGridAdapter(val onClickListener: OnClickListener): RecyclerView.Adap
     return ViewHolder(inflatedView)
   }
 
-  override fun onBindViewHolder(holder: AvatarGridAdapter.ViewHolder, position: Int) {
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     holder.itemView.setOnClickListener {
       onClickListener.onClick(itemAvatar[position])
     }

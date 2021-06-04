@@ -1,7 +1,6 @@
 package com.example.expensare.ui.auth.registration
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers

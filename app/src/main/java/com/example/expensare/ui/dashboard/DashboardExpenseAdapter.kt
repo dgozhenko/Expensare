@@ -9,8 +9,6 @@ import com.example.expensare.data.Expense
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class DashboardExpenseAdapter: RecyclerView.Adapter<DashboardExpenseAdapter.ViewHolder>() {

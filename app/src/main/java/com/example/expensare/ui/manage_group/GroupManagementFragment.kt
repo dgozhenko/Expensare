@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentManageGroupBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.example.expensare.ui.dashboard.DashboardFragmentDirections
 import com.google.android.material.navigation.NavigationView
 
 class GroupManagementFragment: BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
@@ -71,7 +70,6 @@ class GroupManagementFragment: BaseFragment(), NavigationView.OnNavigationItemSe
                 drawer.closeDrawer(GravityCompat.START)
                 findNavController().navigate(GroupManagementFragmentDirections.actionGroupManagementFragmentToSettingsFragment())
             }
-            else -> false
         }
         return true
     }

@@ -1,6 +1,5 @@
 package com.example.expensare.ui.auth.avatar
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import com.example.expensare.R
 import com.example.expensare.databinding.FragmentNameRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.util.Extensions.hideKeyboard
-import com.google.firebase.auth.FirebaseAuth
 
 class ChooseNameFragment : BaseFragment() {
     private var _binding: FragmentNameRegistrationBinding? = null
@@ -41,8 +39,8 @@ class ChooseNameFragment : BaseFragment() {
 
     private fun bindButtons() {
         val progressBar = binding.progressBar
-        progressBar.trackColor = resources.getColor(R.color.light_black)
-        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+        progressBar.trackColor = resources.getColor(R.color.light_black, requireActivity().theme)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
 
         binding.thatsMeButton.setOnClickListener {
             it.hideKeyboard()

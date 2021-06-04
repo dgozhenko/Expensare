@@ -3,7 +3,6 @@ package com.example.expensare.ui.addexpense
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import com.example.expensare.R
 import com.example.expensare.data.User
@@ -26,7 +25,6 @@ class AddExpenseBottomSheetDialog(val amount: Int, val user: User): BottomSheetD
         val view = View.inflate(requireContext(), R.layout.dialog_bottom_sheet_add_expenses_screen, null)
         _binding = DialogBottomSheetAddExpensesScreenBinding.bind(view)
         bottomSheet.setContentView(view)
-        bottomSheet.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         divideEquallyButtonClicked()
         divideExactAmount()
         return bottomSheet

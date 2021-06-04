@@ -8,7 +8,7 @@ import com.example.expensare.R
 import com.example.expensare.data.Group
 import com.google.android.material.textview.MaterialTextView
 
-class ChooseGroupAdapter(val onClickListener: OnClickListener): RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() {
+class ChooseGroupAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() {
 
     private var list = arrayListOf<Group>()
 

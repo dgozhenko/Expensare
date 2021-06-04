@@ -82,9 +82,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 }
         }
     }
-    fun loginComplete() {
-        _userLiveData.value = null
-    }
 
     fun errorComplete() {
         _error.value = null

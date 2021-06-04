@@ -3,13 +3,9 @@ package com.example.expensare.ui.manage_group.debts
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.User
 import com.example.expensare.data.UserDebt
-import com.example.expensare.ui.addexpense.AddExpenseAdapter
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -57,7 +53,7 @@ class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAda
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
             name.text = userDebt.toUser.username
-            amount.setTextColor(itemView.context.resources.getColor(R.color.red))
+            amount.setTextColor(itemView.context.resources.getColor(R.color.red, itemView.context.theme))
             amount.text = "-$${userDebt.fullAmount}"
             Picasso.with(itemView.context).load(userDebt.toUser.avatar).into(image)
         }
@@ -71,7 +67,7 @@ class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAda
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
             name.text = userDebt.toUser.username
-            amount.setTextColor(itemView.context.resources.getColor(R.color.dark_green))
+            amount.setTextColor(itemView.context.resources.getColor(R.color.dark_green, itemView.context.theme))
             amount.text = "+$${userDebt.fullAmount}"
             Picasso.with(itemView.context).load(userDebt.toUser.avatar).into(image)
         }

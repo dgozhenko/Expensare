@@ -1,11 +1,9 @@
 package com.example.expensare.ui.auth.registration
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -41,8 +39,8 @@ class RegistrationFragment : BaseFragment() {
 
     private fun registrationButtonClicked() {
         val progressBar = binding.registrationProgress
-        progressBar.trackColor = resources.getColor(R.color.light_black)
-        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+        progressBar.trackColor = resources.getColor(R.color.light_black, requireActivity().theme)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
 
         binding.registerButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()

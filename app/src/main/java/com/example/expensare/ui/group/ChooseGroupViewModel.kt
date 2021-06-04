@@ -1,8 +1,6 @@
 package com.example.expensare.ui.group
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.expensare.data.Group
 import com.example.expensare.ui.storage.Storage

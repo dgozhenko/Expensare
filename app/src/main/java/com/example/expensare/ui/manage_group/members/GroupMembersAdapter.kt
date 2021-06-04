@@ -1,19 +1,16 @@
 package com.example.expensare.ui.manage_group.members
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
 import com.example.expensare.data.User
-import com.example.expensare.ui.auth.avatar.AvatarGridAdapter
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class GroupMembersAdapter(): RecyclerView.Adapter<GroupMembersAdapter.ViewHolder>() {
+class GroupMembersAdapter: RecyclerView.Adapter<GroupMembersAdapter.ViewHolder>() {
 
     private var userItem = arrayListOf<User>()
 

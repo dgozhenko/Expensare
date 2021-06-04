@@ -184,8 +184,8 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
                     object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (snapshot.exists()) {
-                                snapshot.children.forEach {
-                                    val userInfo = it.getValue(User::class.java)
+                                snapshot.children.forEach { user ->
+                                    val userInfo = user.getValue(User::class.java)
                                     if (userInfo != null) {
                                         if (userInfo.uid == userId) {
                                             userArrayList.add(userInfo)
