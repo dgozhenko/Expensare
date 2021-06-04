@@ -126,4 +126,9 @@
     <string name="set_amount_text">Set Amount</string>
     <string name="divide_equal_text">Divide equal</string>
     <string name="enter_exact_amount_text">Enter Exact amount</string>
+    <string name="debt_chart">Debt Chart</string>
+    <string name="owed_by">Owed by</string>
+    <string name="they_are_waiting_for_debt_return">They are waiting for debt return</string>
+    <string name="touch_pie_to_change_debt_status">(touch pie to change debt status)</string>
+    <string name="they_need_to_return_debt">They need to return debt</string>
 </resources>

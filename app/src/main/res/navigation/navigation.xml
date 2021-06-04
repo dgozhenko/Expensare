@@ -322,7 +322,7 @@
         android:label="GroupSettingsFragment" />
     <fragment
         android:id="@+id/groupDebtFragment"
-        android:name="com.example.expensare.ui.manage_group.GroupDebtFragment"
+        android:name="com.example.expensare.ui.manage_group.debts.GroupDebtFragment"
         android:label="GroupDebtFragment" />
     <fragment
         android:id="@+id/settingsFragment"
