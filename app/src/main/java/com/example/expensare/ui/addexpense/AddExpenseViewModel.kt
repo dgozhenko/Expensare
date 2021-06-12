@@ -12,10 +12,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 sealed class AddExpenseResult {
     object Success : AddExpenseResult()
@@ -27,7 +27,7 @@ sealed class AddDebtResult {
     data class Error(val exception: Exception) : AddDebtResult()
 }
 
-class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getApplication) {
+class AddExpenseViewModel(getApplication: Application) : AndroidViewModel(getApplication) {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -42,12 +42,12 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
         get() = _addDebtResult
 
     private val _group = MutableLiveData<Group>()
-    val group: LiveData<Group> get() = _group
+    val group: LiveData<Group>
+        get() = _group
 
     private val _users = MutableLiveData<ArrayList<User>>()
     val users: LiveData<ArrayList<User>>
         get() = _users
-
 
     init {
         getUserInfo()
@@ -57,32 +57,26 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
     fun createDebt(amount: Int, fromUser: User, toUser: User) {
         val storage = Storage(getApplication())
         val groupId = storage.groupId
-        val uid = UUID.randomUUID().toString()
-        val uid2 = UUID.randomUUID().toString()
         viewModelScope.launch(Dispatchers.IO) {
-
-            val toReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("group_debts/$groupId/${fromUser.uid}/owe/${toUser.uid}")
-            val fromReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("group_debts/$groupId/${toUser.uid}/lent/${fromUser.uid}")
-            val toReferenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("group_debts/$groupId/${fromUser.uid}/owe")
-            val fromReferenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("group_debts/$groupId/${toUser.uid}/lent")
-
-            toReferenceCheck.addListenerForSingleValueEvent(object : ValueEventListener{
+            val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId").push()
+            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+            val referenceAdd = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId")
+            referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        val oweChild = snapshot.child("/${toUser.uid}/amount/").getValue(Int::class.java)
-                        if (oweChild == null) {
-                            val toDebt = FirebaseDebt(uid, user = fromUser, amount = amount)
-                            toReference.setValue(toDebt)
-                        } else {
-                            toReference.child("/amount/").setValue(oweChild + amount)
+                        snapshot.children.forEach {
+                            val key = it.key
+                            val userDebt = it.getValue(UserDebt::class.java)!!
+                            if (userDebt.firstUser == toUser && userDebt.secondUser == fromUser) {
+                                referenceAdd.child("/$key/").setValue(UserDebt(userDebt.firstUser, userDebt.secondUser, userDebt.firstUserAmount + amount, userDebt.secondUserAmount - amount, false))
+                            } else if (userDebt.firstUser == fromUser && userDebt.secondUser == toUser) {
+                                referenceAdd.child("/$key/").setValue(UserDebt(userDebt.firstUser, userDebt.secondUser, userDebt.firstUserAmount - amount, userDebt.secondUserAmount + amount, false))
+                            } else {
+                                reference.setValue(UserDebt(toUser, fromUser, amount, -amount, false))
+                            }
                         }
                     } else {
-                        val toDebt = FirebaseDebt(uid, user = fromUser, amount = amount)
-                        toReference.setValue(toDebt)
+                        reference.setValue(UserDebt(toUser, fromUser, amount, -amount, false))
                     }
                 }
 
@@ -92,39 +86,6 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
 
             })
 
-                fromReferenceCheck.addListenerForSingleValueEvent(object: ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val lentChild = snapshot.child("/${fromUser.uid}/amount/").getValue(Int::class.java)
-                        if (lentChild == null) {
-                            val fromDebt = FirebaseDebt(uid2, user = fromUser, amount = amount)
-                            fromReference.setValue(fromDebt).addOnSuccessListener {
-                                _addDebtResult.postValue(AddDebtResult.Success)
-                            }
-                                .addOnFailureListener {
-                                    _addDebtResult.postValue(AddDebtResult.Error(it))
-                                }
-                        } else {
-                            val insertAmount = lentChild + amount
-                            fromReference.child("/amount/").setValue(insertAmount)
-                        }
-
-                    } else {
-                        val fromDebt = FirebaseDebt(uid2, user = fromUser, amount = amount)
-                        fromReference.setValue(fromDebt).addOnSuccessListener {
-                            _addDebtResult.postValue(AddDebtResult.Success)
-                        }
-                            .addOnFailureListener {
-                                _addDebtResult.postValue(AddDebtResult.Error(it))
-                            }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
         }
     }
 
@@ -138,39 +99,56 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
         val neededDate = simpleDateFormat.format(newCalendar.time)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("expenses/$groupId").push()
-            val expense = Expense(name = name, amount = amount, user = user, groupId = groupId, date = neededDate)
-            reference.setValue(expense).addOnSuccessListener { _addExpenseResult.postValue(AddExpenseResult.Success) }
+            val reference =
+                FirebaseDatabase.getInstance(
+                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                    )
+                    .getReference("expenses/$groupId")
+                    .push()
+            val expense =
+                Expense(
+                    name = name,
+                    amount = amount,
+                    user = user,
+                    groupId = groupId,
+                    date = neededDate
+                )
+            reference
+                .setValue(expense)
+                .addOnSuccessListener { _addExpenseResult.postValue(AddExpenseResult.Success) }
                 .addOnFailureListener { _addExpenseResult.postValue(AddExpenseResult.Error(it)) }
-
         }
     }
 
     private fun getGroupByGroupId() {
         val storage = Storage(getApplication())
         val groupId = storage.groupId
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
+        val reference =
+            FirebaseDatabase.getInstance(
+                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                )
+                .getReference("/groups/")
         viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val groupInfo = it.getValue(Group::class.java)
-                            if (groupInfo != null) {
-                                if (groupInfo.groupID == groupId) {
-                                    _group.postValue(groupInfo)
+            reference.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val groupInfo = it.getValue(Group::class.java)
+                                if (groupInfo != null) {
+                                    if (groupInfo.groupID == groupId) {
+                                        _group.postValue(groupInfo)
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
                 }
-
-            })
+            )
         }
     }
 
@@ -178,7 +156,8 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
         val userId = FirebaseAuth.getInstance().uid
         val reference =
             FirebaseDatabase.getInstance(
-                "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                )
                 .getReference("/users/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(
@@ -206,7 +185,8 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                     override fun onCancelled(error: DatabaseError) {
                         TODO("Not yet implemented")
                     }
-                })
+                }
+            )
         }
     }
 
@@ -222,7 +202,8 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
         userIdArrayList.forEach { currentUserId ->
             val reference =
                 FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                    )
                     .getReference("/users/")
             viewModelScope.launch(Dispatchers.IO) {
                 reference.addListenerForSingleValueEvent(
@@ -241,12 +222,10 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                             }
                         }
 
-                        override fun onCancelled(error: DatabaseError) {
-
-                        }
-                    })
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                )
             }
         }
-
     }
 }

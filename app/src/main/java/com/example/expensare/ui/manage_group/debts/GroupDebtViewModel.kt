@@ -13,9 +13,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
 
 class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getApplication) {
 
@@ -36,48 +36,71 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
         get() = _userDebt
 
     private val _detailedUserDebt = MutableLiveData<ArrayList<UserDebt>>()
-    val detailedUserDebt: LiveData<ArrayList<UserDebt>> get() = _detailedUserDebt
+    val detailedUserDebt: LiveData<ArrayList<UserDebt>>
+        get() = _detailedUserDebt
 
     init {
         getGroupByGroupId()
         getUserInfo()
     }
 
-    fun getDetailedDebts(user: User) {
+    fun getDetailedDebts(user: User, debtToMe: Boolean) {
         val storage = Storage(getApplication())
         val groupId = storage.groupId
         val userDebtArrayList = arrayListOf<UserDebt>()
-                val toReference =
-                    FirebaseDatabase.getInstance(
+        if (debtToMe) {
+            val toReference =
+                FirebaseDatabase.getInstance(
                         "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
                     )
-                        .getReference("group_debts/$groupId/${user.uid}/lent")
-                val fromReference =
-                    FirebaseDatabase.getInstance(
-                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                    )
-                        .getReference("group_debts/$groupId/${user.uid}/owe")
-                toReference.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach {
-                                    val amount = it.child("/amount/").getValue(Int::class.java)
-                                    val userFromData = it.child("/user/").getValue(User::class.java)
-                                    if (amount != null && userFromData != null) {
-                                        userDebtArrayList.add(UserDebt(amount, userFromData, false))
-                                        _detailedUserDebt.postValue(userDebtArrayList)
-                                    }
+                    .getReference("group_debts/$groupId/${user.uid}/lent")
+            toReference.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val amount = it.child("/amount/").getValue(Int::class.java)
+                                val userFromData = it.child("/user/").getValue(User::class.java)
+                                if (amount != null && userFromData != null) {
+                                    //userDebtArrayList.add(UserDebt(amount, userFromData, false))
+                                    _detailedUserDebt.postValue(userDebtArrayList)
                                 }
                             }
-
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
                         }
                     }
-                )
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                }
+            )
+        } else {
+            val reference =
+                FirebaseDatabase.getInstance(
+                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                    )
+                    .getReference("group_debts/$groupId/${user.uid}/owe")
+            reference.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val amount = it.child("/amount/").getValue(Int::class.java)
+                                val userFromData = it.child("/user/").getValue(User::class.java)
+                                if (amount != null && userFromData != null) {
+                                    //userDebtArrayList.add(UserDebt(amount, userFromData, false))
+                                    _detailedUserDebt.postValue(userDebtArrayList)
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                }
+            )
+        }
     }
 
     fun getDebts(user: ArrayList<User>, debtToMe: Boolean) {
@@ -89,7 +112,7 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
         val userDebtArrayList = arrayListOf<UserDebt>()
         val oppositeDebtUserArray = arrayListOf<UserDebt>()
         val tempToUserArray = arrayListOf<User>()
-        val equalizedDebtArray = arrayListOf<UserDebt>()
+        val lentArrayList = mutableListOf<UserDebt>()
         user.forEach { tempToUserArray.add(it) }
         user.forEach { groupUser ->
             if (debtToMe) {
@@ -98,12 +121,13 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
                             "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
                         )
                         .getReference("group_debts/$groupId/${groupUser.uid}/lent")
-                val fromReference =
+                val lentPreReference =
                     FirebaseDatabase.getInstance(
                             "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
                         )
-                        .getReference("group_debts/$groupId/${groupUser.uid}/owe")
-                toReference.addListenerForSingleValueEvent(
+                        .getReference("group_debts/$groupId/${groupUser.uid}/lent")
+
+                lentPreReference.addListenerForSingleValueEvent(
                     object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (snapshot.exists()) {
@@ -111,12 +135,32 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
                                     val amount = it.child("/amount/").getValue(Int::class.java)
                                     val userFromData = it.child("/user/").getValue(User::class.java)
                                     if (amount != null && userFromData != null) {
-                                        fullAmount += amount
+                                        //lentArrayList.add(UserDebt(amount, groupUser, false))
                                     }
                                 }
                             }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    }
+                )
+                toReference.addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()) {
+                                snapshot.children.forEach {
+                                        val amount = it.child("/amount/").getValue(Int::class.java)
+                                        val userFromData =
+                                            it.child("/user/").getValue(User::class.java)
+                                        if (amount != null && userFromData != null) {
+                                                fullAmount += amount
+                                        }
+                                }
+                            }
                             if (fullAmount != 0) {
-                                userDebtArrayList.add(UserDebt(fullAmount, groupUser, false))
+                                //userDebtArrayList.add(UserDebt(fullAmount, groupUser, false))
                                 fullAmount = 0
                                 _userDebt.postValue(userDebtArrayList)
                             }
@@ -145,13 +189,17 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
                             if (snapshot.exists()) {
                                 tempToUserArray.forEach { tempUser ->
                                     val amount =
-                                        snapshot.child("/${tempUser.uid}/amount/").getValue(Int::class.java)
+                                        snapshot
+                                            .child("/${tempUser.uid}/amount/")
+                                            .getValue(Int::class.java)
                                     val userFromData =
-                                        snapshot.child("${tempUser.uid}/user/").getValue(User::class.java)
+                                        snapshot
+                                            .child("${tempUser.uid}/user/")
+                                            .getValue(User::class.java)
                                     if (amount != null && userFromData != null) {
                                         oppositeAmount += amount
                                         if (oppositeAmount != 0) {
-                                            oppositeDebtUserArray.add(UserDebt(oppositeAmount, groupUser, false))
+
                                             oppositeAmount = 0
                                         }
                                     }
@@ -170,21 +218,16 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (snapshot.exists()) {
                                 snapshot.children.forEach {
-
-                                        val amount = it.child("/amount/").getValue(Int::class.java)
-                                        val userFromData =
-                                            it.child("/user/").getValue(User::class.java)
-                                        if (amount != null &&
-                                                userFromData != null
-                                        ) {
-                                            fullAmount += amount
-                                        }
+                                    val amount = it.child("/amount/").getValue(Int::class.java)
+                                    val userFromData = it.child("/user/").getValue(User::class.java)
+                                    if (amount != null && userFromData != null) {
+                                        fullAmount += amount
+                                    }
                                 }
-                                userDebtArrayList.add(UserDebt(fullAmount, groupUser, false))
+                                //userDebtArrayList.add(UserDebt(fullAmount, groupUser, false))
                                 _userDebt.postValue(userDebtArrayList)
                                 fullAmount = 0
                             }
-
                         }
 
                         override fun onCancelled(error: DatabaseError) {

@@ -11,13 +11,19 @@ import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class DetailedGroupDebtAdapter: RecyclerView.Adapter<DetailedGroupDebtAdapter.ViewHolder>() {
+private const val VIEW_TYPE_OWE = 1
+private const val VIEW_TYPE_LENT = 2
+
+class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<DetailedGroupDebtAdapter.ViewHolder>() {
 
     private var list = arrayListOf<UserDebt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_group_debt_expanded_item, parent, false)
-        return ViewHolder(layoutInflater)
+        return if (viewType == VIEW_TYPE_OWE) {
+            OweViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_group_debt_expanded_item, parent, false))
+        } else {
+            LentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_group_debt_expanded_item, parent, false))
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -33,15 +39,42 @@ class DetailedGroupDebtAdapter: RecyclerView.Adapter<DetailedGroupDebtAdapter.Vi
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(userDebt: UserDebt) {
-            val name = itemView.findViewById<MaterialTextView>(R.id.member_name)
-            val debt = itemView.findViewById<MaterialTextView>(R.id.item_price)
-            val image = itemView.findViewById<CircleImageView>(R.id.icon)
+    override fun getItemViewType(position: Int): Int {
+        return when {
+            isLent -> VIEW_TYPE_LENT
+            else -> VIEW_TYPE_OWE
+        }
+    }
 
-            name.text = userDebt.user.username
-            debt.text = userDebt.fullAmount.toString()
-            Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+    inner class OweViewHolder(itemView: View): ViewHolder(itemView) {
+        val name: MaterialTextView = itemView.findViewById(R.id.member_name)
+        private val debt: MaterialTextView = itemView.findViewById(R.id.item_price)
+        private val image: CircleImageView = itemView.findViewById(R.id.icon)
+
+        override fun bind(userDebt: UserDebt) {
+            //name.text = "To: ${userDebt.user.username}"
+            debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
+            //debt.text = "$${userDebt.fullAmount}"
+            //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+        }
+    }
+
+    inner class LentViewHolder(itemView: View): ViewHolder(itemView) {
+        val name: MaterialTextView = itemView.findViewById(R.id.member_name)
+        private val debt: MaterialTextView = itemView.findViewById(R.id.item_price)
+        private val image: CircleImageView = itemView.findViewById(R.id.icon)
+
+        override fun bind(userDebt: UserDebt) {
+            //name.text = "From: ${userDebt.user.username}"
+            debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
+            //debt.text = "$${userDebt.fullAmount}"
+            //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+        }
+    }
+
+    open class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        open fun bind(userDebt: UserDebt) {
+
         }
     }
 }

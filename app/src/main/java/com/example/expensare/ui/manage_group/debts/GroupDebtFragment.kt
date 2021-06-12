@@ -2,13 +2,9 @@ package com.example.expensare.ui.manage_group.debts
 
 import android.graphics.Color
 import android.os.Bundle
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +22,7 @@ class GroupDebtFragment: BaseFragment() {
     private var _binding: FragmentGroupDebtBinding? = null
     private val binding get() = _binding!!
 
-    private var debtToMe = true
+    private var isLent = true
 
     private val groupDebtViewModel: GroupDebtViewModel by lazy { ViewModelProvider(this).get(GroupDebtViewModel::class.java) }
 
@@ -42,17 +38,17 @@ class GroupDebtFragment: BaseFragment() {
         getUsersFromGroup()
         getDebts(true)
         bindRecyclerView()
-        debtToMe = true
+        isLent = true
         binding.pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                if (debtToMe) {
+                if (isLent) {
                     getDebts(false)
-                    debtToMe = false
+                    isLent = false
                     binding.oweStatusText.setTextColor(resources.getColor(R.color.red, requireActivity().theme))
                     binding.oweStatusText.text = getString(R.string.they_need_to_return_debt)
                 } else {
                     getDebts(true)
-                    debtToMe = true
+                    isLent = true
                     binding.oweStatusText.setTextColor(resources.getColor(R.color.dark_green, requireActivity().theme))
                     binding.oweStatusText.text = getString(R.string.they_are_waiting_for_debt_return)
                 }
@@ -70,16 +66,16 @@ class GroupDebtFragment: BaseFragment() {
         })
     }
 
-    private fun getDebts(debtToMe: Boolean) {
+    private fun getDebts(isLent: Boolean) {
         groupDebtViewModel.users.observe(viewLifecycleOwner, {
-            groupDebtViewModel.getDebts(it, debtToMe)
+            groupDebtViewModel.getDebts(it, isLent)
         })
     }
 
     private fun bindRecyclerView() {
-        val adapter = GroupDebtAdapter(debtToMe, OnClickListener { userDebt, recyclerView ->
-            groupDebtViewModel.getDetailedDebts(userDebt.user)
-            val detailAdapter = DetailedGroupDebtAdapter()
+        val adapter = GroupDebtAdapter(isLent, OnClickListener { userDebt, recyclerView ->
+            //groupDebtViewModel.getDetailedDebts(userDebt.user, isLent)
+            val detailAdapter = DetailedGroupDebtAdapter(isLent)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = detailAdapter
             groupDebtViewModel.detailedUserDebt.observe(viewLifecycleOwner, {
@@ -97,7 +93,7 @@ class GroupDebtFragment: BaseFragment() {
             val rnd = Random
             it.forEach { debt ->
                 colors.add(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)))
-                entries.add(PieEntry(debt.fullAmount.toFloat(), debt.user.username))
+                //entries.add(PieEntry(debt.fullAmount.toFloat(), debt.user.username))
             }
             val dataSet = PieDataSet(entries, "users")
             dataSet.colors = colors

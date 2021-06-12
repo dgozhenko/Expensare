@@ -14,15 +14,15 @@ import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-private const val VIEW_TYPE_MY_DEBT = 1
-private const val VIEW_TYPE_TO_ME_DEBT = 2
+private const val VIEW_TYPE_OWE = 1
+private const val VIEW_TYPE_LENT = 2
 
-class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnClickListener): RecyclerView.Adapter<GroupDebtAdapter.ViewHolder>() {
+class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClickListener): RecyclerView.Adapter<GroupDebtAdapter.ViewHolder>() {
 
     private var list = arrayListOf<UserDebt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return if (viewType == VIEW_TYPE_MY_DEBT) {
+        return if (viewType == VIEW_TYPE_OWE) {
             MyDebtViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_group_debt_item, parent, false))
         } else {
             ToMeDebtViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_group_debt_item, parent, false))
@@ -62,8 +62,8 @@ class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnCli
 
     override fun getItemViewType(position: Int): Int {
         return when {
-            debtToMe -> VIEW_TYPE_TO_ME_DEBT
-            else -> VIEW_TYPE_MY_DEBT
+            isLent -> VIEW_TYPE_LENT
+            else -> VIEW_TYPE_OWE
         }
     }
 
@@ -74,10 +74,10 @@ class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnCli
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
-                name.text = userDebt.user.username
+                //name.text = userDebt.user.username
                 amount.setTextColor(itemView.context.resources.getColor(R.color.red, itemView.context.theme))
-                amount.text = "-$${userDebt.fullAmount}"
-                Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+                //amount.text = "-$${userDebt.fullAmount}"
+                //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
         }
     }
 
@@ -88,10 +88,10 @@ class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnCli
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
-            name.text = userDebt.user.username
+            //name.text = userDebt.user.username
             amount.setTextColor(itemView.context.resources.getColor(R.color.dark_green, itemView.context.theme))
-            amount.text = "+$${userDebt.fullAmount}"
-            Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+            //amount.text = "+$${userDebt.fullAmount}"
+            //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
         }
     }
 
