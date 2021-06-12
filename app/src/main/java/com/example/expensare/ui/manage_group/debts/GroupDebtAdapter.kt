@@ -34,7 +34,8 @@ class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnCli
         val hiddenView = holder.itemView.findViewById<LinearLayout>(R.id.hidden_view)
         with(list[position]) {
             cardView.setOnClickListener {
-                onClickListener.onClick(this)
+                val recyclerView = holder.itemView.findViewById<RecyclerView>(R.id.members_recycler_view)
+                onClickListener.onClick(this, recyclerView)
                 if (this.expanded) {
                     TransitionManager.beginDelayedTransition(cardView, AutoTransition())
                     hiddenView.visibility = View.GONE
@@ -84,7 +85,6 @@ class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnCli
         private val name = itemView.findViewById<MaterialTextView>(R.id.name)
         private val amount = itemView.findViewById<MaterialTextView>(R.id.money)
         private val image = itemView.findViewById<CircleImageView>(R.id.icon)
-        val hiddenLayout = itemView.findViewWithTag<LinearLayout>(R.id.hidden_view)
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
@@ -101,6 +101,6 @@ class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnCli
         }
     }
 }
-class OnClickListener(val clickListener: (userDebt: UserDebt) -> Unit) {
-    fun onClick(userDebt: UserDebt) = clickListener(userDebt)
+class OnClickListener(val clickListener: (userDebt: UserDebt, recyclerView: RecyclerView) -> Unit) {
+    fun onClick(userDebt: UserDebt, recyclerView: RecyclerView) = clickListener(userDebt, recyclerView)
 }

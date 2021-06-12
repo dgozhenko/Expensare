@@ -75,13 +75,13 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                     if (snapshot.exists()) {
                         val oweChild = snapshot.child("/${toUser.uid}/amount/").getValue(Int::class.java)
                         if (oweChild == null) {
-                            val toDebt = FirebaseDebt(uid, user = toUser, amount = amount)
+                            val toDebt = FirebaseDebt(uid, user = fromUser, amount = amount)
                             toReference.setValue(toDebt)
                         } else {
                             toReference.child("/amount/").setValue(oweChild + amount)
                         }
                     } else {
-                        val toDebt = FirebaseDebt(uid, user = toUser, amount = amount)
+                        val toDebt = FirebaseDebt(uid, user = fromUser, amount = amount)
                         toReference.setValue(toDebt)
                     }
                 }
@@ -97,7 +97,7 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                     if (snapshot.exists()) {
                         val lentChild = snapshot.child("/${fromUser.uid}/amount/").getValue(Int::class.java)
                         if (lentChild == null) {
-                            val fromDebt = FirebaseDebt(uid2, user = toUser, amount = amount)
+                            val fromDebt = FirebaseDebt(uid2, user = fromUser, amount = amount)
                             fromReference.setValue(fromDebt).addOnSuccessListener {
                                 _addDebtResult.postValue(AddDebtResult.Success)
                             }
@@ -110,7 +110,7 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
                         }
 
                     } else {
-                        val fromDebt = FirebaseDebt(uid2, user = toUser, amount = amount)
+                        val fromDebt = FirebaseDebt(uid2, user = fromUser, amount = amount)
                         fromReference.setValue(fromDebt).addOnSuccessListener {
                             _addDebtResult.postValue(AddDebtResult.Success)
                         }

@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener
 import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.collections.ArrayList
 
 class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getApplication) {
 
@@ -34,9 +35,49 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
     val userDebt: LiveData<ArrayList<UserDebt>>
         get() = _userDebt
 
+    private val _detailedUserDebt = MutableLiveData<ArrayList<UserDebt>>()
+    val detailedUserDebt: LiveData<ArrayList<UserDebt>> get() = _detailedUserDebt
+
     init {
         getGroupByGroupId()
         getUserInfo()
+    }
+
+    fun getDetailedDebts(user: User) {
+        val storage = Storage(getApplication())
+        val groupId = storage.groupId
+        val userDebtArrayList = arrayListOf<UserDebt>()
+                val toReference =
+                    FirebaseDatabase.getInstance(
+                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                    )
+                        .getReference("group_debts/$groupId/${user.uid}/lent")
+                val fromReference =
+                    FirebaseDatabase.getInstance(
+                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                    )
+                        .getReference("group_debts/$groupId/${user.uid}/owe")
+                toReference.addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()) {
+                                snapshot.children.forEach {
+                                    val amount = it.child("/amount/").getValue(Int::class.java)
+                                    val userFromData = it.child("/user/").getValue(User::class.java)
+                                    if (amount != null && userFromData != null) {
+                                        userDebtArrayList.add(UserDebt(amount, userFromData, false))
+                                        _detailedUserDebt.postValue(userDebtArrayList)
+                                    }
+                                }
+                            }
+
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    }
+                )
     }
 
     fun getDebts(user: ArrayList<User>, debtToMe: Boolean) {

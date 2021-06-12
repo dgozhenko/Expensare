@@ -77,8 +77,14 @@ class GroupDebtFragment: BaseFragment() {
     }
 
     private fun bindRecyclerView() {
-        val adapter = GroupDebtAdapter(debtToMe, OnClickListener {
-
+        val adapter = GroupDebtAdapter(debtToMe, OnClickListener { userDebt, recyclerView ->
+            groupDebtViewModel.getDetailedDebts(userDebt.user)
+            val detailAdapter = DetailedGroupDebtAdapter()
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.adapter = detailAdapter
+            groupDebtViewModel.detailedUserDebt.observe(viewLifecycleOwner, {
+                detailAdapter.getDebts(it)
+            })
         })
 
         binding.groupDebtRecyclerView.layoutManager = LinearLayoutManager(requireContext())
