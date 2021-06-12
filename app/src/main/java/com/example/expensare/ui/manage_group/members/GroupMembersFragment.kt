@@ -35,7 +35,7 @@ class GroupMembersFragment : BaseFragment() {
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.add_member_menu_item -> {
-                    groupMembersViewModel.getUserByEmail("hearthstone.gozhenko@gmail.com")
+                    groupMembersViewModel.getUserByEmail("sashaprokipchuk@gmail.com")
                     groupMembersViewModel.userByEmail.observe(
                         viewLifecycleOwner,
                         { user -> groupMembersViewModel.addUserToGroup(user) }
