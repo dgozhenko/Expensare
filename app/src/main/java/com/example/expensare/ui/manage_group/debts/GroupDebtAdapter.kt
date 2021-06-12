@@ -1,8 +1,12 @@
 package com.example.expensare.ui.manage_group.debts
 
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.UserDebt
@@ -13,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 private const val VIEW_TYPE_MY_DEBT = 1
 private const val VIEW_TYPE_TO_ME_DEBT = 2
 
-class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAdapter.ViewHolder>() {
+class GroupDebtAdapter(val debtToMe: Boolean, private val onClickListener: OnClickListener): RecyclerView.Adapter<GroupDebtAdapter.ViewHolder>() {
 
     private var list = arrayListOf<UserDebt>()
 
@@ -26,6 +30,23 @@ class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAda
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val cardView = holder.itemView.findViewById<CardView>(R.id.base_cardview)
+        val hiddenView = holder.itemView.findViewById<LinearLayout>(R.id.hidden_view)
+        with(list[position]) {
+            cardView.setOnClickListener {
+                onClickListener.onClick(this)
+                if (this.expanded) {
+                    TransitionManager.beginDelayedTransition(cardView, AutoTransition())
+                    hiddenView.visibility = View.GONE
+                    this.expanded = false
+                } else {
+                    TransitionManager.beginDelayedTransition(cardView, AutoTransition())
+                    hiddenView.visibility = View.VISIBLE
+                    this.expanded = true
+                }
+            }
+        }
+
         return holder.bind(list[position])
     }
 
@@ -52,10 +73,10 @@ class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAda
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
-            name.text = userDebt.toUser.username
-            amount.setTextColor(itemView.context.resources.getColor(R.color.red, itemView.context.theme))
-            amount.text = "-$${userDebt.fullAmount}"
-            Picasso.with(itemView.context).load(userDebt.toUser.avatar).into(image)
+                name.text = userDebt.user.username
+                amount.setTextColor(itemView.context.resources.getColor(R.color.red, itemView.context.theme))
+                amount.text = "-$${userDebt.fullAmount}"
+                Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
         }
     }
 
@@ -63,13 +84,14 @@ class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAda
         private val name = itemView.findViewById<MaterialTextView>(R.id.name)
         private val amount = itemView.findViewById<MaterialTextView>(R.id.money)
         private val image = itemView.findViewById<CircleImageView>(R.id.icon)
+        val hiddenLayout = itemView.findViewWithTag<LinearLayout>(R.id.hidden_view)
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
-            name.text = userDebt.toUser.username
+            name.text = userDebt.user.username
             amount.setTextColor(itemView.context.resources.getColor(R.color.dark_green, itemView.context.theme))
             amount.text = "+$${userDebt.fullAmount}"
-            Picasso.with(itemView.context).load(userDebt.toUser.avatar).into(image)
+            Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
         }
     }
 
@@ -78,4 +100,7 @@ class GroupDebtAdapter(val debtToMe: Boolean): RecyclerView.Adapter<GroupDebtAda
 
         }
     }
+}
+class OnClickListener(val clickListener: (userDebt: UserDebt) -> Unit) {
+    fun onClick(userDebt: UserDebt) = clickListener(userDebt)
 }

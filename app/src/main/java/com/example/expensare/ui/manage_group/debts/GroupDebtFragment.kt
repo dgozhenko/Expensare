@@ -2,9 +2,13 @@ package com.example.expensare.ui.manage_group.debts
 
 import android.graphics.Color
 import android.os.Bundle
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,7 +77,10 @@ class GroupDebtFragment: BaseFragment() {
     }
 
     private fun bindRecyclerView() {
-        val adapter = GroupDebtAdapter(debtToMe)
+        val adapter = GroupDebtAdapter(debtToMe, OnClickListener {
+
+        })
+
         binding.groupDebtRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.groupDebtRecyclerView.adapter = adapter
         groupDebtViewModel.userDebt.observe(viewLifecycleOwner, {
@@ -84,7 +91,7 @@ class GroupDebtFragment: BaseFragment() {
             val rnd = Random
             it.forEach { debt ->
                 colors.add(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)))
-                entries.add(PieEntry(debt.fullAmount.toFloat(), debt.toUser.username))
+                entries.add(PieEntry(debt.fullAmount.toFloat(), debt.user.username))
             }
             val dataSet = PieDataSet(entries, "users")
             dataSet.colors = colors
