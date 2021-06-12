@@ -54,7 +54,7 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
 
         if (divideEqually) {
             addExpenseViewModel.user.observe(viewLifecycleOwner, {
-                val debt = Debt(it, user, amount )
+                val debt = Debt(it, user, divideAmount)
                 equalDebtsArray.add(debt)
             })
         } else {

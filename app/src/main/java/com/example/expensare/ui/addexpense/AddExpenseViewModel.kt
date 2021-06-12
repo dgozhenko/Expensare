@@ -5,10 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.expensare.data.Debt
-import com.example.expensare.data.Expense
-import com.example.expensare.data.Group
-import com.example.expensare.data.User
+import com.example.expensare.data.*
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -60,18 +57,74 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
     fun createDebt(amount: Int, fromUser: User, toUser: User) {
         val storage = Storage(getApplication())
         val groupId = storage.groupId
-
+        val uid = UUID.randomUUID().toString()
+        val uid2 = UUID.randomUUID().toString()
         viewModelScope.launch(Dispatchers.IO) {
-            val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("group_debts/$groupId").push()
-            val debt = Debt(toUser = toUser, fromUser = fromUser, amount = amount)
-            reference.setValue(debt)
-                .addOnSuccessListener {
-                    _addDebtResult.postValue(AddDebtResult.Success)
+
+            val toReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("group_debts/$groupId/${fromUser.uid}/owe/${toUser.uid}")
+            val fromReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("group_debts/$groupId/${toUser.uid}/lent/${fromUser.uid}")
+            val toReferenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("group_debts/$groupId/${fromUser.uid}/owe")
+            val fromReferenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("group_debts/$groupId/${toUser.uid}/lent")
+
+            toReferenceCheck.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val oweChild = snapshot.child("/${toUser.uid}/amount/").getValue(Int::class.java)
+                        if (oweChild == null) {
+                            val toDebt = FirebaseDebt(uid, user = toUser, amount = amount)
+                            toReference.setValue(toDebt)
+                        } else {
+                            toReference.child("/amount/").setValue(oweChild + amount)
+                        }
+                    } else {
+                        val toDebt = FirebaseDebt(uid, user = toUser, amount = amount)
+                        toReference.setValue(toDebt)
+                    }
                 }
-                .addOnFailureListener {
-                    _addDebtResult.postValue(AddDebtResult.Error(it))
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
                 }
+
+            })
+
+                fromReferenceCheck.addListenerForSingleValueEvent(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val lentChild = snapshot.child("/${fromUser.uid}/amount/").getValue(Int::class.java)
+                        if (lentChild == null) {
+                            val fromDebt = FirebaseDebt(uid2, user = toUser, amount = amount)
+                            fromReference.setValue(fromDebt).addOnSuccessListener {
+                                _addDebtResult.postValue(AddDebtResult.Success)
+                            }
+                                .addOnFailureListener {
+                                    _addDebtResult.postValue(AddDebtResult.Error(it))
+                                }
+                        } else {
+                            val insertAmount = lentChild + amount
+                            fromReference.child("/amount/").setValue(insertAmount)
+                        }
+
+                    } else {
+                        val fromDebt = FirebaseDebt(uid2, user = toUser, amount = amount)
+                        fromReference.setValue(fromDebt).addOnSuccessListener {
+                            _addDebtResult.postValue(AddDebtResult.Success)
+                        }
+                            .addOnFailureListener {
+                                _addDebtResult.postValue(AddDebtResult.Error(it))
+                            }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
         }
     }
 
