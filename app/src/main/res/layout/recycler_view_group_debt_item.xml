@@ -105,6 +105,12 @@
                     android:id="@+id/members_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/textText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="I AM ALIVE"/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
