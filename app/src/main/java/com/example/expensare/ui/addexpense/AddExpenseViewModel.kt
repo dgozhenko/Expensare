@@ -92,7 +92,7 @@ class AddExpenseViewModel(getApplication: Application): AndroidViewModel(getAppl
 
             })
 
-                fromReferenceCheck.addListenerForSingleValueEvent(object: ValueEventListener{
+            fromReferenceCheck.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val lentChild = snapshot.child("/${fromUser.uid}/amount/").getValue(Int::class.java)
