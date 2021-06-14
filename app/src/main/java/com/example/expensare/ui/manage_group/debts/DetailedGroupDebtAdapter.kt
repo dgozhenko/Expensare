@@ -52,10 +52,10 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
         private val image: CircleImageView = itemView.findViewById(R.id.icon)
 
         override fun bind(userDebt: UserDebt) {
-            //name.text = "To: ${userDebt.user.username}"
+            name.text = "To: ${userDebt.firstUser.username}"
             debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
-            //debt.text = "$${userDebt.fullAmount}"
-            //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+            debt.text = "$${userDebt.firstUserAmount}"
+            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
         }
     }
 
@@ -65,10 +65,10 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
         private val image: CircleImageView = itemView.findViewById(R.id.icon)
 
         override fun bind(userDebt: UserDebt) {
-            //name.text = "From: ${userDebt.user.username}"
+            name.text = "From: ${userDebt.firstUser.username}"
             debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
-            //debt.text = "$${userDebt.fullAmount}"
-            //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+            debt.text = "$${userDebt.firstUserAmount}"
+            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
         }
     }
 

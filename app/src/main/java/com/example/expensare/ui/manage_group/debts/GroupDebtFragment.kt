@@ -74,7 +74,7 @@ class GroupDebtFragment: BaseFragment() {
 
     private fun bindRecyclerView() {
         val adapter = GroupDebtAdapter(isLent, OnClickListener { userDebt, recyclerView ->
-            //groupDebtViewModel.getDetailedDebts(userDebt.user, isLent)
+            groupDebtViewModel.getDetailedDebts(userDebt.firstUser, isLent)
             val detailAdapter = DetailedGroupDebtAdapter(isLent)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = detailAdapter
@@ -93,7 +93,7 @@ class GroupDebtFragment: BaseFragment() {
             val rnd = Random
             it.forEach { debt ->
                 colors.add(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)))
-                //entries.add(PieEntry(debt.fullAmount.toFloat(), debt.user.username))
+                entries.add(PieEntry(debt.firstUserAmount.toFloat(), debt.firstUser.username))
             }
             val dataSet = PieDataSet(entries, "users")
             dataSet.colors = colors

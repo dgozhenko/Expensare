@@ -74,10 +74,10 @@ class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClick
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
-                //name.text = userDebt.user.username
+                name.text = userDebt.firstUser.username
                 amount.setTextColor(itemView.context.resources.getColor(R.color.red, itemView.context.theme))
-                //amount.text = "-$${userDebt.fullAmount}"
-                //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+                amount.text = "-$${userDebt.firstUserAmount}"
+                Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
         }
     }
 
@@ -88,10 +88,10 @@ class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClick
 
         override fun bind(userDebt: UserDebt) {
             super.bind(userDebt)
-            //name.text = userDebt.user.username
+            name.text = userDebt.firstUser.username
             amount.setTextColor(itemView.context.resources.getColor(R.color.dark_green, itemView.context.theme))
-            //amount.text = "+$${userDebt.fullAmount}"
-            //Picasso.with(itemView.context).load(userDebt.user.avatar).into(image)
+            amount.text = "+$${userDebt.firstUserAmount}"
+            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
         }
     }
 
