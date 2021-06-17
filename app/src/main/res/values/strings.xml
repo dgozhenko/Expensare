@@ -27,6 +27,8 @@
     <string name="status_text">Faceless HQ - Owner</string>
     <string name="history_money">-$175</string>
     <string name="history_name_text">Daniil</string>
+    <string name="create_manual_debt_lender">user</string>
+    <string name="create_manual_debt_debtor">Choose debtor</string>
     <string name="date_text">17.04.2021</string>
     <string name="quantity_history_item">1.5 kg</string>
     <string name="history_item_price">-$17</string>
