@@ -1,14 +1,12 @@
 package com.example.expensare.ui.mydebts.create_debt
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.expensare.data.Debt
-import com.example.expensare.data.Group
-import com.example.expensare.data.User
-import com.example.expensare.data.UserDebt
+import com.example.expensare.data.*
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -54,6 +52,7 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
                                     if (userInfo.uid == userId) {
                                         userIsExist = true
                                         _user.postValue(userInfo)
+                                        Log.d("userInfo", user.value.toString())
                                     }
                                 }
                                 if (!userIsExist) {
@@ -105,6 +104,7 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
         val userArrayList = arrayListOf<User>()
         group.users.forEach {
             if (userId != it) {
+                Log.d("userId", userId.toString())
                 userIdArrayList.add(it)
             }
         }
@@ -124,6 +124,7 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
                                     if (userInfo != null) {
                                         if (userInfo.uid == currentUserId) {
                                             userArrayList.add(userInfo)
+                                            Log.d("userArraylist", userInfo.toString())
                                         }
                                     }
                                 }
@@ -144,7 +145,7 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
             val referenceAdd = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts")
             referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    referenceAdd.push().setValue(Debt(toUser, fromUser, amount))
+                    referenceAdd.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor))
                 }
 
                 override fun onCancelled(error: DatabaseError) {
