@@ -1,11 +1,11 @@
 package com.example.expensare.ui.addexpense
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.expensare.data.*
+import androidx.lifecycle.*
+import com.example.expensare.data.models.Expense
+import com.example.expensare.data.models.Group
+import com.example.expensare.data.models.User
+import com.example.expensare.data.models.UserDebt
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class AddExpenseResult {
     object Success : AddExpenseResult()
@@ -27,7 +28,7 @@ sealed class AddDebtResult {
     data class Error(val exception: Exception) : AddDebtResult()
 }
 
-class AddExpenseViewModel(getApplication: Application) : AndroidViewModel(getApplication) {
+class AddExpenseViewModel @Inject constructor(private val storage: Storage) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -55,7 +56,6 @@ class AddExpenseViewModel(getApplication: Application) : AndroidViewModel(getApp
     }
 
     fun createDebt(amount: Int, fromUser: User, toUser: User) {
-        val storage = Storage(getApplication())
         val groupId = storage.groupId
         var operationDone = false
         viewModelScope.launch(Dispatchers.IO) {
@@ -94,7 +94,6 @@ class AddExpenseViewModel(getApplication: Application) : AndroidViewModel(getApp
     }
 
     fun createExpense(name: String, amount: Int, user: User) {
-        val storage = Storage(getApplication())
         val groupId = storage.groupId
         // User + Date
         val pattern = "dd.MM.yyyy"
@@ -125,7 +124,6 @@ class AddExpenseViewModel(getApplication: Application) : AndroidViewModel(getApp
     }
 
     private fun getGroupByGroupId() {
-        val storage = Storage(getApplication())
         val groupId = storage.groupId
         val reference =
             FirebaseDatabase.getInstance(

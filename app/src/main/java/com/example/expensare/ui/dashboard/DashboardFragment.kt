@@ -1,5 +1,6 @@
 package com.example.expensare.ui.dashboard
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -7,17 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.expensare.App
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDashboardBinding
+import com.example.expensare.ui.auth.avatar.AvatarViewModel
 import com.example.expensare.ui.base.BaseFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import javax.inject.Inject
 
 class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
     private var _binding: FragmentDashboardBinding? = null
@@ -26,8 +31,14 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var navigationView: NavigationView
 
-    private val dashboardViewModel: DashboardViewModel by lazy {
-        ViewModelProvider(this).get(DashboardViewModel::class.java)
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val dashboardViewModel by viewModels<DashboardViewModel> { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.inject(this)
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {

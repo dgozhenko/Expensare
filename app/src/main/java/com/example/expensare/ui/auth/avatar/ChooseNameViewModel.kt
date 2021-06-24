@@ -4,19 +4,20 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.expensare.data.User
+import com.example.expensare.data.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
 sealed class ChooseNameResult {
     object Success: ChooseNameResult()
     data class Error (val exception: Exception): ChooseNameResult()
 }
 
-class ChooseNameViewModel: ViewModel() {
+class ChooseNameViewModel @Inject constructor(): ViewModel() {
 
     private val _chooseNameResult = MutableLiveData<ChooseNameResult>()
     val chooseNameResult: LiveData<ChooseNameResult> get() = _chooseNameResult

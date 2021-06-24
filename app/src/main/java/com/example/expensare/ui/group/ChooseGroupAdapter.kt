@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.Group
+import com.example.expensare.data.models.Group
 import com.google.android.material.textview.MaterialTextView
 
 class ChooseGroupAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<ChooseGroupAdapter.ViewHolder>() {

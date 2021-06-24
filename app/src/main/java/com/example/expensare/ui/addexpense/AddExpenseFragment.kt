@@ -1,19 +1,23 @@
 package com.example.expensare.ui.addexpense
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.expensare.App
 import com.example.expensare.R
-import com.example.expensare.data.Debt
-import com.example.expensare.data.User
+import com.example.expensare.data.models.Debt
+import com.example.expensare.data.models.User
 import com.example.expensare.databinding.FragmentAddExpensesBinding
 import com.example.expensare.ui.base.BaseFragment
+import javax.inject.Inject
 
 
 class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMethodListener {
@@ -27,7 +31,15 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
     private var _binding: FragmentAddExpensesBinding? = null
     private val binding get() = _binding!!
 
-    private val addExpenseViewModel: AddExpenseViewModel by lazy { ViewModelProvider(this).get(AddExpenseViewModel::class.java) }
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val addExpenseViewModel by viewModels<AddExpenseViewModel> { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.inject(this)
+    }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentAddExpensesBinding.inflate(inflater)

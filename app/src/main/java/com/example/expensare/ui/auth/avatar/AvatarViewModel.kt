@@ -6,12 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
+import com.example.expensare.data.models.Avatar
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AvatarViewModel: ViewModel() {
+class AvatarViewModel @Inject constructor(): ViewModel() {
     private var _avatarList = MutableLiveData<ArrayList<Avatar>>()
     val avatarList: LiveData<ArrayList<Avatar>> get() = _avatarList
 

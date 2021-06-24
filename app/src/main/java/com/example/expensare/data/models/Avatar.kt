@@ -1,4 +1,4 @@
-package com.example.expensare.data
+package com.example.expensare.data.models
 
 import android.net.Uri
 import android.os.Parcelable

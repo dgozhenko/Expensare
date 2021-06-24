@@ -1,4 +1,4 @@
-package com.example.expensare.data
+package com.example.expensare.data.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

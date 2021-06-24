@@ -1,21 +1,26 @@
 package com.example.expensare.ui.manage_group.debts
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.expensare.App
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentGroupDebtBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.group.CreateGroupViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import javax.inject.Inject
 import kotlin.random.Random
 
 class GroupDebtFragment: BaseFragment() {
@@ -24,7 +29,15 @@ class GroupDebtFragment: BaseFragment() {
 
     private var isLent = true
 
-    private val groupDebtViewModel: GroupDebtViewModel by lazy { ViewModelProvider(this).get(GroupDebtViewModel::class.java) }
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val groupDebtViewModel by viewModels<GroupDebtViewModel> { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.inject(this)
+    }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentGroupDebtBinding.inflate(inflater)

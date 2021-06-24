@@ -1,23 +1,22 @@
 package com.example.expensare.ui.manage_group.debts
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.expensare.data.*
+import androidx.lifecycle.*
+import com.example.expensare.data.models.Group
+import com.example.expensare.data.models.User
+import com.example.expensare.data.models.UserDebt
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getApplication) {
+class GroupDebtViewModel @Inject constructor(private val storage: Storage) : ViewModel() {
 
     private val _group = MutableLiveData<Group>()
     val group: LiveData<Group>
@@ -45,7 +44,6 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
     }
 
     fun getDetailedDebts(user: User, debtToMe: Boolean) {
-        val storage = Storage(getApplication())
         val groupId = storage.groupId
         val userDebtArrayList = arrayListOf<UserDebt>()
         if (debtToMe) {
@@ -102,7 +100,6 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
     }
 
     fun getDebts(user: ArrayList<User>, debtToMe: Boolean) {
-        val storage = Storage(getApplication())
         val groupId = storage.groupId
         var fullAmount = 0
         val userDebtArrayList = arrayListOf<UserDebt>()
@@ -166,7 +163,6 @@ class GroupDebtViewModel(getApplication: Application) : AndroidViewModel(getAppl
     }
 
     private fun getGroupByGroupId() {
-        val storage = Storage(getApplication())
         val groupId = storage.groupId
         val reference =
             FirebaseDatabase.getInstance(

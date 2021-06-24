@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.Group
-import com.example.expensare.data.UserDebt
+import com.example.expensare.data.models.UserDebt
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView

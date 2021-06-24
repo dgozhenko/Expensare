@@ -1,11 +1,8 @@
 package com.example.expensare.ui.auth.login
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.expensare.data.User
+import androidx.lifecycle.*
+import com.example.expensare.data.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,8 +10,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel @Inject constructor() : ViewModel() {
     private val _userLiveData = MutableLiveData<Boolean>()
     val userLiveData: LiveData<Boolean>
         get() = _userLiveData

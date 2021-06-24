@@ -1,24 +1,34 @@
 package com.example.expensare.ui.group
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.expensare.App
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentCreateGroupBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.util.Extensions.hideKeyboard
+import javax.inject.Inject
 
 class CreateGroupFragment : BaseFragment() {
     private var _binding: FragmentCreateGroupBinding? = null
     private val binding
         get() = _binding!!
 
-    private val createGroupViewModel: CreateGroupViewModel by lazy {
-        ViewModelProvider(this).get(CreateGroupViewModel::class.java)
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val createGroupViewModel by viewModels<CreateGroupViewModel> { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.inject(this)
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {

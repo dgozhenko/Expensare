@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.User
+import com.example.expensare.data.models.User
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Picasso

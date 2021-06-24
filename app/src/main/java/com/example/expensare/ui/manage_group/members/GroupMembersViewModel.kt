@@ -2,8 +2,8 @@ package com.example.expensare.ui.manage_group.members
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.expensare.data.Group
-import com.example.expensare.data.User
+import com.example.expensare.data.models.Group
+import com.example.expensare.data.models.User
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -11,8 +11,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GroupMembersViewModel(private val getApplication: Application): AndroidViewModel(getApplication) {
+class GroupMembersViewModel @Inject constructor(private val storage: Storage): ViewModel() {
 
     private val _user = MutableLiveData<ArrayList<User>>()
     val user: LiveData<ArrayList<User>>
@@ -29,7 +30,6 @@ class GroupMembersViewModel(private val getApplication: Application): AndroidVie
     }
 
     private fun getGroupByGroupId() {
-        val storage = Storage(getApplication.baseContext)
         val groupId = storage.groupId
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
         viewModelScope.launch(Dispatchers.IO) {
@@ -56,7 +56,6 @@ class GroupMembersViewModel(private val getApplication: Application): AndroidVie
     }
 
     fun addUserToGroup(user: User) {
-        val storage = Storage(getApplication.baseContext)
         val groupId = storage.groupId
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
         viewModelScope.launch(Dispatchers.IO) {

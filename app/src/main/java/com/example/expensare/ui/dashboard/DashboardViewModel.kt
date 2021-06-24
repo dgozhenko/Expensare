@@ -2,9 +2,9 @@ package com.example.expensare.ui.dashboard
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.expensare.data.Expense
-import com.example.expensare.data.Group
-import com.example.expensare.data.User
+import com.example.expensare.data.models.Expense
+import com.example.expensare.data.models.Group
+import com.example.expensare.data.models.User
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -13,8 +13,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DashboardViewModel(private val getApplication: Application) : AndroidViewModel(getApplication) {
+class DashboardViewModel @Inject constructor(private val storage: Storage) : ViewModel() {
 
   private val _user = MutableLiveData<User>()
   val user: LiveData<User>
@@ -33,7 +34,6 @@ class DashboardViewModel(private val getApplication: Application) : AndroidViewM
   }
 
   private fun getGroupExpenses() {
-    val storage = Storage(getApplication)
     val groupId = storage.groupId
     val expensesArrayList = arrayListOf<Expense>()
     val reference = FirebaseDatabase.getInstance(
@@ -98,7 +98,6 @@ class DashboardViewModel(private val getApplication: Application) : AndroidViewM
   }
 
   private fun getGroupByGroupId() {
-    val storage = Storage(getApplication.baseContext)
     val groupId = storage.groupId
     val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
     viewModelScope.launch(Dispatchers.IO) {

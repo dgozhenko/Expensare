@@ -11,8 +11,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
-import com.example.expensare.data.Input
+import com.example.expensare.data.models.Avatar
+import com.example.expensare.data.models.Input
 import com.example.expensare.databinding.FragmentLoginBinding
 import com.example.expensare.ui.base.BaseFragment
 class LoginFragment: BaseFragment() {
@@ -87,7 +87,8 @@ class LoginFragment: BaseFragment() {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
                                 } else {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
-                                        Input(Avatar(Uri.EMPTY, false), email)))
+                                        Input(Avatar(Uri.EMPTY, false), email)
+                                    ))
                                 }
                             } else {
                                 loginViewModel.errorComplete()

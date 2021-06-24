@@ -2,7 +2,7 @@ package com.example.expensare.ui.group
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.expensare.data.Group
+import com.example.expensare.data.models.Group
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -11,14 +11,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChooseGroupViewModel(private val getApplication: Application): AndroidViewModel(getApplication) {
+class ChooseGroupViewModel @Inject constructor(private val storage: Storage): ViewModel() {
 
     private val _groups = MutableLiveData<ArrayList<Group>>()
     val groups: LiveData<ArrayList<Group>> get() = _groups
 
     fun saveGroupID(groupId: String) {
-        val storage = Storage(getApplication.baseContext)
         storage.groupId = groupId
     }
 

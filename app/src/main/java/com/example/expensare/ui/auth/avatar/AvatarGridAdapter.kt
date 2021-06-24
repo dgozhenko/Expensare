@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
+import com.example.expensare.data.models.Avatar
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AvatarGridAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<AvatarGridAdapter.ViewHolder>() {
