@@ -24,4 +24,10 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/light_gray</item>
     </style>
+
+    <style name="SplashScreenTheme" parent = "Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="android:windowBackground">@drawable/splash_background</item>
+    <item name="android:navigationBarColor">@color/light_black</item>
+</style>
+
 </resources>

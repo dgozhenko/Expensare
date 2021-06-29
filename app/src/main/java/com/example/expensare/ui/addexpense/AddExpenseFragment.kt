@@ -198,7 +198,7 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
                                                                 progressBar.visibility = View.GONE
                                                             }
                                                             AddDebtResult.Success -> {
-
+                                                                progressBar.visibility = View.GONE
                                                             }
                                                         }
                                                     })

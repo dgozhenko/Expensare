@@ -30,6 +30,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
         get() = _binding!!
 
     private lateinit var navigationView: NavigationView
+    private var userExists: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -43,13 +44,14 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentDashboardBinding.inflate(inflater)
+        getUserInfo()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userLoggedIn()
         bindToolbarAndNavDrawer()
+        //getUserInfo()
         bindButtons()
     }
 
@@ -183,15 +185,6 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
             }
         }
         return true
-    }
-
-    private fun userLoggedIn() {
-        if (FirebaseAuth.getInstance().uid == null) {
-            findNavController()
-                .navigate(DashboardFragmentDirections.actionDashboardFragmentToLoginFragment())
-        } else {
-            getUserInfo()
-        }
     }
 
     private fun getUserInfo() {

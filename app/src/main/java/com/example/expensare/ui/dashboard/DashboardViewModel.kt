@@ -39,6 +39,7 @@ class DashboardViewModel @Inject constructor(private val storage: Storage) : Vie
     val reference = FirebaseDatabase.getInstance(
       "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
       .getReference("/expenses/$groupId/")
+    reference.keepSynced(true)
     viewModelScope.launch(Dispatchers.IO) {
       reference.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -67,6 +68,7 @@ class DashboardViewModel @Inject constructor(private val storage: Storage) : Vie
         FirebaseDatabase.getInstance(
                 "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("/users/")
+    reference.keepSynced(true)
     viewModelScope.launch(Dispatchers.IO) {
       reference.addListenerForSingleValueEvent(
           object : ValueEventListener {
@@ -100,6 +102,7 @@ class DashboardViewModel @Inject constructor(private val storage: Storage) : Vie
   private fun getGroupByGroupId() {
     val groupId = storage.groupId
     val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
+    reference.keepSynced(true)
     viewModelScope.launch(Dispatchers.IO) {
       reference.addListenerForSingleValueEvent(object : ValueEventListener{
         override fun onDataChange(snapshot: DataSnapshot) {

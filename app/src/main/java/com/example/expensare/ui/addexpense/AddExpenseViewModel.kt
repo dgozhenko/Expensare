@@ -1,6 +1,7 @@
 package com.example.expensare.ui.addexpense
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.expensare.data.models.Expense
 import com.example.expensare.data.models.Group
@@ -71,9 +72,11 @@ class AddExpenseViewModel @Inject constructor(private val storage: Storage) : Vi
                             if (userDebt.firstUser == toUser && userDebt.secondUser == fromUser) {
                                 operationDone = true
                                 referenceAdd.child("/$key/").setValue(UserDebt(userDebt.firstUser, userDebt.secondUser, userDebt.firstUserAmount + amount, userDebt.secondUserAmount - amount, false))
+                                _addDebtResult.postValue(AddDebtResult.Success)
                             } else if (userDebt.firstUser == fromUser && userDebt.secondUser == toUser) {
                                 operationDone = true
                                 referenceAdd.child("/$key/").setValue(UserDebt(userDebt.firstUser, userDebt.secondUser, userDebt.firstUserAmount - amount, userDebt.secondUserAmount + amount, false))
+                                _addDebtResult.postValue(AddDebtResult.Success)
                             }
                         }
                         if(!operationDone) {
@@ -108,6 +111,7 @@ class AddExpenseViewModel @Inject constructor(private val storage: Storage) : Vi
                 )
                     .getReference("expenses/$groupId")
                     .push()
+            reference.keepSynced(true)
             val expense =
                 Expense(
                     name = name,
@@ -116,10 +120,31 @@ class AddExpenseViewModel @Inject constructor(private val storage: Storage) : Vi
                     groupId = groupId,
                     date = neededDate
                 )
-            reference
-                .setValue(expense)
-                .addOnSuccessListener { _addExpenseResult.postValue(AddExpenseResult.Success) }
-                .addOnFailureListener { _addExpenseResult.postValue(AddExpenseResult.Error(it)) }
+
+            val connectedRef = FirebaseDatabase.getInstance(
+                "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+            ).getReference(".info/connected")
+            connectedRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val connected = snapshot.getValue(Boolean::class.java) ?: false
+                    if (connected) {
+                        Log.d("TAG", "connected")
+                        reference
+                            .setValue(expense)
+                            .addOnSuccessListener { _addExpenseResult.postValue(AddExpenseResult.Success)}
+                            .addOnFailureListener { _addExpenseResult.postValue(AddExpenseResult.Error(it)) }
+                    } else {
+                        Log.d("TAG", "not connected")
+                        reference
+                            .setValue(expense)
+                        _addExpenseResult.postValue(AddExpenseResult.Success)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w("TAG", "Listener was cancelled")
+                }
+            })
         }
     }
 

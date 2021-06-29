@@ -1,6 +1,5 @@
 package com.example.expensare.ui.mydebts.create_debt
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,17 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.load.engine.Resource
 import com.example.expensare.R
-import com.example.expensare.data.User
+import com.example.expensare.data.models.User
 import com.example.expensare.databinding.FragmentCreateManualDebtBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.ui.dashboard.DashboardFragmentDirections
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
-import com.google.rpc.context.AttributeContext
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 
 class CreateDebtFragment: BaseFragment() {
     private var _binding: FragmentCreateManualDebtBinding? = null
