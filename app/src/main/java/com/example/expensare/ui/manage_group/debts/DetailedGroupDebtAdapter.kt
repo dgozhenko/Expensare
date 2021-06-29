@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.models.UserDebt
 import com.google.android.material.textview.MaterialTextView
+import com.squareup.picasso.Callback
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -54,7 +56,18 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
             name.text = "To: ${userDebt.firstUser.username}"
             debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
             debt.text = "$${userDebt.firstUserAmount}"
-            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).networkPolicy(
+                NetworkPolicy.OFFLINE).into(image, object :
+                Callback {
+                override fun onSuccess() {
+
+                }
+
+                override fun onError() {
+                    Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+                }
+
+            })
         }
     }
 
@@ -67,7 +80,17 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
             name.text = "From: ${userDebt.firstUser.username}"
             debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
             debt.text = "$${userDebt.firstUserAmount}"
-            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
+                Callback {
+                override fun onSuccess() {
+
+                }
+
+                override fun onError() {
+                    Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+                }
+
+            })
         }
     }
 

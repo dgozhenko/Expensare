@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.models.Expense
 import com.google.android.material.textview.MaterialTextView
+import com.squareup.picasso.Callback
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.collections.ArrayList
@@ -43,7 +45,17 @@ class DashboardExpenseAdapter: RecyclerView.Adapter<DashboardExpenseAdapter.View
             userName.text = expense.user.username
             date.text = expense.date
             money.text = "-$${expense.amount}"
-            Picasso.with(itemView.context).load(expense.user.avatar).into(imageView)
+            Picasso.with(itemView.context).load(expense.user.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, object :
+                Callback {
+                override fun onSuccess() {
+
+                }
+
+                override fun onError() {
+                    Picasso.with(itemView.context).load(expense.user.avatar).into(imageView)
+                }
+
+            })
         }
     }
 }

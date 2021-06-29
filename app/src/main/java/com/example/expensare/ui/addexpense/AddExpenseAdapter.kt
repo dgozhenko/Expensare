@@ -9,8 +9,11 @@ import com.example.expensare.R
 import com.example.expensare.data.models.User
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textview.MaterialTextView
+import com.squareup.picasso.Callback
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.flow.callbackFlow
 
 class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<AddExpenseAdapter.ViewHolder>() {
 
@@ -47,7 +50,17 @@ class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerV
             val imageView = itemView.findViewById<CircleImageView>(R.id.avatar)
 
             userName.text = user.username
-            Picasso.with(itemView.context).load(user.avatar).into(imageView)
+
+            Picasso.with(itemView.context).load(user.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, object : Callback{
+                override fun onSuccess() {
+
+                }
+
+                override fun onError() {
+                    Picasso.with(itemView.context).load(user.avatar).into(imageView)
+                }
+
+            })
         }
     }
 }

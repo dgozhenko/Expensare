@@ -116,4 +116,8 @@ dependencies {
 
     // Gson
     implementation "com.google.code.gson:gson:$gsonVersion"
+
+    // okHttp
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+
 }
