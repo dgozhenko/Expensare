@@ -11,12 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDebtRequestsBinding
-import com.example.expensare.databinding.FragmentMyRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.example.expensare.ui.manage_group.GroupManagementFragmentDirections
-import com.example.expensare.ui.mydebts.FromMeDebtsFragment
-import com.example.expensare.ui.mydebts.MyDebtsFragmentViewPagerAdapter
-import com.example.expensare.ui.mydebts.ToMeDebtsFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 

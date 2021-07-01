@@ -34,16 +34,16 @@ class MyDebtsFragment : BaseFragment() {
       }
     }
     val tabLayout = binding.myDebtsTabLayout
-    tabLayout.addTab(tabLayout.newTab().setText("To me"))
-    tabLayout.addTab(tabLayout.newTab().setText("From me"))
+    tabLayout.addTab(tabLayout.newTab().setText("Lent"))
+    tabLayout.addTab(tabLayout.newTab().setText("Owe"))
     tabLayout.tabGravity = TabLayout.GRAVITY_FILL
 
     val adapter =
         MyDebtsFragmentViewPagerAdapter(
             childFragmentManager, tabLayout.tabCount, FragmentPagerAdapter.POSITION_UNCHANGED)
 
-    adapter.addFragment(ToMeDebtsFragment())
-    adapter.addFragment(FromMeDebtsFragment())
+    adapter.addFragment(LentDebtsFragment())
+    adapter.addFragment(OweDebtsFragment())
     binding.debtsViewPager.adapter = adapter
     binding.debtsViewPager.addOnPageChangeListener(
       TabLayout.TabLayoutOnPageChangeListener(tabLayout)

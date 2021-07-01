@@ -1,11 +1,13 @@
 package com.example.expensare.ui.mydebts
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.expensare.data.models.Group
+import com.example.expensare.data.models.ManualDebt
 import com.example.expensare.data.models.User
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
@@ -23,11 +25,22 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         get() = _user
 
     private val _group = MutableLiveData<Group>()
-    val group: LiveData<Group> get() = _group
+    val group: LiveData<Group>
+        get() = _group
+
+    private val _lentDebts = MutableLiveData<ArrayList<ManualDebt>>()
+    val lentDebts: LiveData<ArrayList<ManualDebt>>
+        get() = _lentDebts
+
+    private val _oweDebts = MutableLiveData<ArrayList<ManualDebt>>()
+    val oweDebts: LiveData<ArrayList<ManualDebt>>
+        get() = _oweDebts
 
     init {
         getUserInfo()
         getGroupByGroupId()
+        getLentDebts()
+        getOweDebts()
     }
 
     private fun getUserInfo() {
@@ -88,6 +101,54 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
                     TODO("Not yet implemented")
                 }
 
+            })
+        }
+    }
+
+    private fun getLentDebts(){
+        val debtsArrayList = arrayListOf<ManualDebt>()
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/")
+        viewModelScope.launch(Dispatchers.IO) {
+            reference.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.children.forEach {
+                            val lentDebt = it.getValue(ManualDebt::class.java)
+                            if (lentDebt!!.fromUser.uid == user.value!!.uid) {
+                                debtsArrayList.add(lentDebt)
+                            }
+                        }
+                        _lentDebts.postValue(debtsArrayList)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+    }
+
+    private fun getOweDebts(){
+        val debtsArrayList = arrayListOf<ManualDebt>()
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/")
+        viewModelScope.launch(Dispatchers.IO) {
+            reference.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.children.forEach {
+                            val oweDebt = it.getValue(ManualDebt::class.java)
+                            if (oweDebt!!.toUser.uid == user.value!!.uid != null) {
+                                debtsArrayList.add(oweDebt)
+                            }
+                        }
+                        _oweDebts.postValue(debtsArrayList)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
             })
         }
     }
