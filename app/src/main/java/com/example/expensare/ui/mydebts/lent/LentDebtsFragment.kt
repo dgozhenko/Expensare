@@ -26,11 +26,11 @@ class LentDebtsFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getUser()
+        getLentUserDebts()
         bindDebtsRecyclerView()
     }
 
-    private fun getUser() {
+    private fun getLentUserDebts() {
         myDebtsViewModel.user.observe(viewLifecycleOwner, {
             myDebtsViewModel.getLentDebts(it)
         })

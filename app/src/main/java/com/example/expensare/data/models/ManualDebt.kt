@@ -5,6 +5,6 @@ import com.example.expensare.data.models.User
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ManualDebt(val toUser: User, val fromUser: User, val amount: Int, val debtFor: String): Parcelable {
-    constructor(): this (User("", "", "", null), User("", "", "", null), 0, "")
+data class ManualDebt(val toUser: User, val fromUser: User, val amount: Int, val debtFor: String, val date: String): Parcelable {
+    constructor(): this (User("", "", "", null), User("", "", "", null), 0, "", "")
 }

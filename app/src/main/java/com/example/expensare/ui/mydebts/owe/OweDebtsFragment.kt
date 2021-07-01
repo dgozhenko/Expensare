@@ -25,11 +25,11 @@ class OweDebtsFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getUser()
+        getOweUserDebts()
         bindDebtsRecyclerView()
     }
 
-    private fun getUser() {
+    private fun getOweUserDebts() {
         myDebtsViewModel.user.observe(viewLifecycleOwner, {
             myDebtsViewModel.getOweDebts(it)
         })

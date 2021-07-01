@@ -17,7 +17,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CreateDebtViewModel (private val getApplication: Application) : AndroidViewModel(getApplication) {
 
@@ -142,12 +143,17 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
     }
 
     fun createDebt(debtFor: String, amount: Int, fromUser: User, toUser: User) {
+        val pattern = "dd.MM.yyyy"
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+        val newCalendar = Calendar.getInstance(Locale.getDefault())
+        val neededDate = simpleDateFormat.format(newCalendar.time)
+
         viewModelScope.launch(Dispatchers.IO) {
             val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/")
             val referenceAdd = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts")
             referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    referenceAdd.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor))
+                    referenceAdd.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor, neededDate))
                 }
 
                 override fun onCancelled(error: DatabaseError) {

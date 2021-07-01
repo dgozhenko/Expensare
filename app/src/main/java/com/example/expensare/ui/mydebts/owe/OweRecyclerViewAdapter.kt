@@ -42,9 +42,10 @@ class OweRecyclerViewAdapter: RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHo
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
 
-            userName.text = debt.toUser.username
+            userName.text = debt.fromUser.username
             money.text = "-$${debt.amount}"
             debtFor.text = debt.debtFor
+            date.text = debt.date
             Picasso.with(itemView.context).load(debt.fromUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {

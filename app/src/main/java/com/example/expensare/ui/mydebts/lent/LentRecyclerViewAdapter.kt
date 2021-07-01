@@ -45,6 +45,7 @@ class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.View
             userName.text = debt.toUser.username
             money.text = "-$${debt.amount}"
             debtFor.text = debt.debtFor
+            date.text = debt.date
             Picasso.with(itemView.context).load(debt.toUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
