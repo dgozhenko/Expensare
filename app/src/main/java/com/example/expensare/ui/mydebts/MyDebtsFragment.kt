@@ -9,6 +9,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentMyDebtsBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.mydebts.lent.LentDebtsFragment
+import com.example.expensare.ui.mydebts.owe.OweDebtsFragment
 import com.google.android.material.tabs.TabLayout
 
 class MyDebtsFragment : BaseFragment() {

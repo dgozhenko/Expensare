@@ -1,4 +1,4 @@
-package com.example.expensare.ui.mydebts
+package com.example.expensare.ui.mydebts.owe
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +12,12 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.ViewHolder>() {
+class OweRecyclerViewAdapter: RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<ManualDebt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_to_me_debt_item, parent, false)
+        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_from_me_debt_item, parent, false)
         return ViewHolder(layoutInflater)
     }
 
@@ -45,7 +45,7 @@ class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.View
             userName.text = debt.toUser.username
             money.text = "-$${debt.amount}"
             debtFor.text = debt.debtFor
-            Picasso.with(itemView.context).load(debt.toUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(debt.fromUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 
