@@ -6,17 +6,22 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.App
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDashboardBinding
 import com.example.expensare.ui.auth.avatar.AvatarViewModel
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.dashboard.list.ListFragmentDirections
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
@@ -62,15 +67,19 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun bindExpensesRecyclerView() {
+        binding.progressCircular.visibility = View.VISIBLE
         val adapter = DashboardExpenseAdapter()
         binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.historyRecyclerView.adapter = adapter
+
         dashboardViewModel.expense.observe(viewLifecycleOwner, {
             if (it != null) {
                 binding.noHistoryText.visibility = View.GONE
                 adapter.getExpenses(it)
+                binding.progressCircular.visibility = View.GONE
             } else {
                 binding.noHistoryText.visibility = View.VISIBLE
+                binding.progressCircular.visibility = View.GONE
             }
         })
     }
@@ -84,29 +93,12 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun bindButtons() {
-        binding.listButton.setOnClickListener {
-            binding.listButton.setBackgroundResource(R.drawable.rounded_button_left_chosen)
-            binding.historyButton.setBackgroundResource(R.drawable.square_button)
-            binding.historyRecyclerView.visibility = View.GONE
-            binding.noHistoryText.visibility = View.GONE
-            binding.noListText.visibility = View.VISIBLE
-            binding.addNewItem.visibility = View.VISIBLE
-            binding.finalizeButton.visibility = View.VISIBLE
-            binding.addExpensesButton.visibility = View.GONE
-            binding.groceryListRecyclerView.visibility = View.VISIBLE
-        }
+        binding.listButton.setBackgroundResource(R.drawable.rounded_button_left)
+        binding.historyButton.setBackgroundResource(R.drawable.square_button_chosen)
+        binding.debtButton.setBackgroundResource(R.drawable.rounded_button_right)
 
-        binding.historyButton.setOnClickListener {
-            binding.listButton.setBackgroundResource(R.drawable.rounded_button_left)
-            binding.historyButton.setBackgroundResource(R.drawable.square_button_chosen)
-            binding.noHistoryText.visibility = View.VISIBLE
-            binding.noListText.visibility = View.GONE
-            binding.addNewItem.visibility = View.GONE
-            binding.finalizeButton.visibility = View.GONE
-            binding.addExpensesButton.visibility = View.VISIBLE
-            binding.historyRecyclerView.visibility = View.VISIBLE
-            binding.groceryListRecyclerView.visibility = View.GONE
-            bindExpensesRecyclerView()
+        binding.listButton.setOnClickListener {
+            findNavController().navigate(DashboardFragmentDirections.actionDashboardFragmentToListFragment())
         }
 
         binding.debtButton.setOnClickListener {
@@ -114,19 +106,8 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
                 .navigate(DashboardFragmentDirections.actionDashboardFragmentToMyDebtsFragment())
         }
 
-        binding.addNewItem.setOnClickListener {
-            findNavController()
-                .navigate(DashboardFragmentDirections.actionDashboardFragmentToAddToListFragment())
-        }
 
-        binding.finalizeButton.setOnClickListener {
-            findNavController()
-                .navigate(
-                    DashboardFragmentDirections.actionDashboardFragmentToFinishShopSessionFragment()
-                )
-        }
-
-        binding.addExpensesButton.setOnClickListener {
+        binding.addExpenses.setOnClickListener {
             findNavController()
                 .navigate(
                     DashboardFragmentDirections.actionDashboardFragmentToAddExpensesFragment()
