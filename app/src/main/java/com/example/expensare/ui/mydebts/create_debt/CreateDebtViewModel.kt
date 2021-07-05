@@ -149,11 +149,13 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
         val neededDate = simpleDateFormat.format(newCalendar.time)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/")
-            val referenceAdd = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts")
+            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${fromUser.uid}/")
+            val referenceAddLent = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${fromUser.uid}/lent")
+            val referenceAddOwe = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${toUser.uid}/owe")
             referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    referenceAdd.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor, neededDate))
+                    referenceAddLent.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor, neededDate))
+                    referenceAddOwe.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor, neededDate))
                 }
 
                 override fun onCancelled(error: DatabaseError) {
