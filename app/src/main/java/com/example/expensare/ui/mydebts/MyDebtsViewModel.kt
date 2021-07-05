@@ -105,7 +105,7 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
 
      fun getLentDebts(user: User){
         val debtsArrayList = arrayListOf<ManualDebt>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/")
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${user.uid}/lent/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -129,7 +129,7 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
 
      fun getOweDebts(user: User){
         val debtsArrayList = arrayListOf<ManualDebt>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/")
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${user.uid}/owe/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
