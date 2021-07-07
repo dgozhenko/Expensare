@@ -51,7 +51,6 @@ class CreateDebtFragment: BaseFragment() {
                     arraySize++
                 }
             })
-            val checkedItem = 0
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Choose debtor")
                 .setNegativeButton("Cancel") { dialog, which ->
@@ -101,12 +100,18 @@ class CreateDebtFragment: BaseFragment() {
                         }
                     })
                     createDebtViewModel.createDebt(debtFor,debtAmount.toInt(), this.userFrom!!, userTo!!)
-                    Toast.makeText(
-                        requireContext(),
-                        "Debt was successfully created",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    createDebtViewModel.addExpenseResult.observe(viewLifecycleOwner, {
+                        if (it == CreateDebtResult.Success) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Debt was successfully created",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                            findNavController().navigateUp()
+                        }
+                    })
+
                 }
             }
         }
