@@ -31,7 +31,7 @@ class OweDebtsFragment: BaseFragment() {
 
     private fun getOweUserDebts() {
         myDebtsViewModel.user.observe(viewLifecycleOwner, {
-            myDebtsViewModel.getOweDebts(it)
+            myDebtsViewModel.getOweDebts()
         })
     }
 

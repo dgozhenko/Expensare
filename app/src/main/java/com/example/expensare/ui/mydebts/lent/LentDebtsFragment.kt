@@ -32,7 +32,7 @@ class LentDebtsFragment: BaseFragment() {
 
     private fun getLentUserDebts() {
         myDebtsViewModel.user.observe(viewLifecycleOwner, {
-            myDebtsViewModel.getLentDebts(it)
+            myDebtsViewModel.getLentDebts()
         })
     }
 
