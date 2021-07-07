@@ -105,16 +105,17 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         }
     }
 
-     fun getLentDebts(user: User){
+     fun getLentDebts(){
+         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${user.uid}/lent/")
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
                             val lentDebt = it.getValue(ManualDebt::class.java)!!
-                            if (lentDebt.fromUser.uid == user.uid) {
+                            if (lentDebt.fromUser.uid == userId) {
                                 debtsArrayList.add(lentDebt)
                             }
                         }
@@ -129,16 +130,17 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         }
     }
 
-     fun getOweDebts(user: User){
+     fun getOweDebts(){
+         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${user.uid}/owe/")
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/owe/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
                             val oweDebt = it.getValue(ManualDebt::class.java)!!
-                            if (oweDebt.toUser.uid == user.uid) {
+                            if (oweDebt.toUser.uid == userId) {
                                 debtsArrayList.add(oweDebt)
                             }
                         }

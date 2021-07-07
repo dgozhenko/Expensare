@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.expensare.data.models.Group
 import com.example.expensare.data.models.ManualDebt
 import com.example.expensare.data.models.User
+import com.example.expensare.ui.addexpense.AddExpenseResult
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -19,6 +20,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
+sealed class CreateDebtResult {
+    object Success : CreateDebtResult()
+    data class Error(val exception: Exception) : CreateDebtResult()
+}
 
 class CreateDebtViewModel (private val getApplication: Application) : AndroidViewModel(getApplication) {
 
@@ -32,6 +38,10 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
     private val _users = MutableLiveData<ArrayList<User>>()
     val users: LiveData<ArrayList<User>>
         get() = _users
+
+    private val _createDebtResult = MutableLiveData<CreateDebtResult>()
+    val addExpenseResult: LiveData<CreateDebtResult>
+        get() = _createDebtResult
 
     init {
         getUserInfo()
@@ -157,6 +167,7 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
                 override fun onDataChange(snapshot: DataSnapshot) {
                     referenceAddLent.push().setValue(ManualDebt(debtId,toUser, fromUser, amount, debtFor, neededDate))
                     referenceAddOwe.push().setValue(ManualDebt(debtId, toUser, fromUser, amount, debtFor, neededDate))
+                    _createDebtResult.postValue(CreateDebtResult.Success)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
