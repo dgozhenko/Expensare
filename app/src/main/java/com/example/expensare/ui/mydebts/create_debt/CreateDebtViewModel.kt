@@ -147,6 +147,7 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         val newCalendar = Calendar.getInstance(Locale.getDefault())
         val neededDate = simpleDateFormat.format(newCalendar.time)
+        val debtId = UUID.randomUUID().toString()
 
         viewModelScope.launch(Dispatchers.IO) {
             val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${fromUser.uid}/")
@@ -154,8 +155,8 @@ class CreateDebtViewModel (private val getApplication: Application) : AndroidVie
             val referenceAddOwe = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${toUser.uid}/owe")
             referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    referenceAddLent.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor, neededDate))
-                    referenceAddOwe.push().setValue(ManualDebt(toUser, fromUser, amount, debtFor, neededDate))
+                    referenceAddLent.push().setValue(ManualDebt(debtId,toUser, fromUser, amount, debtFor, neededDate))
+                    referenceAddOwe.push().setValue(ManualDebt(debtId, toUser, fromUser, amount, debtFor, neededDate))
                 }
 
                 override fun onCancelled(error: DatabaseError) {
