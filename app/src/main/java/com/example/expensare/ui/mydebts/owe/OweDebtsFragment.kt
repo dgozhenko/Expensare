@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensare.databinding.FragmentDebtsFromMeBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.ui.mydebts.MyDebtsViewModel
+import com.example.expensare.ui.mydebts.lent.LentRecyclerViewAdapter
 
 class OweDebtsFragment: BaseFragment() {
     private var _binding: FragmentDebtsFromMeBinding? = null
@@ -35,9 +37,12 @@ class OweDebtsFragment: BaseFragment() {
         })
     }
 
+
     private fun bindDebtsRecyclerView() {
-        val adapter = OweRecyclerViewAdapter()
-        binding.debtsFromMeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = OweRecyclerViewAdapter(OweRecyclerViewAdapter.OnClickListener { manualDebt ->
+            myDebtsViewModel.createRequest(manualDebt)
+        })
+        binding.debtsFromMeRecyclerView .layoutManager = LinearLayoutManager(requireContext())
         binding.debtsFromMeRecyclerView.adapter = adapter
         myDebtsViewModel.oweDebts.observe(viewLifecycleOwner, {
             if (it != null) {
