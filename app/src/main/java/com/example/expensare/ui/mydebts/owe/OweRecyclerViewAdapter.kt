@@ -1,15 +1,17 @@
 package com.example.expensare.ui.mydebts.owe
 
-import android.app.Activity
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.models.ManualDebt
 import com.example.expensare.ui.MainActivity
-import com.example.expensare.ui.mydebts.lent.LentRecyclerViewAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Callback
@@ -18,9 +20,14 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.coroutines.coroutineContext
 
+
 class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<ManualDebt>()
+    val APP_PREFERENCES = "MyPreferences"
+    val APP_PREFERENCES_NICKNAME = "isClickable"
+
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_from_me_debt_item, parent, false)
@@ -29,10 +36,20 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payMoneyButton = holder.itemView.findViewById<MaterialButton>(R.id.money_pay_button)
+
         with(list[position]){
             payMoneyButton.setOnClickListener {
+                preferences = it.getContext().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+                if (preferences.contains(APP_PREFERENCES_NICKNAME)){
+                    payMoneyButton.isClickable = preferences.getBoolean(APP_PREFERENCES_NICKNAME, true)
+                }
+
                 onClickListener.onClick(this)
                 payMoneyButton.isClickable = false
+
+                val editor = preferences.edit()
+                editor.putBoolean(APP_PREFERENCES_NICKNAME, false)
+                editor.apply()
                 Toast.makeText(it.context, "Request sent successfully!", Toast.LENGTH_SHORT).show()
             }
         }
