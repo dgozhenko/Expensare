@@ -1,0 +1,50 @@
+package com.example.expensare.ui.requests.toMe
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.expensare.databinding.FragmentMyRequestsBinding
+import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.mydebts.owe.OweRecyclerViewAdapter
+import com.example.expensare.ui.requests.RequestsViewModel
+
+class ToMeRequestsFragment: BaseFragment() {
+    private var _binding: FragmentMyRequestsBinding? = null
+    private val binding get() = _binding!!
+
+    private val requestsViewModel: RequestsViewModel by lazy {
+        ViewModelProvider(this).get(RequestsViewModel::class.java)
+    }
+
+    override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
+        _binding = FragmentMyRequestsBinding.inflate(inflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getToMeUserRequests()
+        bindDebtsRecyclerView()
+    }
+
+    private fun getToMeUserRequests() {
+        requestsViewModel.user.observe(viewLifecycleOwner, {
+            requestsViewModel.getToMeRequests()
+        })
+    }
+
+
+    private fun bindDebtsRecyclerView() {
+        val adapter = ToMeRecyclerViewAdapter()
+        binding.requestsToMeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.requestsToMeRecyclerView.adapter = adapter
+        requestsViewModel.toMeRequests.observe(viewLifecycleOwner, {
+            if (it != null) {
+                adapter.getRequests(it)
+            }
+        })
+    }
+}

@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDebtRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.requests.pending.PendingRequestsFragment
+import com.example.expensare.ui.requests.toMe.ToMeRequestsFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 

@@ -104,30 +104,30 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         }
     }
 
-     fun getLentDebts(){
-         val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val lentDebt = it.getValue(ManualDebt::class.java)!!
-                            if (lentDebt.fromUser.uid == userId) {
-                                debtsArrayList.add(lentDebt)
+         fun getLentDebts(){
+             val userId = FirebaseAuth.getInstance().uid
+            val debtsArrayList = arrayListOf<ManualDebt>()
+            val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
+            viewModelScope.launch(Dispatchers.IO) {
+                reference.addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val lentDebt = it.getValue(ManualDebt::class.java)!!
+                                if (lentDebt.fromUser.uid == userId) {
+                                    debtsArrayList.add(lentDebt)
+                                }
                             }
+                            _lentDebts.postValue(debtsArrayList)
                         }
-                        _lentDebts.postValue(debtsArrayList)
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+            }
         }
-    }
 
      fun getOweDebts(){
          val userId = FirebaseAuth.getInstance().uid
