@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensare.databinding.FragmentMyRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.example.expensare.ui.mydebts.owe.OweRecyclerViewAdapter
 import com.example.expensare.ui.requests.RequestsViewModel
 
 class ToMeRequestsFragment: BaseFragment() {
@@ -26,13 +25,13 @@ class ToMeRequestsFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getToMeUserRequests()
-        bindDebtsRecyclerView()
+        /*getToMeUserRequests()
+        bindDebtsRecyclerView()*/
     }
 
-    private fun getToMeUserRequests() {
+    /*private fun getToMeUserRequests() {
         requestsViewModel.user.observe(viewLifecycleOwner, {
-            requestsViewModel.getToMeRequests()
+            requestsViewModel.getPendingRequests()
         })
     }
 
@@ -46,5 +45,5 @@ class ToMeRequestsFragment: BaseFragment() {
                 adapter.getRequests(it)
             }
         })
-    }
+    }*/
 }

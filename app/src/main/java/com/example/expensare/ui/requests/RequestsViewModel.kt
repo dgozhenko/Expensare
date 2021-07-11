@@ -68,7 +68,7 @@ class RequestsViewModel(private val getApplication: Application) : AndroidViewMo
         }
     }
 
-    fun getToMeRequests(){
+    fun getPendingRequests(){
         val userId = FirebaseAuth.getInstance().uid
         val requestsArrayList = arrayListOf<Request>()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/requests/$userId/requested/")
