@@ -50,6 +50,7 @@ class DashboardViewModel @Inject constructor(private val storage: Storage) : Vie
                 expensesArrayList.add(expense)
               }
             }
+            expensesArrayList.reverse()
             _expenses.postValue(expensesArrayList)
           }
         }
