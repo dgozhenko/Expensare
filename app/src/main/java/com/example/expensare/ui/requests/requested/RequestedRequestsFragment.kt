@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensare.databinding.FragmentRequestedRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.ui.requests.RequestsViewModel
-import com.example.expensare.ui.requests.pending.PendingRecyclerViewAdapter
 
 class RequestedRequestsFragment: BaseFragment() {
     private var _binding: FragmentRequestedRequestsBinding? = null
@@ -26,22 +25,22 @@ class RequestedRequestsFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getToMeUserRequests()
+        getRequestedRequests()
         bindDebtsRecyclerView()
     }
 
-    private fun getToMeUserRequests() {
+    private fun getRequestedRequests() {
         requestsViewModel.user.observe(viewLifecycleOwner, {
-            requestsViewModel.getPendingRequests()
+            requestsViewModel.getRequestedRequests()
         })
     }
 
 
     private fun bindDebtsRecyclerView() {
         val adapter = RequestedRecyclerViewAdapter()
-        binding.requestsToMeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.requestsToMeRecyclerView.adapter = adapter
-        requestsViewModel.toMeRequests.observe(viewLifecycleOwner, {
+        binding.requestedRequestsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.requestedRequestsRecyclerView.adapter = adapter
+        requestsViewModel.requestedRequests.observe(viewLifecycleOwner, {
             if (it != null) {
                 adapter.getRequests(it)
             }

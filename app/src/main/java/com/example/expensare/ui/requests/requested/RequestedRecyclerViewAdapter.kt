@@ -17,7 +17,7 @@ class RequestedRecyclerViewAdapter: RecyclerView.Adapter<RequestedRecyclerViewAd
     private var list = arrayListOf<Request>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_pending_request_item, parent, false)
+        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_requested_request_item, parent, false)
         return RequestedRecyclerViewAdapter.ViewHolder(layoutInflater)
     }
 

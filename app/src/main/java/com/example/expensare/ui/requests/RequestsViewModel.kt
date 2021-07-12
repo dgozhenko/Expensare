@@ -21,9 +21,9 @@ class RequestsViewModel(private val getApplication: Application) : AndroidViewMo
     val user: LiveData<User>
         get() = _user
 
-    private val _toMeRequests = MutableLiveData<ArrayList<Request>>()
-    val toMeRequests: LiveData<ArrayList<Request>>
-        get() = _toMeRequests
+    private val _requestedRequests = MutableLiveData<ArrayList<Request>>()
+    val requestedRequests: LiveData<ArrayList<Request>>
+        get() = _requestedRequests
 
     private val _pendingRequests = MutableLiveData<ArrayList<Request>>()
     val pendingRequests: LiveData<ArrayList<Request>>
@@ -71,6 +71,29 @@ class RequestsViewModel(private val getApplication: Application) : AndroidViewMo
     fun getPendingRequests(){
         val userId = FirebaseAuth.getInstance().uid
         val requestsArrayList = arrayListOf<Request>()
+        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/requests/$userId/pending/")
+        viewModelScope.launch(Dispatchers.IO) {
+            reference.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.children.forEach {
+                            val request = it.getValue(Request::class.java)!!
+                            requestsArrayList.add(request)
+                        }
+                        _pendingRequests.postValue(requestsArrayList)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+    }
+
+    fun getRequestedRequests(){
+        val userId = FirebaseAuth.getInstance().uid
+        val requestsArrayList = arrayListOf<Request>()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/requests/$userId/requested/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
@@ -80,7 +103,7 @@ class RequestsViewModel(private val getApplication: Application) : AndroidViewMo
                             val request = it.getValue(Request::class.java)!!
                             requestsArrayList.add(request)
                         }
-                        _toMeRequests.postValue(requestsArrayList)
+                        _requestedRequests.postValue(requestsArrayList)
                     }
                 }
 

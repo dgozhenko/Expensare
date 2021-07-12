@@ -41,7 +41,7 @@ class PendingRequestsFragment: BaseFragment() {
         val adapter = RequestedRecyclerViewAdapter()
         binding.pendingRequestsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.pendingRequestsRecyclerView.adapter = adapter
-        requestsViewModel.toMeRequests.observe(viewLifecycleOwner, {
+        requestsViewModel.pendingRequests.observe(viewLifecycleOwner, {
             if (it != null) {
                 adapter.getRequests(it)
             }

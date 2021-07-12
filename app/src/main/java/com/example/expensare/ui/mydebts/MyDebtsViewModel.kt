@@ -160,7 +160,8 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.fromUser.uid}/lent/")
         val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.toUser.uid}/owe/")
         val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/")
-        val referenceAddRequest = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/requested")
+        val referenceAddRequested = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.fromUser.uid}/requested")
+        val referenceAddPending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/pending")
         viewModelScope.launch(Dispatchers.IO) {
             oweReference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -198,7 +199,8 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
                                 })
                                 referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {
-                                        referenceAddRequest.push().setValue(Request(oweKey, debt.debtId, debt.toUser, debt.fromUser, debt.amount, debt.debtFor, debt.date))
+                                        referenceAddPending.push().setValue(Request(oweKey, debt.debtId, debt.toUser, debt.fromUser, debt.amount, debt.debtFor, debt.date))
+                                        referenceAddRequested.push().setValue(Request(oweKey, debt.debtId, debt.toUser, debt.fromUser, debt.amount, debt.debtFor, debt.date))
                                             oweReference.child(oweKey).removeValue()
                                     }
 
