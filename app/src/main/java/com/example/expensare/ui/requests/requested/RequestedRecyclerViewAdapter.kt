@@ -1,26 +1,24 @@
-package com.example.expensare.ui.requests.toMe
+package com.example.expensare.ui.requests.requested
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.models.ManualDebt
 import com.example.expensare.data.models.Request
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ToMeRecyclerViewAdapter: RecyclerView.Adapter<ToMeRecyclerViewAdapter.ViewHolder>() {
+class RequestedRecyclerViewAdapter: RecyclerView.Adapter<RequestedRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<Request>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_request_item, parent, false)
-        return ToMeRecyclerViewAdapter.ViewHolder(layoutInflater)
+        val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_pending_request_item, parent, false)
+        return RequestedRecyclerViewAdapter.ViewHolder(layoutInflater)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.expensare.databinding.FragmentMyRequestsBinding
+import com.example.expensare.databinding.FragmentPendingRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.ui.requests.RequestsViewModel
-import com.example.expensare.ui.requests.toMe.ToMeRecyclerViewAdapter
+import com.example.expensare.ui.requests.requested.RequestedRecyclerViewAdapter
 
 class PendingRequestsFragment: BaseFragment() {
-    private var _binding: FragmentMyRequestsBinding? = null
+    private var _binding: FragmentPendingRequestsBinding? = null
     private val binding get() = _binding!!
 
     private val requestsViewModel: RequestsViewModel by lazy {
@@ -20,7 +20,7 @@ class PendingRequestsFragment: BaseFragment() {
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
-        _binding = FragmentMyRequestsBinding.inflate(inflater)
+        _binding = FragmentPendingRequestsBinding.inflate(inflater)
         return binding.root
     }
 
@@ -38,9 +38,9 @@ class PendingRequestsFragment: BaseFragment() {
 
 
     private fun bindDebtsRecyclerView() {
-        val adapter = ToMeRecyclerViewAdapter()
-        binding.requestsToMeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.requestsToMeRecyclerView.adapter = adapter
+        val adapter = RequestedRecyclerViewAdapter()
+        binding.pendingRequestsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.pendingRequestsRecyclerView.adapter = adapter
         requestsViewModel.toMeRequests.observe(viewLifecycleOwner, {
             if (it != null) {
                 adapter.getRequests(it)
