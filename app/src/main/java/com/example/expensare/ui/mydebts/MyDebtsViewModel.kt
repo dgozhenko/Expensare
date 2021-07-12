@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.expensare.data.models.Group
 import com.example.expensare.data.models.ManualDebt
+import com.example.expensare.data.models.Request
 import com.example.expensare.data.models.User
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
@@ -103,30 +104,30 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         }
     }
 
-     fun getLentDebts(){
-         val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val lentDebt = it.getValue(ManualDebt::class.java)!!
-                            if (lentDebt.fromUser.uid == userId) {
-                                debtsArrayList.add(lentDebt)
+         fun getLentDebts(){
+             val userId = FirebaseAuth.getInstance().uid
+            val debtsArrayList = arrayListOf<ManualDebt>()
+            val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
+            viewModelScope.launch(Dispatchers.IO) {
+                reference.addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val lentDebt = it.getValue(ManualDebt::class.java)!!
+                                if (lentDebt.fromUser.uid == userId) {
+                                    debtsArrayList.add(lentDebt)
+                                }
                             }
+                            _lentDebts.postValue(debtsArrayList)
                         }
-                        _lentDebts.postValue(debtsArrayList)
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+            }
         }
-    }
 
      fun getOweDebts(){
          val userId = FirebaseAuth.getInstance().uid
@@ -150,6 +151,72 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
                     TODO("Not yet implemented")
                 }
             })
+        }
+    }
+
+    fun createRequest(debt: ManualDebt){
+        var oweKey = ""
+        var lentKey = ""
+        val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.fromUser.uid}/lent/")
+        val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.toUser.uid}/owe/")
+        val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/")
+        val referenceAddRequest = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/requested")
+        viewModelScope.launch(Dispatchers.IO) {
+            oweReference.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.children.forEach {
+                            val oweDebt = it.getValue(ManualDebt::class.java)!!
+                            Log.d("oweDebt", oweDebt.toString())
+                            if (oweDebt.debtId == debt.debtId) {
+                                oweKey = it.key.toString()
+                                lentReference.addListenerForSingleValueEvent(object : ValueEventListener{
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        if (snapshot.exists()) {
+                                            snapshot.children.forEach {
+                                                val lentDebt = it.getValue(ManualDebt::class.java)!!
+                                                Log.d("lentDebt", lentDebt.toString())
+                                                if (lentDebt.debtId == debt.debtId) {
+                                                    lentKey = it.key.toString()
+                                                    referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
+                                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                                            lentReference.child(lentKey).removeValue()
+                                                        }
+
+                                                        override fun onCancelled(error: DatabaseError) {
+                                                            TODO("Not yet implemented")
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+                                })
+                                referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        referenceAddRequest.push().setValue(Request(oweKey, debt.debtId, debt.toUser, debt.fromUser, debt.amount, debt.debtFor, debt.date))
+                                            oweReference.child(oweKey).removeValue()
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+
         }
     }
 }

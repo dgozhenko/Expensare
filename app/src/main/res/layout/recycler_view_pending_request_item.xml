@@ -114,31 +114,6 @@
                 app:layout_constraintStart_toEndOf="@id/via_text_view"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/decline_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:backgroundTint="@color/button_red"
-                android:background="@drawable/rounded_button_left"
-                android:text="@string/decline_text"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/via_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/accept_button"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/accept_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button_right"
-                app:backgroundTint="@color/dark_green"
-                android:text="@string/accept_text"
-                app:layout_constraintTop_toTopOf="@id/decline_button"
-                app:layout_constraintStart_toEndOf="@id/decline_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

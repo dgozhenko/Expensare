@@ -1,18 +1,28 @@
 package com.example.expensare.ui.mydebts.owe
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.models.ManualDebt
+import com.example.expensare.ui.MainActivity
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlin.coroutines.coroutineContext
 
-class OweRecyclerViewAdapter: RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
+
+class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<ManualDebt>()
 
@@ -22,6 +32,16 @@ class OweRecyclerViewAdapter: RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHo
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val payMoneyButton = holder.itemView.findViewById<MaterialButton>(R.id.money_pay_button)
+
+        with(list[position]){
+            payMoneyButton.setOnClickListener {
+                onClickListener.onClick(this)
+                payMoneyButton.isClickable = false
+
+                Toast.makeText(it.context, "Request sent successfully!", Toast.LENGTH_SHORT).show()
+            }
+        }
         return holder.bind(list[position])
     }
 
@@ -58,5 +78,9 @@ class OweRecyclerViewAdapter: RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHo
 
             })
         }
+    }
+
+    class OnClickListener(val clickListener: (manualDebt: ManualDebt) -> Unit) {
+        fun onClick(manualDebt: ManualDebt) = clickListener(manualDebt)
     }
 }

@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentDebtRequestsBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.requests.pending.PendingRequestsFragment
+import com.example.expensare.ui.requests.requested.RequestedRequestsFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 
@@ -36,15 +38,15 @@ class RequestsViewPagerFragment: BaseFragment(), NavigationView.OnNavigationItem
             drawer.openDrawer(GravityCompat.START)
         }
         val tabLayout = binding.requestsTabLayout
-        tabLayout.addTab(tabLayout.newTab().setText("Requests To Me "))
-        tabLayout.addTab(tabLayout.newTab().setText("Pending Requests"))
+        tabLayout.addTab(tabLayout.newTab().setText("Requested"))
+        tabLayout.addTab(tabLayout.newTab().setText("Pending"))
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
 
         val adapter =
             RequestsViewPagerAdapter(
                 childFragmentManager, tabLayout.tabCount, FragmentPagerAdapter.POSITION_UNCHANGED)
 
-        adapter.addFragment(ToMeRequestsFragment())
+        adapter.addFragment(RequestedRequestsFragment())
         adapter.addFragment(PendingRequestsFragment())
 
         binding.requestsViewPager.adapter = adapter
