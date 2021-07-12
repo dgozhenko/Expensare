@@ -11,6 +11,8 @@ import com.example.expensare.ui.auth.avatar.ChooseNameViewModel
 import com.example.expensare.ui.auth.login.LoginViewModel
 import com.example.expensare.ui.auth.registration.RegistrationViewModel
 import com.example.expensare.ui.dashboard.DashboardViewModel
+import com.example.expensare.ui.dashboard.list.AddToListViewModel
+import com.example.expensare.ui.dashboard.list.ListViewModel
 import com.example.expensare.ui.group.ChooseGroupViewModel
 import com.example.expensare.ui.group.CreateGroupViewModel
 import com.example.expensare.ui.manage_group.debts.GroupDebtViewModel
@@ -74,4 +76,14 @@ abstract class ViewModelsModule {
     @IntoMap
     @ViewModelKey(GroupDebtViewModel::class)
     abstract fun bindsGroupDebtViewModel(viewModel: GroupDebtViewModel?) : ViewModel?
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddToListViewModel::class)
+    abstract fun bindsAddToListViewModel(viewModel: AddToListViewModel?) : ViewModel?
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ListViewModel::class)
+    abstract fun bindsListViewModel(viewModel: ListViewModel?): ViewModel?
 }

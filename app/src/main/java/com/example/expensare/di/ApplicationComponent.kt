@@ -7,6 +7,8 @@ import com.example.expensare.ui.addexpense.AddExpenseFragment
 import com.example.expensare.ui.auth.avatar.AvatarPickerFragment
 import com.example.expensare.ui.auth.avatar.ChooseNameFragment
 import com.example.expensare.ui.dashboard.DashboardFragment
+import com.example.expensare.ui.dashboard.list.AddToListFragment
+import com.example.expensare.ui.dashboard.list.ListFragment
 import com.example.expensare.ui.group.ChooseGroupFragment
 import com.example.expensare.ui.group.CreateGroupFragment
 import com.example.expensare.ui.manage_group.debts.GroupDebtFragment
@@ -25,4 +27,6 @@ interface ApplicationComponent {
     fun inject(fragment: CreateGroupFragment)
     fun inject(fragment: GroupDebtFragment)
     fun inject(fragment: GroupMembersFragment)
+    fun inject(fragment: AddToListFragment)
+    fun inject(fragment: ListFragment)
 }
