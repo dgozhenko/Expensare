@@ -22,21 +22,13 @@ class OweDebtsFragment: BaseFragment() {
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentDebtsFromMeBinding.inflate(inflater)
+        bindDebtsRecyclerView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getOweUserDebts()
-        bindDebtsRecyclerView()
     }
-
-    private fun getOweUserDebts() {
-        myDebtsViewModel.user.observe(viewLifecycleOwner, {
-            myDebtsViewModel.getOweDebts()
-        })
-    }
-
 
     private fun bindDebtsRecyclerView() {
         val adapter = OweRecyclerViewAdapter(OweRecyclerViewAdapter.OnClickListener { manualDebt ->
@@ -44,9 +36,18 @@ class OweDebtsFragment: BaseFragment() {
         })
         binding.debtsFromMeRecyclerView .layoutManager = LinearLayoutManager(requireContext())
         binding.debtsFromMeRecyclerView.adapter = adapter
+//        binding.debtsFromMeRecyclerView.itemAnimator = null
         myDebtsViewModel.oweDebts.observe(viewLifecycleOwner, {
             if (it != null) {
                 adapter.getDebts(it)
+            }
+        })
+        myDebtsViewModel.updatedOweDebts.observe(viewLifecycleOwner, {
+            if (it != null) {
+                binding.debtsFromMeRecyclerView.visibility = View.VISIBLE
+                adapter.getDebts(it)
+            } else {
+                binding.debtsFromMeRecyclerView.visibility = View.GONE
             }
         })
     }

@@ -20,8 +20,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        FirebaseDatabase.getInstance(
-            "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").setPersistenceEnabled(true)
+//        FirebaseDatabase.getInstance(
+//            "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").setPersistenceEnabled(true)
         val built = Picasso.Builder(this).downloader(OkHttpDownloader(this, Long.MAX_VALUE)).build()
         built.setIndicatorsEnabled(false)
         built.isLoggingEnabled = true

@@ -30,6 +30,11 @@ class LentDebtsFragment: BaseFragment() {
         bindDebtsRecyclerView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        bindDebtsRecyclerView()
+    }
+
     private fun getLentUserDebts() {
         myDebtsViewModel.user.observe(viewLifecycleOwner, {
             myDebtsViewModel.getLentDebts()

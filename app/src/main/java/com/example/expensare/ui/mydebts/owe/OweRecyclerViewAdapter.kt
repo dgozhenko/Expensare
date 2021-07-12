@@ -1,25 +1,18 @@
 package com.example.expensare.ui.mydebts.owe
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
 import com.example.expensare.data.models.ManualDebt
-import com.example.expensare.ui.MainActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlin.coroutines.coroutineContext
 
 
 class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
@@ -46,8 +39,10 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
     }
 
     fun getDebts(debts: ArrayList<ManualDebt>) {
-        list = debts
+        list.clear()
         notifyDataSetChanged()
+        list.addAll(debts)
+        notifyItemRangeChanged(0, list.size)
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
