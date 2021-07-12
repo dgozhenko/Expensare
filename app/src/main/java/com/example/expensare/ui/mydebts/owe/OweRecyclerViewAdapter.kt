@@ -34,14 +34,10 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payMoneyButton = holder.itemView.findViewById<MaterialButton>(R.id.money_pay_button)
 
-        with(list[position]){
             payMoneyButton.setOnClickListener {
-                onClickListener.onClick(this)
+                onClickListener.onClick(list[position])
                 payMoneyButton.isClickable = false
-
-                Toast.makeText(it.context, "Request sent successfully!", Toast.LENGTH_SHORT).show()
             }
-        }
         return holder.bind(list[position])
     }
 
