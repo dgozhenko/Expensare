@@ -38,7 +38,7 @@ class PendingRequestsFragment: BaseFragment() {
 
 
     private fun bindDebtsRecyclerView() {
-        val adapter = RequestedRecyclerViewAdapter()
+        val adapter = PendingRecyclerViewAdapter()
         binding.pendingRequestsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.pendingRequestsRecyclerView.adapter = adapter
         requestsViewModel.pendingRequests.observe(viewLifecycleOwner, {
