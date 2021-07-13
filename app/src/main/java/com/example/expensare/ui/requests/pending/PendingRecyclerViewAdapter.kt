@@ -18,7 +18,7 @@ class PendingRecyclerViewAdapter: RecyclerView.Adapter<PendingRecyclerViewAdapte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_pending_request_item, parent, false)
-        return PendingRecyclerViewAdapter.ViewHolder(layoutInflater)
+        return ViewHolder(layoutInflater)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -41,20 +41,19 @@ class PendingRecyclerViewAdapter: RecyclerView.Adapter<PendingRecyclerViewAdapte
             val money = itemView.findViewById<MaterialTextView>(R.id.debt_amount)
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
-            val viaContent = itemView.findViewById<MaterialTextView>(R.id.via_content)
 
-            userName.text = request.fromUser.username
-            money.text = "-$${request.amount}"
-            debtFor.text = request.debtFor
+            userName.text = request.debt.fromUser.username
+            money.text = "-$${request.debt.amount}"
+            debtFor.text = request.debt.debtFor
             date.text = request.date
-            Picasso.with(itemView.context).load(request.fromUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(request.debt.fromUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(request.fromUser.avatar).into(avatar)
+                    Picasso.with(itemView.context).load(request.debt.fromUser.avatar).into(avatar)
                 }
 
             })

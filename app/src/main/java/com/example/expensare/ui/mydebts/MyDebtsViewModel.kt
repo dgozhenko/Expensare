@@ -18,6 +18,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyDebtsViewModel(private val getApplication: Application) : AndroidViewModel(getApplication) {
 
@@ -182,10 +185,17 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
     fun createRequest(debt: ManualDebt){
         var oweKey = ""
         var lentKey = ""
+
         val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.fromUser.uid}/lent/")
         val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.toUser.uid}/owe/")
         val referenceAddRequested = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.fromUser.uid}/requested")
         val referenceAddPending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/pending")
+
+        val pattern = "dd.MM.yyyy"
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+        val newCalendar = Calendar.getInstance(Locale.getDefault())
+        val neededDate = simpleDateFormat.format(newCalendar.time)
+
         viewModelScope.launch(Dispatchers.IO) {
             oweReference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -225,8 +235,8 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
 
             lentReference.child("$lentKey/").removeValue()
             oweReference.child("$oweKey/").removeValue()
-            referenceAddPending.push().setValue(Request(oweKey.toString(), debt.debtId, debt.toUser, debt.fromUser, debt.amount, debt.debtFor, debt.date))
-            referenceAddRequested.push().setValue(Request(oweKey.toString(), debt.debtId, debt.toUser, debt.fromUser, debt.amount, debt.debtFor, debt.date))
+            referenceAddPending.push().setValue(Request(debt,neededDate))
+            referenceAddRequested.push().setValue(Request(debt,neededDate))
         }
     }
 }
