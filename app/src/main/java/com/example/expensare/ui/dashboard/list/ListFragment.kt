@@ -28,6 +28,9 @@ class ListFragment: BaseFragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
+    private var _adapter: ListAdapter? = null
+    private val adapter get() = _adapter!!
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -40,6 +43,7 @@ class ListFragment: BaseFragment() {
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentListBinding.inflate(inflater)
+        bindGroceryListRecyclerView()
         return binding.root
     }
 
@@ -50,14 +54,19 @@ class ListFragment: BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        bindGroceryListRecyclerView()
+        listViewModel.refreshGroceryList()
+        listViewModel.refreshedGroceryList.observe(viewLifecycleOwner, {
+            if (it != null) {
+                adapter.getListItems(it)
+            }
+        })
     }
 
     private fun bindGroceryListRecyclerView() {
         val progressBar = binding.progressCircular
         progressBar.visibility = View.VISIBLE
         val checkedArray = arrayListOf<ListItem>()
-        val adapter = ListAdapter(OnClickListener {listItem, isChecked ->
+         _adapter = ListAdapter(OnClickListener {listItem, isChecked ->
             if (isChecked) {
                 checkedArray.add(listItem)
             } else {

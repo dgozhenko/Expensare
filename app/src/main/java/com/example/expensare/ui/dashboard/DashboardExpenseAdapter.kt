@@ -31,8 +31,10 @@ class DashboardExpenseAdapter: RecyclerView.Adapter<DashboardExpenseAdapter.View
     }
 
     fun getExpenses(expenses: ArrayList<Expense>) {
-        list = expenses
+        list.clear()
         notifyDataSetChanged()
+        list.addAll(expenses)
+        notifyItemRangeChanged(0, list.size)
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

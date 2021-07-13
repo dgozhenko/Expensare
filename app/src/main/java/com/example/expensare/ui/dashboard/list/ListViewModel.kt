@@ -24,9 +24,43 @@ class ListViewModel @Inject constructor(private val storage: Storage): ViewModel
     private val _groceryList = MutableLiveData<ArrayList<ListItem>>()
     val groceryList: LiveData<ArrayList<ListItem>> get() = _groceryList
 
+    private val _refreshedGroceryList = MutableLiveData<ArrayList<ListItem>>()
+    val refreshedGroceryList: LiveData<ArrayList<ListItem>> get() = _refreshedGroceryList
+
     init {
         getGroupByGroupId()
         getGroupGroceryList()
+    }
+
+    fun refreshGroceryList() {
+        val groupId = storage.groupId
+        val groceryListArray = arrayListOf<ListItem>()
+        val reference = FirebaseDatabase.getInstance(
+            "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("/grocery_list/$groupId/")
+        reference.keepSynced(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            reference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.children.forEach {
+                            val groceryListItem = it.getValue(ListItem::class.java)
+                            if (groceryListItem != null) {
+                                groceryListArray.add(groceryListItem)
+                            }
+                        }
+                        _refreshedGroceryList.postValue(groceryListArray)
+                    } else {
+                        _refreshedGroceryList.postValue(null)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+        }
     }
 
     fun deleteGroceryItem(item: ListItem) {

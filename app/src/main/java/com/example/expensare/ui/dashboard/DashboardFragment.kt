@@ -34,6 +34,9 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     private val binding
         get() = _binding!!
 
+    private var _adapter: DashboardExpenseAdapter? = null
+    private val adapter get() = _adapter!!
+
     private lateinit var navigationView: NavigationView
     private var userExists: Boolean = false
 
@@ -50,25 +53,29 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentDashboardBinding.inflate(inflater)
         getUserInfo()
+        bindExpensesRecyclerView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindToolbarAndNavDrawer()
-        //getUserInfo()
         bindButtons()
     }
 
     override fun onResume() {
         super.onResume()
-        // TO-DO Add real-time update
-        bindExpensesRecyclerView()
+        dashboardViewModel.refreshExpenses()
+        dashboardViewModel.refreshedExpenses.observe(viewLifecycleOwner, {
+            if (it != null) {
+                adapter.getExpenses(it)
+            }
+        })
     }
 
     private fun bindExpensesRecyclerView() {
         binding.progressCircular.visibility = View.VISIBLE
-        val adapter = DashboardExpenseAdapter()
+        _adapter = DashboardExpenseAdapter()
         binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.historyRecyclerView.adapter = adapter
 

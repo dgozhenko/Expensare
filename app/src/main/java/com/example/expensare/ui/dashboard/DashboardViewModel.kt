@@ -27,10 +27,45 @@ class DashboardViewModel @Inject constructor(private val storage: Storage) : Vie
   private val _expenses = MutableLiveData<ArrayList<Expense>>()
   val expense: LiveData<ArrayList<Expense>> get() = _expenses
 
+  private val _refreshedExpenses = MutableLiveData<ArrayList<Expense>>()
+  val refreshedExpenses: LiveData<ArrayList<Expense>> get() = _refreshedExpenses
+
   init {
     getUserInfo()
     getGroupByGroupId()
     getGroupExpenses()
+  }
+
+  fun refreshExpenses() {
+    val groupId = storage.groupId
+    val expensesArrayList = arrayListOf<Expense>()
+    val reference = FirebaseDatabase.getInstance(
+      "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+      .getReference("/expenses/$groupId/")
+    reference.keepSynced(true)
+    viewModelScope.launch(Dispatchers.IO) {
+      reference.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+          if (snapshot.exists()) {
+            snapshot.children.forEach {
+              val expense = it.getValue(Expense::class.java)
+              if (expense != null) {
+                expensesArrayList.add(expense)
+              }
+            }
+            expensesArrayList.reverse()
+            _refreshedExpenses.postValue(expensesArrayList)
+          } else {
+            _refreshedExpenses.postValue(null)
+          }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+          TODO("Not yet implemented")
+        }
+
+      })
+    }
   }
 
   private fun getGroupExpenses() {

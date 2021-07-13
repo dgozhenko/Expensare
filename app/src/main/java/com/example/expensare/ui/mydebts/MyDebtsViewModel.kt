@@ -126,7 +126,6 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
     }
 
      fun refreshLentDebts() {
-         _refreshedLentDebts.postValue(null)
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
@@ -181,7 +180,6 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
         }
 
      private fun getOweDebts(){
-         _oweDebts.postValue(null)
          val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
          debtsArrayList.clear()
@@ -211,7 +209,6 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
     }
 
      fun refreshOweDebts(){
-        _refreshedOweDebts.postValue(null)
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
         debtsArrayList.clear()
@@ -241,7 +238,6 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
     }
 
     private fun updateOweDebts(){
-        _updatedOweDebts.postValue(null)
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
         debtsArrayList.clear()
@@ -271,7 +267,6 @@ class MyDebtsViewModel(private val getApplication: Application) : AndroidViewMod
     }
 
     private fun updateLentDebts() {
-        _updatedLentDebts.postValue(null)
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
         debtsArrayList.clear()
