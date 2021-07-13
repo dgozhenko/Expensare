@@ -15,6 +15,8 @@ import com.example.expensare.ui.mydebts.lent.LentRecyclerViewAdapter
 class OweDebtsFragment: BaseFragment() {
     private var _binding: FragmentDebtsFromMeBinding? = null
     private val binding get() = _binding!!
+    private var _adapter: OweRecyclerViewAdapter? = null
+    private val adapter get() = _adapter!!
 
     private val myDebtsViewModel: MyDebtsViewModel by lazy {
         ViewModelProvider(this).get(MyDebtsViewModel::class.java)
@@ -26,12 +28,19 @@ class OweDebtsFragment: BaseFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
+        myDebtsViewModel.refreshOweDebts()
+        myDebtsViewModel.refreshedOweDebts.observe(viewLifecycleOwner, {
+            if (it != null) {
+                adapter.getDebts(it)
+            }
+        })
+
     }
 
     private fun bindDebtsRecyclerView() {
-        val adapter = OweRecyclerViewAdapter(OweRecyclerViewAdapter.OnClickListener { manualDebt ->
+         _adapter = OweRecyclerViewAdapter(OweRecyclerViewAdapter.OnClickListener { manualDebt ->
             myDebtsViewModel.createRequest(manualDebt)
         })
         binding.debtsFromMeRecyclerView .layoutManager = LinearLayoutManager(requireContext())

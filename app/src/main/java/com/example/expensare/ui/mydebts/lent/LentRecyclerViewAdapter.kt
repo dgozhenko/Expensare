@@ -30,8 +30,10 @@ class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.View
     }
 
     fun getDebts(debts: ArrayList<ManualDebt>) {
-        list = debts
+        list.clear()
         notifyDataSetChanged()
+        list.addAll(debts)
+        notifyItemRangeChanged(0, list.size)
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
