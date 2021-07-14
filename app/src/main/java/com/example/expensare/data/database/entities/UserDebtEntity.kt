@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity(tableName = "userDebt")
 data class UserDebtEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val userDebt: Int,
     @Embedded
     val userDebtFirstUser: UserEntity,

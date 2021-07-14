@@ -8,22 +8,23 @@ import java.io.Serializable
 
 @Entity(tableName = "expense")
 data class ExpenseEntity(
-    @PrimaryKey(autoGenerate = true)
-    val expenseId: Int,
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "expenseId")
+    val expenseId: String = "",
     @ColumnInfo(name = "expenseName")
-    val expenseName: String,
+    val expenseName: String = "",
     @ColumnInfo(name = "expenseAmount")
-    val expenseAmount: Int,
+    val expenseAmount: Int = 0,
     @Embedded
-    val expenseUser: UserEntity,
+    val expenseUser: UserEntity = UserEntity.EMPTY,
     @ColumnInfo(name = "expenseGroupId")
-    val expenseGroupId: String,
+    val expenseGroupId: String = "",
     @ColumnInfo(name = "expenseDate")
-    val expenseDate: String
+    val expenseDate: String = ""
 ) : Serializable {
     companion object {
         val EMPTY: ExpenseEntity = ExpenseEntity(
-            0,
+            "",
             "",
             0,
             UserEntity.EMPTY,

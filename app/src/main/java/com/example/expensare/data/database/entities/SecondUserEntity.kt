@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity(tableName = "second_user")
 data class SecondUserEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val secondUser: Int,
     @ColumnInfo(name = "secondUserId")
     val secondUserUidId: String,

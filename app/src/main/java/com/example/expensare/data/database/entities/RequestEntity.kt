@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity(tableName = "request")
 data class RequestEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val request: Int,
     @Embedded
     val requestDebt: ManualDebtEntity,

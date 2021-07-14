@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity(tableName = "manual_debt")
 data class ManualDebtEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val manualDebt: Int,
     @ColumnInfo(name = "manualDebtId")
     val manualDebtId: Int,

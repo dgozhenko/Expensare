@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity(tableName = "list_item")
 data class ListItemEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val listItemId: Int,
     @ColumnInfo(name = "itemStore")
     val itemStore: String,

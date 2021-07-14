@@ -10,8 +10,11 @@ import com.example.expensare.data.database.entities.GroupEntity
 interface GroupDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun createGroup(groupEntity: GroupEntity)
+    suspend fun createGroup(groupEntity: GroupEntity)
 
     @Query("SELECT * FROM groups")
-    fun getGroups(): List<GroupEntity>
+    suspend fun getGroups(): List<GroupEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun downloadAllGroups(groups: ArrayList<GroupEntity>)
 }

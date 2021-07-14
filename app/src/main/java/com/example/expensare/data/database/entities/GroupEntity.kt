@@ -8,16 +8,16 @@ import java.io.Serializable
 
 @Entity(tableName = "groups")
 data class GroupEntity(
-    @PrimaryKey(autoGenerate = true)
-    val group: Int,
+    @PrimaryKey(autoGenerate = false)
+    val group: Int = 0,
     @ColumnInfo(name = "groupId")
-    val groupUid: String,
+    val groupUid: String = "",
     @ColumnInfo(name = "groupName")
-    val groupName: String,
+    val groupName: String ="",
     @ColumnInfo(name = "groupType")
-    val groupType: String,
+    val groupType: String = "",
     @ColumnInfo(name = "groupUsers")
-    val groupUsers: ArrayList<String>,
+    val groupUsers: ArrayList<String> = arrayListOf(),
 ) : Serializable {
     companion object {
         val EMPTY: GroupEntity = GroupEntity(

@@ -1,6 +1,7 @@
 package com.example.expensare.di
 
 import com.example.expensare.di.modules.AppModule
+import com.example.expensare.di.modules.RepositoryModule
 import com.example.expensare.di.modules.StorageModule
 import com.example.expensare.di.modules.ViewModelsModule
 import com.example.expensare.ui.addexpense.AddExpenseFragment
@@ -17,7 +18,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class, StorageModule::class, ViewModelsModule::class])
+@Component(modules = [AppModule::class, StorageModule::class, ViewModelsModule::class, RepositoryModule::class])
 interface ApplicationComponent {
     fun inject(fragment: AddExpenseFragment)
     fun inject(fragment: AvatarPickerFragment)
