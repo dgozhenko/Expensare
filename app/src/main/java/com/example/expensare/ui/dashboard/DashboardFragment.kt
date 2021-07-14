@@ -1,12 +1,16 @@
 package com.example.expensare.ui.dashboard
 
+import android.app.Service
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
@@ -30,6 +34,11 @@ import de.hdodenhof.circleimageview.CircleImageView
 import javax.inject.Inject
 
 class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
+
+    var context = this
+    var connectivity : ConnectivityManager? = null
+    var info : NetworkInfo? = null
+
     private var _binding: FragmentDashboardBinding? = null
     private val binding
         get() = _binding!!
@@ -61,6 +70,25 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
         super.onViewCreated(view, savedInstanceState)
         bindToolbarAndNavDrawer()
         bindButtons()
+        connectivity = requireContext().getSystemService(Service.CONNECTIVITY_SERVICE)
+                as ConnectivityManager
+
+        if ( connectivity != null)
+        {
+            info = connectivity!!.activeNetworkInfo
+
+            if (info != null)
+            {
+                if (info!!.state == NetworkInfo.State.CONNECTED)
+                {
+                    Toast.makeText(requireContext(), "CONNECTED", Toast.LENGTH_LONG).show()
+                }
+            }
+            else
+            {
+                Toast.makeText(requireContext(), "NOT CONNECTED", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onResume() {

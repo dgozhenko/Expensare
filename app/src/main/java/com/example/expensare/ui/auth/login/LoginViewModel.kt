@@ -2,6 +2,7 @@ package com.example.expensare.ui.auth.login
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.example.expensare.data.database.entities.UserEntity
 import com.example.expensare.data.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -34,21 +35,22 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                     if (task.isSuccessful) {
                         if (FirebaseAuth.getInstance().currentUser!!.isEmailVerified) {
                             _verificationError.postValue(false)
-                            val uid = FirebaseAuth.getInstance().uid ?: ""
+                            val uid = FirebaseAuth.getInstance().uid
                             val reference =
                                 FirebaseDatabase.getInstance(
                                         "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
                                     )
                                     .getReference("/users/")
-                            var userIsExisted = false
+
                             reference.addListenerForSingleValueEvent(
                                 object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         if (snapshot.exists()) {
+                                            var userIsExisted = false
                                             snapshot.children.forEach {
-                                                val user = it.getValue(User::class.java)
+                                                val user = it.getValue(UserEntity::class.java)
                                                 if (user != null) {
-                                                    if (user.uid == uid) {
+                                                    if (user.userUidId == uid) {
                                                         userIsExisted = true
                                                     }
                                                 }

@@ -114,6 +114,7 @@
         android:layout_height="wrap_content"
         android:text="@string/there_no_expense_history_yet_text"
         android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/history_recycler_view"
         app:layout_constraintStart_toStartOf="@id/history_recycler_view"
         app:layout_constraintEnd_toEndOf="@id/history_recycler_view"

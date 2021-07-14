@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.expensare.App
 import com.example.expensare.R
+import com.example.expensare.data.database.entities.SecondUserEntity
+import com.example.expensare.data.database.entities.UserEntity
 import com.example.expensare.data.models.Debt
 import com.example.expensare.data.models.User
 import com.example.expensare.databinding.FragmentAddExpensesBinding
@@ -48,16 +50,16 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getUsers()
+//        getUsers()
         setupToolbar()
-        setupRecyclerView()
+        //setupRecyclerView()
         Log.d("TAG", "created")
     }
 
     override fun onDivideMethodListener(
         divideAmount: Int,
         divideEqually: Boolean,
-        user: User,
+        user: SecondUserEntity,
         startAmount: Int
     ) {
         this.divideEqually = divideEqually
@@ -80,67 +82,67 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
 
     }
 
-    private fun getUsers() {
-        addExpenseViewModel.group.observe(viewLifecycleOwner, {
-            addExpenseViewModel.getUsersFromGroup(it)
-        })
-    }
+//    private fun getUsers() {
+//        addExpenseViewModel.group.observe(viewLifecycleOwner, {
+//            addExpenseViewModel.getUsersFromGroup(it)
+//        })
+//    }
 
-    private fun setupRecyclerView() {
-        val adapter = AddExpenseAdapter(OnClickListener {
-            if (debtsArray.isNotEmpty() || equalDebtsArray.isNotEmpty()) {
-                var noUserInDebtArray = true
-                var noUserInEqualDebtArray = true
+//    private fun setupRecyclerView() {
+//        val adapter = AddExpenseAdapter(OnClickListener {
+//            if (debtsArray.isNotEmpty() || equalDebtsArray.isNotEmpty()) {
+//                var noUserInDebtArray = true
+//                var noUserInEqualDebtArray = true
+//
+//                debtsArray.forEach { debt->
+//                    if (debt.fromUser == it) {
+//                        Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
+//                        noUserInDebtArray = false
+//                    }
+//                }
+//
+//                equalDebtsArray.forEach {equalDebt ->
+//                    if (equalDebt.fromUser == it) {
+//                        Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
+//                        noUserInEqualDebtArray = false
+//                    }
+//                }
+//
+//                if (noUserInDebtArray && noUserInEqualDebtArray) {
+//                    callDialog(it)
+//                }
+//
+//
+//            } else {
+//                callDialog(it)
+//            }
+//        })
+//        binding.userRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+//        binding.userRecyclerView.adapter = adapter
+//        addExpenseViewModel.users.observe(viewLifecycleOwner, {
+//            adapter.getUsers(it)
+//        })
+//    }
 
-                debtsArray.forEach { debt->
-                    if (debt.fromUser == it) {
-                        Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
-                        noUserInDebtArray = false
-                    }
-                }
-
-                equalDebtsArray.forEach {equalDebt ->
-                    if (equalDebt.fromUser == it) {
-                        Toast.makeText(requireContext(), "You already added debt for this user", Toast.LENGTH_SHORT).show()
-                        noUserInEqualDebtArray = false
-                    }
-                }
-
-                if (noUserInDebtArray && noUserInEqualDebtArray) {
-                    callDialog(it)
-                }
-
-
-            } else {
-                callDialog(it)
-            }
-        })
-        binding.userRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.userRecyclerView.adapter = adapter
-        addExpenseViewModel.users.observe(viewLifecycleOwner, {
-            adapter.getUsers(it)
-        })
-    }
-
-    private fun callDialog(user: User) {
-        val amountEditText = binding.amountEditText.text.toString()
-        if (amountEditText.isNotEmpty()) {
-            if (divideAmount == 0) {
-                fromUserId.add(user.uid)
-                val bottomSheetDialog  =  AddExpenseBottomSheetDialog(amountEditText.toInt(), user)
-                bottomSheetDialog.setTargetFragment(this, 0)
-                bottomSheetDialog.show(parentFragmentManager, "")
-            } else {
-                fromUserId.add(user.uid)
-                val bottomSheetDialog  =  AddExpenseBottomSheetDialog(divideAmount, user)
-                bottomSheetDialog.setTargetFragment(this, 0)
-                bottomSheetDialog.show(parentFragmentManager, "")
-            }
-
-        } else {
-            Toast.makeText(requireContext(), "Enter amount for dividing first", Toast.LENGTH_SHORT).show()
-        }
-    }
+//    private fun callDialog(user: User) {
+//        val amountEditText = binding.amountEditText.text.toString()
+//        if (amountEditText.isNotEmpty()) {
+//            if (divideAmount == 0) {
+//                fromUserId.add(user.uid)
+//                val bottomSheetDialog  =  AddExpenseBottomSheetDialog(amountEditText.toInt(), user)
+//                bottomSheetDialog.setTargetFragment(this, 0)
+//                bottomSheetDialog.show(parentFragmentManager, "")
+//            } else {
+//                fromUserId.add(user.uid)
+//                val bottomSheetDialog  =  AddExpenseBottomSheetDialog(divideAmount, user)
+//                bottomSheetDialog.setTargetFragment(this, 0)
+//                bottomSheetDialog.show(parentFragmentManager, "")
+//            }
+//
+//        } else {
+//            Toast.makeText(requireContext(), "Enter amount for dividing first", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
     private fun setupToolbar() {
         val progressBar = binding.progressBar
@@ -186,46 +188,46 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
                                     AddExpenseResult.Success -> {
                                         if (divideAmount == 0 && !divideEqually) {
                                             progressBar.visibility = View.GONE
-                                            findNavController().navigateUp()
-                                        } else {
-                                            if (debtsArray.isNotEmpty()) {
-                                                debtsArray.forEach { debt ->
-                                                    addExpenseViewModel.createDebt(debt.amount, debt.fromUser, debt.toUser)
-                                                    addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
-                                                        when (debtResult) {
-                                                            is AddDebtResult.Error -> {
-                                                                Toast.makeText(requireContext(), debtResult.exception.message, Toast.LENGTH_SHORT).show()
-                                                                progressBar.visibility = View.GONE
-                                                            }
-                                                            AddDebtResult.Success -> {
-                                                                progressBar.visibility = View.GONE
-                                                            }
-                                                        }
-                                                    })
-
-                                                }
-                                            }
-
-                                            if (equalDebtsArray.isNotEmpty()) {
-                                                equalDebtsArray.forEach { debt ->
-                                                    val equalAmount = divideAmount / (1 + equalDebtsArray.size)
-                                                    addExpenseViewModel.createDebt(equalAmount, debt.fromUser, debt.toUser)
-                                                    addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
-                                                        when (debtResult) {
-                                                            is AddDebtResult.Error -> {
-                                                                Toast.makeText(requireContext(), debtResult.exception.message, Toast.LENGTH_SHORT).show()
-                                                                progressBar.visibility = View.GONE
-                                                            }
-                                                            AddDebtResult.Success -> {
-                                                                progressBar.visibility = View.GONE
-                                                            }
-                                                        }
-                                                    })
-
-                                                }
-                                            }
-                                            findNavController().navigateUp()
-                                        }
+                                            findNavController().navigateUp()}
+//                                        } else {
+//                                            if (debtsArray.isNotEmpty()) {
+//                                                debtsArray.forEach { debt ->
+//                                                    addExpenseViewModel.createDebt(debt.amount, debt.fromUser, debt.toUser)
+//                                                    addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
+//                                                        when (debtResult) {
+//                                                            is AddDebtResult.Error -> {
+//                                                                Toast.makeText(requireContext(), debtResult.exception.message, Toast.LENGTH_SHORT).show()
+//                                                                progressBar.visibility = View.GONE
+//                                                            }
+//                                                            AddDebtResult.Success -> {
+//                                                                progressBar.visibility = View.GONE
+//                                                            }
+//                                                        }
+//                                                    })
+//
+//                                                }
+//                                            }
+//
+//                                            if (equalDebtsArray.isNotEmpty()) {
+//                                                equalDebtsArray.forEach { debt ->
+//                                                    val equalAmount = divideAmount / (1 + equalDebtsArray.size)
+//                                                    addExpenseViewModel.createDebt(equalAmount, debt.fromUser, debt.toUser)
+//                                                    addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
+//                                                        when (debtResult) {
+//                                                            is AddDebtResult.Error -> {
+//                                                                Toast.makeText(requireContext(), debtResult.exception.message, Toast.LENGTH_SHORT).show()
+//                                                                progressBar.visibility = View.GONE
+//                                                            }
+//                                                            AddDebtResult.Success -> {
+//                                                                progressBar.visibility = View.GONE
+//                                                            }
+//                                                        }
+//                                                    })
+//
+//                                                }
+//                                            }
+//                                            findNavController().navigateUp()
+//                                        }
                                     }
                                 }
                             })
