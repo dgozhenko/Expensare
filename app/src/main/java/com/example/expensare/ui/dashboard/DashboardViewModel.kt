@@ -11,6 +11,7 @@ import com.example.expensare.data.models.Expense
 import com.example.expensare.data.models.Group
 import com.example.expensare.data.models.User
 import com.example.expensare.data.repositories.ExpenseRepository
+import com.example.expensare.ui.addexpense.AddExpenseResult
 import com.example.expensare.ui.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -60,6 +61,40 @@ constructor(
         getUser()
         getGroups()
         getExpenses()
+        // check for internet for diff uploads
+    }
+
+    fun checkForConnection(connection: Boolean) {
+        if (connection) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val groupId = storage.groupId
+                val expensesForUploading = arrayListOf<ExpenseEntity>()
+                val expenses = expenseDao.getExpenses()
+                expenses.forEach {
+                    if (!it.uploaded) {
+                        expensesForUploading.add(it)
+                    }
+                }
+                if (expensesForUploading.isNotEmpty()) {
+                    expensesForUploading.forEach {expense ->
+                        val reference =
+                            FirebaseDatabase.getInstance(
+                                "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                            )
+                                .getReference("expenses/$groupId")
+                                .push()
+                        viewModelScope.launch(Dispatchers.IO) {
+                            reference.setValue(expense).addOnSuccessListener {
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    expenseDao.updateUploadInfo(true)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
     }
 
      private fun getUserInfo() {

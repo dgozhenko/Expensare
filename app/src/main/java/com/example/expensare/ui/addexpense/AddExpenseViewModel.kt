@@ -144,7 +144,7 @@ constructor(private val storage: Storage, private val database: ExpensareDatabas
         }
     }
 
-    fun createExpense(name: String, amount: Int, user: UserEntity) {
+    fun createExpense(name: String, amount: Int, user: UserEntity, connection: Boolean) {
         val groupId = storage.groupId
         // User + Date
         val pattern = "dd.MM.yyyy"
@@ -159,26 +159,47 @@ constructor(private val storage: Storage, private val database: ExpensareDatabas
                 )
                 .getReference("expenses/$groupId")
                 .push()
-        val expense =
-            ExpenseEntity(
-                expenseId = expenseId,
-                expenseName = name,
-                expenseAmount = amount,
-                expenseUser = user,
-                expenseGroupId = groupId,
-                expenseDate = neededDate
-            )
-        viewModelScope.launch(Dispatchers.IO) {
-            expenseDao.createExpense(expense)
-            _addExpenseResult.postValue(AddExpenseResult.Success)
-        }
+
         // TO-Do if no connection, save for better time
-        viewModelScope.launch(Dispatchers.IO) {
-            reference
-                .setValue(expense)
-                .addOnSuccessListener { _addExpenseResult.postValue(AddExpenseResult.Success) }
-                .addOnFailureListener { _addExpenseResult.postValue(AddExpenseResult.Error(it)) }
+        if (connection) {
+            val expenseUploaded =
+                ExpenseEntity(
+                    expenseId = expenseId,
+                    expenseName = name,
+                    expenseAmount = amount,
+                    expenseUser = user,
+                    expenseGroupId = groupId,
+                    expenseDate = neededDate,
+                    uploaded = true
+                )
+            viewModelScope.launch(Dispatchers.IO) {
+                reference
+                    .setValue(expenseUploaded)
+                    .addOnSuccessListener {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            expenseDao.createExpense(expenseUploaded)
+                            _addExpenseResult.postValue(AddExpenseResult.Success)
+                        }
+                        _addExpenseResult.postValue(AddExpenseResult.Success) }
+                    .addOnFailureListener { _addExpenseResult.postValue(AddExpenseResult.Error(it)) }
+            }
+        } else {
+            val expenseNotUploaded =
+                ExpenseEntity(
+                    expenseId = expenseId,
+                    expenseName = name,
+                    expenseAmount = amount,
+                    expenseUser = user,
+                    expenseGroupId = groupId,
+                    expenseDate = neededDate,
+                    uploaded = false
+                )
+            viewModelScope.launch(Dispatchers.IO) {
+                expenseDao.createExpense(expenseNotUploaded)
+                _addExpenseResult.postValue(AddExpenseResult.Success)
+            }
         }
+
     }
 
     private fun getUser() {

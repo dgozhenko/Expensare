@@ -1,6 +1,9 @@
 package com.example.expensare.ui.addexpense
 
+import android.app.Service
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +36,10 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
     private var _binding: FragmentAddExpensesBinding? = null
     private val binding get() = _binding!!
 
+    var context = this
+    var connectivity : ConnectivityManager? = null
+    var info : NetworkInfo? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -53,7 +60,6 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
 //        getUsers()
         setupToolbar()
         //setupRecyclerView()
-        Log.d("TAG", "created")
     }
 
     override fun onDivideMethodListener(
@@ -156,6 +162,25 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
                     progressBar.visibility = View.VISIBLE
                     val nameEditText = binding.expensesEditText.text.toString()
                     val amountEditText = binding.amountEditText.text.toString()
+                    var connection = true
+                    connectivity = requireContext().getSystemService(Service.CONNECTIVITY_SERVICE)
+                            as ConnectivityManager
+                    if ( connectivity != null)
+                    {
+                        info = connectivity!!.activeNetworkInfo
+
+                        if (info != null)
+                        {
+                            if (info!!.state == NetworkInfo.State.CONNECTED)
+                            {
+                                connection = true
+                            }
+                        }
+                        else
+                        {
+                            connection = false
+                        }
+                    }
                     when {
                         nameEditText.isEmpty() -> {
                             Toast.makeText(
@@ -177,7 +202,7 @@ class AddExpenseFragment: BaseFragment(), AddExpenseBottomSheetDialog.OnDivideMe
                         }
                         else -> {
                             addExpenseViewModel.user.observe(viewLifecycleOwner, { user ->
-                                addExpenseViewModel.createExpense(nameEditText, amountEditText.toInt(), user)
+                                addExpenseViewModel.createExpense(nameEditText, amountEditText.toInt(), user, connection)
                             })
                             addExpenseViewModel.addExpenseResult.observe(viewLifecycleOwner, { result ->
                                 when (result) {

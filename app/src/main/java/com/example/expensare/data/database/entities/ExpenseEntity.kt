@@ -20,7 +20,8 @@ data class ExpenseEntity(
     @ColumnInfo(name = "expenseGroupId")
     val expenseGroupId: String = "",
     @ColumnInfo(name = "expenseDate")
-    val expenseDate: String = ""
+    val expenseDate: String = "",
+    val uploaded: Boolean = false,
 ) : Serializable {
     companion object {
         val EMPTY: ExpenseEntity = ExpenseEntity(
@@ -29,7 +30,8 @@ data class ExpenseEntity(
             0,
             UserEntity.EMPTY,
             "",
-            ""
+            "",
+            false
         )
     }
 }

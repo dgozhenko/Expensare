@@ -70,6 +70,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
         super.onViewCreated(view, savedInstanceState)
         bindToolbarAndNavDrawer()
         bindButtons()
+        var connection = true
         connectivity = requireContext().getSystemService(Service.CONNECTIVITY_SERVICE)
                 as ConnectivityManager
 
@@ -81,14 +82,16 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
             {
                 if (info!!.state == NetworkInfo.State.CONNECTED)
                 {
-                    Toast.makeText(requireContext(), "CONNECTED", Toast.LENGTH_LONG).show()
+                   connection = true
                 }
             }
             else
             {
-                Toast.makeText(requireContext(), "NOT CONNECTED", Toast.LENGTH_LONG).show()
+                connection = false
             }
         }
+
+        dashboardViewModel.checkForConnection(connection)
     }
 
     override fun onResume() {

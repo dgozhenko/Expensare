@@ -1,9 +1,6 @@
 package com.example.expensare.data.database.daos
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.expensare.data.database.entities.ExpenseEntity
 import dagger.multibindings.IntoMap
 
@@ -18,4 +15,7 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM expense")
     suspend fun getExpenses(): List<ExpenseEntity>
+
+    @Query("UPDATE expense SET uploaded = :uploaded")
+    suspend fun updateUploadInfo(uploaded: Boolean)
 }
