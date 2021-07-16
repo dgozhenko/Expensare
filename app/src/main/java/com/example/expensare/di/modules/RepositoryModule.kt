@@ -1,6 +1,9 @@
 package com.example.expensare.di.modules
 
 import com.example.expensare.data.database.ExpensareDatabase
+import com.example.expensare.data.datasource.UserDataSource
+import com.example.expensare.data.interactors.CreateUser
+import com.example.expensare.data.interactors.DownloadUser
 import com.example.expensare.data.repositories.*
 import com.example.expensare.ui.storage.Storage
 import dagger.Module
@@ -41,14 +44,39 @@ class RepositoryModule {
 
     @Singleton
     @Provides
+    fun providesUserInterface(database: ExpensareDatabase): UserInterface {
+        return UserDataSource(database)
+    }
+
+    @Singleton
+    @Provides
+    fun providesUserDataSource(database: ExpensareDatabase): UserDataSource {
+        return UserDataSource(database)
+    }
+
+    @Singleton
+    @Provides
+    fun providesUserRepository(userInterface: UserInterface): UserRepository {
+        return UserRepository(userInterface)
+    }
+
+    @Singleton
+    @Provides
     fun providesGroupRepository(database: ExpensareDatabase): GroupRepository {
         return GroupRepository(database)
     }
 
     @Singleton
     @Provides
-    fun providesUserRepository(database: ExpensareDatabase): UserRepository {
-        return UserRepository(database)
+    fun providesCreateUser(userRepository: UserRepository): CreateUser {
+        return CreateUser(userRepository)
     }
+
+    @Singleton
+    @Provides
+    fun providesDownloadUser(userRepository: UserRepository): DownloadUser {
+        return DownloadUser(userRepository)
+    }
+
 
 }

@@ -7,6 +7,8 @@ import com.example.expensare.data.database.daos.UserDao
 import com.example.expensare.data.database.entities.ExpenseEntity
 import com.example.expensare.data.database.entities.GroupEntity
 import com.example.expensare.data.database.entities.UserEntity
+import com.example.expensare.data.interactors.CreateUser
+import com.example.expensare.data.interactors.DownloadUser
 import com.example.expensare.data.models.Expense
 import com.example.expensare.data.models.Group
 import com.example.expensare.data.models.User
@@ -25,9 +27,10 @@ import kotlinx.coroutines.launch
 class DashboardViewModel
 @Inject
 constructor(
-    database: ExpensareDatabase,
+    private val database: ExpensareDatabase,
     private val expenseRepository: ExpenseRepository,
-    private val storage: Storage
+    private val storage: Storage,
+    private val downloadUser: DownloadUser
 ) : ViewModel() {
 
     private val _user = MutableLiveData<UserEntity>()
@@ -98,42 +101,14 @@ constructor(
     }
 
      private fun getUserInfo() {
-        val userId = FirebaseAuth.getInstance().uid
-        val reference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/users/")
-        val usersArray = arrayListOf<UserEntity>()
-        reference.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var userIsExist: Boolean = false
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val userInfo = it.getValue(UserEntity::class.java)
-                            if (userInfo != null) {
-                                if (userInfo.userUidId == userId) {
-                                    userIsExist = true
-                                    usersArray.add(userInfo)
-                                }
-                            }
-                        }
-                        if (!userIsExist) {
-                            _user.postValue(null)
-                        }
-                        viewModelScope.launch(Dispatchers.IO) {
-                                createUserDao.downloadUsers(usersArray)
-
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            }
-        )
+         viewModelScope.launch(Dispatchers.IO) {
+             val downloadedUser = downloadUser.invoke()
+             if (downloadedUser != UserEntity.EMPTY) {
+                 _user.postValue(downloadedUser)
+             } else {
+                 _user.postValue(null)
+             }
+         }
     }
 
     fun getGroupByGroupId() {

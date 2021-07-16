@@ -18,7 +18,7 @@ import com.example.expensare.util.Converters
             SecondUserEntity::class,
             UserDebtEntity::class,
             UserEntity::class],
-    version = 13,
+    version = 14,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
