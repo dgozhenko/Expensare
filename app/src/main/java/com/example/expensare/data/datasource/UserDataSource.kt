@@ -14,12 +14,10 @@ import javax.inject.Inject
 class UserDataSource @Inject constructor(private val database: ExpensareDatabase) : UserInterface {
 
     override suspend fun create(user: UserEntity) {
-
         database.userDao().createUser(user)
     }
 
     override suspend fun getAll(): ArrayList<UserEntity> {
-
         return database.userDao().getAllUsers() as ArrayList<UserEntity>
     }
 
@@ -27,9 +25,9 @@ class UserDataSource @Inject constructor(private val database: ExpensareDatabase
         var userId = ""
         if (FirebaseAuth.getInstance().uid != null) {
             userId = FirebaseAuth.getInstance().uid.toString()
+        } else {
+            userId = ""
         }
-
-
         val users =
             FirebaseDatabase.getInstance(
                     "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"

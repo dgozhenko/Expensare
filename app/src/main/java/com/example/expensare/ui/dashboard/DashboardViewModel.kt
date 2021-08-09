@@ -24,10 +24,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DashboardViewModel
-@Inject
-constructor(
-    private val database: ExpensareDatabase,
+class DashboardViewModel @Inject constructor(
+    database: ExpensareDatabase,
     private val expenseRepository: ExpenseRepository,
     private val storage: Storage,
     private val downloadUser: DownloadUser
