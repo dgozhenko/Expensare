@@ -1,5 +1,5 @@
 include ':app'
 rootProject.name = "Expensare"
 include ':data'
-include ':domain'
 include ':presentation'
+include ':domain'

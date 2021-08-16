@@ -1,0 +1,186 @@
+package com.example.presentation.ui.dashboard
+
+import androidx.lifecycle.*
+import com.example.data.interactors.user.DownloadUser
+import com.example.data.repositories.ExpenseRepository
+import com.example.domain.database.ExpensareDatabase
+import com.example.domain.database.daos.ExpenseDao
+import com.example.domain.database.daos.UserDao
+import com.example.domain.database.entities.ExpenseEntity
+import com.example.domain.database.entities.GroupEntity
+import com.example.domain.database.entities.UserEntity
+import com.example.presentation.ui.storage.Storage
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    database: ExpensareDatabase,
+    private val expenseRepository: ExpenseRepository,
+    private val storage: Storage,
+    private val downloadUser: DownloadUser
+) : ViewModel() {
+
+    private val _user = MutableLiveData<UserEntity>()
+    val user: LiveData<UserEntity>
+        get() = _user
+
+    private val _group = MutableLiveData<GroupEntity>()
+    val group: LiveData<GroupEntity>
+        get() = _group
+
+    private val _expenses = MutableLiveData<ArrayList<ExpenseEntity>>()
+    val expense: LiveData<ArrayList<ExpenseEntity>>
+        get() = _expenses
+
+    private val _refreshedExpenses = MutableLiveData<ArrayList<ExpenseEntity>>()
+    val refreshedExpenses: LiveData<ArrayList<ExpenseEntity>>
+        get() = _refreshedExpenses
+
+    private val groupDao = database.groupDao()
+    private val createUserDao: UserDao = database.userDao()
+    private val expenseDao: ExpenseDao = database.expenseDao()
+
+    init {
+        syncWithFirebase()
+    }
+
+    private fun syncWithFirebase() {
+        getUserInfo()
+        getGroupByGroupId()
+        getGroupExpenses()
+        getUser()
+        getGroups()
+        //getExpenses()
+        // check for internet for diff uploads
+    }
+
+     private fun getUserInfo() {
+         viewModelScope.launch(Dispatchers.IO) {
+             val downloadedUser = downloadUser.invoke()
+             if (downloadedUser != UserEntity.EMPTY) {
+                 _user.postValue(downloadedUser)
+             } else {
+                 _user.postValue(null)
+             }
+         }
+    }
+
+    fun getGroupByGroupId() {
+        val groupId = storage.groupId
+        val reference =
+            FirebaseDatabase.getInstance(
+                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                )
+                .getReference("/groups/")
+        val groupsArray = arrayListOf<GroupEntity>()
+            reference.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val groupInfo = it.getValue(GroupEntity::class.java)
+                                if (groupInfo != null) {
+                                    if (groupInfo.groupUid == groupId) {
+                                        groupsArray.add(groupInfo)
+                                    }
+                                }
+                            }
+                            viewModelScope.launch(Dispatchers.IO) {
+                                groupDao.downloadAllGroups(groupsArray)
+
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                }
+            )
+    }
+
+//    fun refreshExpenses() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val expenses = expenseRepository.getAllExpenses()
+//            if(expenses.isNotEmpty()) {
+//                expenses.reverse()
+//                _refreshedExpenses.postValue(expenses)
+//            }
+//        }
+//    }
+
+    private fun getGroupExpenses() {
+        val groupId = storage.groupId
+        val expensesArrayList = arrayListOf<ExpenseEntity>()
+        val reference =
+            FirebaseDatabase.getInstance(
+                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+                )
+                .getReference("/expenses/$groupId/")
+            reference.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            snapshot.children.forEach {
+                                val expense = it.getValue(ExpenseEntity::class.java)
+                                if (expense != null) {
+                                    expensesArrayList.add(expense)
+                                } else {
+                                    _expenses.postValue(null)
+                                }
+                            }
+                            viewModelScope.launch(Dispatchers.IO) {
+                                if (expensesArrayList.size == 0) {
+
+                                } else {
+                                    expenseDao.downloadExpenses(expensesArrayList)
+                                }
+                            }
+                        } else {
+                            _expenses.postValue(null)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                }
+            )
+    }
+
+//    private fun getExpenses() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            //val expenses = expenseRepository.getAllExpenses()
+//            if (expenses.isNotEmpty()) {
+//                expenses.reverse()
+//                _expenses.postValue(expenses)
+//            }
+//
+//        }
+//    }
+
+    private fun getUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val returnedUser = createUserDao.getAllUsers()
+            if (returnedUser.isNotEmpty()) {
+                _user.postValue(returnedUser.first())
+            }
+        }
+    }
+
+    private fun getGroups() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val returnedGroup = groupDao.getGroups()
+            if (returnedGroup.isNotEmpty()) {
+                _group.postValue(returnedGroup.first())
+            }
+        }
+    }
+}
