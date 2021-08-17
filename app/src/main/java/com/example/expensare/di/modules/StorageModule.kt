@@ -1,11 +1,10 @@
 package com.example.expensare.di.modules
 
 import android.content.Context
-import com.example.presentation.ui.storage.Storage
+import com.example.data.storage.Storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton

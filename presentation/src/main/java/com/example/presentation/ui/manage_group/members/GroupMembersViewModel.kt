@@ -3,7 +3,7 @@ package com.example.presentation.ui.manage_group.members
 import androidx.lifecycle.*
 import com.example.domain.models.Group
 import com.example.domain.models.User
-import com.example.presentation.ui.storage.Storage
+import com.example.data.storage.Storage
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

@@ -1,4 +1,4 @@
-package com.example.presentation.ui.storage
+package com.example.data.storage
 
 import android.content.Context
 import android.content.SharedPreferences

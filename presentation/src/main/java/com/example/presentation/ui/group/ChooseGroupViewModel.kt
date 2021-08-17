@@ -2,7 +2,7 @@ package com.example.presentation.ui.group
 
 import androidx.lifecycle.*
 import com.example.domain.models.Group
-import com.example.presentation.ui.storage.Storage
+import com.example.data.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

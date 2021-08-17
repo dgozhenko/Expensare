@@ -1,16 +1,24 @@
 package com.example.expensare.di.modules
 
-import com.example.expensare.data.database.ExpensareDatabase
-import com.example.expensare.data.datasource.UserDataSource
-import com.example.expensare.data.interactors.CreateUser
-import com.example.expensare.data.interactors.DownloadUser
-import com.example.expensare.data.repositories.*
-import com.example.expensare.ui.storage.Storage
+import com.example.data.datasource.ExpenseDataSource
+import com.example.domain.database.ExpensareDatabase
+import com.example.data.datasource.UserDataSource
+import com.example.data.interactors.expenses.CreateExpense
+import com.example.data.interactors.expenses.DownloadExpenses
+import com.example.data.interactors.user.CreateUser
+import com.example.data.interactors.user.DownloadUser
+import com.example.data.interfaces.ExpensesInterface
+import com.example.data.interfaces.UserInterface
+import com.example.data.repositories.*
+import com.example.data.storage.Storage
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class RepositoryModule {
 
     @Singleton
@@ -25,22 +33,41 @@ class RepositoryModule {
         return RequestRepository(database)
     }
 
+    // Expenses
+
     @Singleton
     @Provides
-    fun providesListItemRepository(database: ExpensareDatabase): ListItemRepository {
-        return ListItemRepository(database)
-    }
-    @Singleton
-    @Provides
-    fun providesExpenseRepository(database: ExpensareDatabase): ExpenseRepository {
-        return ExpenseRepository(database)
+    fun providesExpensesInterface(database: ExpensareDatabase, storage: Storage): ExpensesInterface {
+        return ExpenseDataSource(database, storage)
     }
 
     @Singleton
     @Provides
-    fun providesManualDebtRepository(database: ExpensareDatabase): ManualDebtRepository {
-        return ManualDebtRepository(database)
+    fun providesExpenseRepository(expensesInterface: ExpensesInterface): ExpenseRepository {
+        return ExpenseRepository(expensesInterface)
     }
+
+    @Singleton
+    @Provides
+    fun providesExpenseDataSource(database: ExpensareDatabase, storage: Storage): ExpenseDataSource {
+        return ExpenseDataSource(database, storage)
+    }
+
+    @Singleton
+    @Provides
+    fun providesCreateExpense(expenseRepository: ExpenseRepository): CreateExpense {
+        return CreateExpense(expenseRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesDownloadExpense(expenseRepository: ExpenseRepository): DownloadExpenses {
+        return DownloadExpenses(expenseRepository)
+    }
+
+
+
+    // User
 
     @Singleton
     @Provides
@@ -58,12 +85,6 @@ class RepositoryModule {
     @Provides
     fun providesUserRepository(userInterface: UserInterface): UserRepository {
         return UserRepository(userInterface)
-    }
-
-    @Singleton
-    @Provides
-    fun providesGroupRepository(database: ExpensareDatabase): GroupRepository {
-        return GroupRepository(database)
     }
 
     @Singleton
