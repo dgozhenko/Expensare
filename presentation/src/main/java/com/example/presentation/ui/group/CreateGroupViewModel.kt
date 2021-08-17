@@ -25,6 +25,7 @@ class CreateGroupViewModel @Inject constructor() : ViewModel() {
     val createGroupResult: LiveData<CreateGroupResult>
         get() = _createGroupResult
 
+    // TODO: 17.08.2021 Repository
     fun createGroup(groupName: String, groupType: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val uid = FirebaseAuth.getInstance().uid ?: ""

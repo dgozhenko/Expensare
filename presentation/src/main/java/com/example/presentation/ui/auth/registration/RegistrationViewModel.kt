@@ -17,6 +17,7 @@ class RegistrationViewModel @Inject constructor(): ViewModel() {
     private val _error = MutableLiveData<Exception>()
     val error: LiveData<Exception> get() = _error
 
+    // TODO: 17.08.2021 Repository
     fun registerUser(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)

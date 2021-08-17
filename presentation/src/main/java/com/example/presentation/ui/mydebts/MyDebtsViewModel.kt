@@ -65,6 +65,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         getOweDebts()
     }
 
+    // TODO: 17.08.2021 Repository
     private fun getUserInfo() {
         val userId = FirebaseAuth.getInstance().uid
         val reference =
@@ -100,6 +101,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
         val storage = Storage(getApplication.baseContext)
         val groupId = storage.groupId
@@ -127,6 +129,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
      fun refreshLentDebts() {
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
@@ -155,6 +158,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
           private fun getLentDebts(){
             val userId = FirebaseAuth.getInstance().uid
             val debtsArrayList = arrayListOf<ManualDebt>()
@@ -181,6 +185,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
             }
         }
 
+    // TODO: 17.08.2021 Repository
      private fun getOweDebts(){
          val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
@@ -210,6 +215,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
      fun refreshOweDebts(){
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
@@ -239,6 +245,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
     private fun updateOweDebts(){
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
@@ -268,6 +275,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
     private fun updateLentDebts() {
         val userId = FirebaseAuth.getInstance().uid
         val debtsArrayList = arrayListOf<ManualDebt>()
@@ -297,6 +305,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun createRequest(debt: ManualDebt){
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())

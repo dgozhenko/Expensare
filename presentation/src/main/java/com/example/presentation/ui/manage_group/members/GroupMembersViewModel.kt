@@ -29,7 +29,7 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
     init {
         getGroupByGroupId()
     }
-
+    // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
         val groupId = storage.groupId
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
@@ -56,6 +56,7 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun addUserToGroup(user: User) {
         val groupId = storage.groupId
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
@@ -85,12 +86,14 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
         }
     }
 
+    // TODO: 17.08.2021 Repository
     private fun createUserInGroup(user: User, groupKey: String?, usersIdArray: ArrayList<String>) {
         usersIdArray.add(user.uid)
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
         reference.child(groupKey!!).child("users").setValue(usersIdArray)
     }
 
+    // TODO: 17.08.2021 Repository
     fun getUserByEmail(email: String) {
         val users = arrayListOf<String>()
         val reference =
@@ -121,6 +124,7 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
         }
     }
 
+    // TODO: 17.08.2021 Repository
      fun getUsersFromGroup(group: Group) {
         val userIdArrayList = arrayListOf<String>()
         val userArrayList = arrayListOf<User>()

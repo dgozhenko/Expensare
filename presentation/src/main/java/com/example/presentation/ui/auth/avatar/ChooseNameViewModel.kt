@@ -24,6 +24,7 @@ class ChooseNameViewModel @Inject constructor(): ViewModel() {
     private val _chooseNameResult = MutableLiveData<ChooseNameResult>()
     val chooseNameResult: LiveData<ChooseNameResult> get() = _chooseNameResult
 
+    // TODO: 17.08.2021 Repository
         private fun createUserInDatabase(username: String, avatarUri: String, email: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val user = User(uid, username, email, avatarUri)
@@ -36,6 +37,7 @@ class ChooseNameViewModel @Inject constructor(): ViewModel() {
             }
     }
 
+    // TODO: 17.08.2021 Repository
     fun uploadImage(uri: Uri, username: String, email: String) {
         val filename = UUID.randomUUID().toString()
         val reference = FirebaseStorage.getInstance("gs://expensare.appspot.com").getReference("/avatars/$filename")

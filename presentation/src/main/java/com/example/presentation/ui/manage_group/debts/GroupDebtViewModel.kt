@@ -44,6 +44,7 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
         getUserInfo()
     }
 
+    // TODO: 17.08.2021 Repository
     fun getDetailedDebts(user: User, debtToMe: Boolean) {
         val groupId = storage.groupId
         val userDebtArrayList = arrayListOf<UserDebt>()
@@ -100,6 +101,7 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun getDebts(user: ArrayList<User>, debtToMe: Boolean) {
         val groupId = storage.groupId
         var fullAmount = 0
@@ -163,6 +165,7 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
         }
     }
 
+    // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
         val groupId = storage.groupId
         val reference =
@@ -193,6 +196,7 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
             )
         }
     }
+
 
     private fun getUserInfo() {
         val userId = FirebaseAuth.getInstance().uid
@@ -232,6 +236,7 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun getUsersFromGroup(group: Group) {
         val userIdArrayList = arrayListOf<String>()
         val userArrayList = arrayListOf<User>()
