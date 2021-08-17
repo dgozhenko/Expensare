@@ -1,30 +1,20 @@
 package com.example.expensare.ui.auth.login
 
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
-import com.example.expensare.data.Input
+import com.example.expensare.data.models.Avatar
+import com.example.expensare.data.models.Input
 import com.example.expensare.databinding.FragmentLoginBinding
 import com.example.expensare.ui.base.BaseFragment
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textview.MaterialTextView
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.parcelize.Parcelize
-import kotlin.math.log
-
 class LoginFragment: BaseFragment() {
 
 
@@ -49,8 +39,8 @@ class LoginFragment: BaseFragment() {
 
     private fun loginButtonClicked() {
         val progressBar = binding.loginProgress
-        progressBar.trackColor = resources.getColor(R.color.light_black)
-        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+        progressBar.trackColor = resources.getColor(R.color.light_black, requireActivity().theme)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
 
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmailEditText.text.toString()
@@ -97,7 +87,8 @@ class LoginFragment: BaseFragment() {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToDashboardFragment())
                                 } else {
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(
-                                        Input(Avatar(Uri.EMPTY, false), email)))
+                                        Input(Avatar(Uri.EMPTY, false), email)
+                                    ))
                                 }
                             } else {
                                 loginViewModel.errorComplete()
@@ -115,11 +106,4 @@ class LoginFragment: BaseFragment() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(windowToken, 0)
     }
-
-    private fun crashTest() {
-        binding.forgotPasswordText.setOnClickListener {
-            throw RuntimeException("Test Crash")
-        }
-    }
-
 }

@@ -1,19 +1,18 @@
 package com.example.expensare.ui.manage_group.members
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensare.R
-import com.example.expensare.data.Avatar
-import com.example.expensare.data.User
-import com.example.expensare.ui.auth.avatar.AvatarGridAdapter
+import com.example.expensare.data.models.User
 import com.google.android.material.textview.MaterialTextView
+import com.squareup.picasso.Callback
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class GroupMembersAdapter(): RecyclerView.Adapter<GroupMembersAdapter.ViewHolder>() {
+class GroupMembersAdapter: RecyclerView.Adapter<GroupMembersAdapter.ViewHolder>() {
 
     private var userItem = arrayListOf<User>()
 
@@ -39,7 +38,17 @@ class GroupMembersAdapter(): RecyclerView.Adapter<GroupMembersAdapter.ViewHolder
         fun bind(user: User) {
             val imageView = itemView.findViewById<CircleImageView>(R.id.avatar)
             val name = itemView.findViewById<MaterialTextView>(R.id.member_name)
-            Picasso.with(itemView.context).load(user.avatar).into(imageView)
+            Picasso.with(itemView.context).load(user.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, object :
+                Callback {
+                override fun onSuccess() {
+
+                }
+
+                override fun onError() {
+                    Picasso.with(itemView.context).load(user.avatar).into(imageView)
+                }
+
+            })
             name.text = user.username
         }
     }

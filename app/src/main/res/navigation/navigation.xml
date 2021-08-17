@@ -73,7 +73,7 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="input"
-            app:argType="com.example.expensare.data.Input"/>
+            app:argType="com.example.expensare.data.models.Input"/>
 
 
     </fragment>
@@ -107,8 +107,6 @@
         <action
             android:id="@+id/action_dashboardFragment_to_myDebtsFragment"
             app:destination="@id/myDebtsFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
         <action
@@ -168,10 +166,13 @@
         <action
             android:id="@+id/action_dashboardFragment_to_chooseNameFragment"
             app:destination="@id/chooseNameFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExpensesFragment"
-        android:name="com.example.expensare.ui.addexpenses.AddExpensesFragment"
+        android:name="com.example.expensare.ui.addexpense.AddExpenseFragment"
         android:label="AddExpensesFragment" />
     <fragment
         android:id="@+id/myDebtsFragment"
@@ -184,6 +185,15 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_myDebtsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_myDebtsFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+        <action
+            android:id="@+id/action_myDebtsFragment_to_listFragment2"
+            app:destination="@id/listFragment" />
     </fragment>
     <fragment
         android:id="@+id/createDebtFragment"
@@ -322,7 +332,7 @@
         android:label="GroupSettingsFragment" />
     <fragment
         android:id="@+id/groupDebtFragment"
-        android:name="com.example.expensare.ui.manage_group.GroupDebtFragment"
+        android:name="com.example.expensare.ui.manage_group.debts.GroupDebtFragment"
         android:label="GroupDebtFragment" />
     <fragment
         android:id="@+id/settingsFragment"
@@ -500,5 +510,22 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.expensare.ui.dashboard.list.ListFragment"
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/action_listFragment_to_myDebtsFragment"
+            app:destination="@id/myDebtsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_addToListFragment"
+            app:destination="@id/addToListFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_finishShopSessionFragment"
+            app:destination="@id/finishShopSessionFragment" />
     </fragment>
 </navigation>

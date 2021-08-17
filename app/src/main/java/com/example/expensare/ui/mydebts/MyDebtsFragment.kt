@@ -9,6 +9,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentMyDebtsBinding
 import com.example.expensare.ui.base.BaseFragment
+import com.example.expensare.ui.dashboard.DashboardFragmentDirections
+import com.example.expensare.ui.mydebts.lent.LentDebtsFragment
+import com.example.expensare.ui.mydebts.owe.OweDebtsFragment
 import com.google.android.material.tabs.TabLayout
 
 class MyDebtsFragment : BaseFragment() {
@@ -24,26 +27,18 @@ class MyDebtsFragment : BaseFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-    binding.absToolbar.inflateMenu(R.menu.my_debts_menu)
-    binding.absToolbar.setOnMenuItemClickListener {
-      when (it.itemId) {
-        R.id.create_debt_menu_button -> {
-          findNavController().navigate(MyDebtsFragmentDirections.actionMyDebtsFragmentToCreateDebtFragment())
-          true
-        } else -> false
-      }
-    }
+    bindButtons()
     val tabLayout = binding.myDebtsTabLayout
-    tabLayout.addTab(tabLayout.newTab().setText("To me"))
-    tabLayout.addTab(tabLayout.newTab().setText("From me"))
+    tabLayout.addTab(tabLayout.newTab().setText("Lent"))
+    tabLayout.addTab(tabLayout.newTab().setText("Owe"))
     tabLayout.tabGravity = TabLayout.GRAVITY_FILL
 
     val adapter =
         MyDebtsFragmentViewPagerAdapter(
             childFragmentManager, tabLayout.tabCount, FragmentPagerAdapter.POSITION_UNCHANGED)
 
-    adapter.addFragment(ToMeDebtsFragment())
-    adapter.addFragment(FromMeDebtsFragment())
+    adapter.addFragment(LentDebtsFragment())
+    adapter.addFragment(OweDebtsFragment())
     binding.debtsViewPager.adapter = adapter
     binding.debtsViewPager.addOnPageChangeListener(
       TabLayout.TabLayoutOnPageChangeListener(tabLayout)
@@ -62,5 +57,25 @@ class MyDebtsFragment : BaseFragment() {
       }
 
     })
+  }
+
+  private fun bindButtons() {
+    binding.listButton.setBackgroundResource(R.drawable.rounded_button_left)
+    binding.historyButton.setBackgroundResource(R.drawable.square_button)
+    binding.debtButton.setBackgroundResource(R.drawable.rounded_button_right_chosen)
+
+    binding.listButton.setOnClickListener {
+      findNavController().navigate(MyDebtsFragmentDirections.actionMyDebtsFragmentToListFragment())
+    }
+
+    binding.historyButton.setOnClickListener {
+      findNavController()
+        .navigate(MyDebtsFragmentDirections.actionMyDebtsFragmentToDashboardFragment())
+    }
+
+
+    binding.addDebt.setOnClickListener {
+      findNavController().navigate(MyDebtsFragmentDirections.actionMyDebtsFragmentToCreateDebtFragment())
+    }
   }
 }

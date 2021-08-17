@@ -1,14 +1,14 @@
 package com.example.expensare.ui.auth.registration
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-class RegistrationViewModel(application: Application): AndroidViewModel(application) {
+class RegistrationViewModel @Inject constructor(): ViewModel() {
 
     private val _isRegisterComplete = MutableLiveData<Boolean>()
     val isRegisterComplete: LiveData<Boolean> get() = _isRegisterComplete

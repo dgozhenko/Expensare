@@ -1,11 +1,9 @@
 package com.example.expensare.ui.auth.login
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.expensare.data.User
+import androidx.lifecycle.*
+import com.example.expensare.data.database.entities.UserEntity
+import com.example.expensare.data.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,8 +11,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel @Inject constructor() : ViewModel() {
     private val _userLiveData = MutableLiveData<Boolean>()
     val userLiveData: LiveData<Boolean>
         get() = _userLiveData
@@ -36,21 +35,22 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     if (task.isSuccessful) {
                         if (FirebaseAuth.getInstance().currentUser!!.isEmailVerified) {
                             _verificationError.postValue(false)
-                            val uid = FirebaseAuth.getInstance().uid ?: ""
+                            val uid = FirebaseAuth.getInstance().uid
                             val reference =
                                 FirebaseDatabase.getInstance(
                                         "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
                                     )
                                     .getReference("/users/")
-                            var userIsExisted = false
+
                             reference.addListenerForSingleValueEvent(
                                 object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         if (snapshot.exists()) {
+                                            var userIsExisted = false
                                             snapshot.children.forEach {
-                                                val user = it.getValue(User::class.java)
+                                                val user = it.getValue(UserEntity::class.java)
                                                 if (user != null) {
-                                                    if (user.uid == uid) {
+                                                    if (user.userUidId == uid) {
                                                         userIsExisted = true
                                                     }
                                                 }
@@ -81,9 +81,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     _error.postValue(it)
                 }
         }
-    }
-    fun loginComplete() {
-        _userLiveData.value = null
     }
 
     fun errorComplete() {

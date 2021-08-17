@@ -1,27 +1,35 @@
 package com.example.expensare.ui.auth.avatar
 
-import android.graphics.Color
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.expensare.App
 import com.example.expensare.R
 import com.example.expensare.databinding.FragmentNameRegistrationBinding
 import com.example.expensare.ui.base.BaseFragment
 import com.example.expensare.util.Extensions.hideKeyboard
-import com.google.firebase.auth.FirebaseAuth
+import javax.inject.Inject
 
 class ChooseNameFragment : BaseFragment() {
     private var _binding: FragmentNameRegistrationBinding? = null
     private val binding
         get() = _binding!!
 
-    private val chooseNameViewModel: ChooseNameViewModel by lazy {
-        ViewModelProvider(this).get(ChooseNameViewModel::class.java)
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val chooseNameViewModel by viewModels<ChooseNameViewModel> { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as App).appComponent.inject(this)
     }
 
     private val args: ChooseNameFragmentArgs by navArgs()
@@ -41,8 +49,8 @@ class ChooseNameFragment : BaseFragment() {
 
     private fun bindButtons() {
         val progressBar = binding.progressBar
-        progressBar.trackColor = resources.getColor(R.color.light_black)
-        progressBar.setIndicatorColor(resources.getColor(R.color.red))
+        progressBar.trackColor = resources.getColor(R.color.light_black, requireActivity().theme)
+        progressBar.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
 
         binding.thatsMeButton.setOnClickListener {
             it.hideKeyboard()
