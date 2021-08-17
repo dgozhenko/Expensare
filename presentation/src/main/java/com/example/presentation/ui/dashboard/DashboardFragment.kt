@@ -56,18 +56,18 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
         bindButtons()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        dashboardViewModel.refreshExpenses()
-//        dashboardViewModel.refreshedExpenses.observe(
-//            viewLifecycleOwner,
-//            {
-//                if (it != null) {
-//                    adapter.getExpenses(it)
-//               }
-//            }
-//        )
-//    }
+    override fun onResume() {
+        super.onResume()
+        dashboardViewModel.refreshExpenses()
+        dashboardViewModel.refreshedExpenses.observe(
+            viewLifecycleOwner,
+            {
+                if (it != null) {
+                    adapter.getExpenses(it)
+               }
+            }
+        )
+    }
 
     private fun bindExpensesRecyclerView() {
         binding.progressCircular.visibility = View.VISIBLE

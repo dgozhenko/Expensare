@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.interactors.expenses.CreateExpense
+import com.example.data.interactors.expenses.DownloadExpenses
 import com.example.data.interactors.user.DownloadUser
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.ExpenseEntity
@@ -13,7 +15,7 @@ import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Group
 import com.example.domain.models.User
 import com.example.domain.models.UserDebt
-import com.example.presentation.ui.storage.Storage
+import com.example.data.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -39,7 +41,7 @@ sealed class AddDebtResult {
 @HiltViewModel
 class AddExpenseViewModel
 @Inject
-constructor(private val storage: Storage, private val database: ExpensareDatabase, private val downloadUser: DownloadUser) : ViewModel() {
+constructor(private val storage: Storage, database: ExpensareDatabase, private val downloadUser: DownloadUser, private val createExpense: CreateExpense) : ViewModel() {
 
     private val createUserDao = database.userDao()
     private val groupDao = database.groupDao()
@@ -150,43 +152,21 @@ constructor(private val storage: Storage, private val database: ExpensareDatabas
 
     fun createExpense(name: String, amount: Int, user: UserEntity, connection: Boolean) {
         val groupId = storage.groupId
-        // User + Date
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         val newCalendar = Calendar.getInstance(Locale.getDefault())
         val neededDate = simpleDateFormat.format(newCalendar.time)
         val expenseId = UUID.randomUUID().toString()
 
-        val reference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("expenses/$groupId")
-                .push()
-
-        // TO-Do if no connection, save for better time
-        val expenseUploaded =
-            ExpenseEntity(
-                expenseId = expenseId,
-                expenseName = name,
-                expenseAmount = amount,
-                expenseUser = user,
-                expenseGroupId = groupId,
-                expenseDate = neededDate,
-                uploaded = true
-            )
+        val expenseEntity = ExpenseEntity(expenseId, name, amount, user, groupId, neededDate, true)
         viewModelScope.launch(Dispatchers.IO) {
-            reference
-                .setValue(expenseUploaded)
-                .addOnSuccessListener {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        _addExpenseResult.postValue(AddExpenseResult.Success)
-                    }
-                    _addExpenseResult.postValue(AddExpenseResult.Success) }
-                .addOnFailureListener { _addExpenseResult.postValue(AddExpenseResult.Error(it)) }
-                .addOnCanceledListener {
-                    Log.d("EXPENSES_CANCELED", "Database error")
-                }
+            val exception = createExpense.invoke(expenseEntity)
+            if (exception == null) {
+                _addExpenseResult.postValue(AddExpenseResult.Success)
+            } else {
+                _addExpenseResult.postValue(AddExpenseResult.Error(exception))
+            }
+
         }
 
     }
