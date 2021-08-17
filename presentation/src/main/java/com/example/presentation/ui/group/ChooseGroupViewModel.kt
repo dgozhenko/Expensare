@@ -23,6 +23,7 @@ class ChooseGroupViewModel @Inject constructor(private val storage: Storage): Vi
         storage.groupId = groupId
     }
 
+    // TODO: 17.08.2021 Repository
     fun listenForGroups() {
         val userID = FirebaseAuth.getInstance().uid
         val allGroups = arrayListOf<Group>()

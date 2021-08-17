@@ -55,13 +55,12 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun syncWithFirebase() {
+        // Repos
         getUserInfo()
+        // To-do
         getGroupByGroupId()
+        // repos
         getGroupExpenses()
-        getUser()
-        getGroups()
-        //getExpenses()
-        // check for internet for diff uploads
     }
 
      private fun getUserInfo() {
@@ -75,7 +74,7 @@ class DashboardViewModel @Inject constructor(
          }
     }
 
-    fun getGroupByGroupId() {
+    private fun getGroupByGroupId() {
         val groupId = storage.groupId
         val reference =
             FirebaseDatabase.getInstance(
@@ -127,25 +126,6 @@ class DashboardViewModel @Inject constructor(
                 _expenses.postValue(expenses)
             } else {
                 _expenses.postValue(null)
-            }
-        }
-    }
-
-
-    private fun getUser() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val returnedUser = createUserDao.getAllUsers()
-            if (returnedUser.isNotEmpty()) {
-                _user.postValue(returnedUser.first())
-            }
-        }
-    }
-
-    private fun getGroups() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val returnedGroup = groupDao.getGroups()
-            if (returnedGroup.isNotEmpty()) {
-                _group.postValue(returnedGroup.first())
             }
         }
     }

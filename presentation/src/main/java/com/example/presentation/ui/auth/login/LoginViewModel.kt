@@ -26,6 +26,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
     val error: LiveData<Exception>
         get() = _error
 
+
+    // TODO: 17.08.2021 Repository
     fun loginUser(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             FirebaseAuth.getInstance()

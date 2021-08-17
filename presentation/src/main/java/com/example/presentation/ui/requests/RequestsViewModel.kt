@@ -46,6 +46,7 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
         getUserInfo()
     }
 
+    // TODO: 17.08.2021 Repository
     private fun getUserInfo() {
         val userId = FirebaseAuth.getInstance().uid
         val reference =
@@ -81,6 +82,7 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun getPendingRequests() {
         val userId = FirebaseAuth.getInstance().uid
         val requestsArrayList = arrayListOf<Request>()
@@ -104,6 +106,7 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun getRequestedRequests() {
         val userId = FirebaseAuth.getInstance().uid
         val requestsArrayList = arrayListOf<Request>()
@@ -127,6 +130,7 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun acceptHandler(request: Request, choice: Boolean) {
         val userId = FirebaseAuth.getInstance().uid
         var requestedKey = ""
@@ -154,7 +158,6 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
                 }
             })
         }
-
         viewModelScope.launch(Dispatchers.IO) {
             referenceDeletePending.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -181,4 +184,5 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
             lentReference.push().setValue(request.debt)
         }
     }
+
 }

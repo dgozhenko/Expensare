@@ -46,9 +46,10 @@ class AddToListViewModel @Inject constructor(private val storage: Storage): View
 
     init {
         getUserInfo()
+        // TODO: 17.08.2021 Repository
         getGroupByGroupId()
     }
-
+    // TODO: 17.08.2021 Repository
     fun createListItem(category: String, name: String, user: User, quantity: Int, store: String) {
         val groupId = storage.groupId
         viewModelScope.launch(Dispatchers.IO) {
@@ -86,7 +87,7 @@ class AddToListViewModel @Inject constructor(private val storage: Storage): View
             })
         }
     }
-
+    // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
         val groupId = storage.groupId
         val reference =
@@ -156,6 +157,7 @@ class AddToListViewModel @Inject constructor(private val storage: Storage): View
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun getUsersFromGroup(group: Group) {
         val userId = FirebaseAuth.getInstance().uid
         val userIdArrayList = arrayListOf<String>()

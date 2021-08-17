@@ -50,6 +50,7 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
         getGroupByGroupId()
     }
 
+    // TODO: 17.08.2021 Repository
     private fun getUserInfo() {
         val userId = FirebaseAuth.getInstance().uid
         val reference =
@@ -86,6 +87,7 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
         }
     }
 
+    // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
         val storage = Storage(getApplication.baseContext)
         val groupId = storage.groupId
@@ -113,6 +115,7 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun getUsersFromGroup(group: Group) {
         val userId = FirebaseAuth.getInstance().uid
         val userIdArrayList = arrayListOf<String>()
@@ -154,6 +157,7 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
         }
     }
 
+    // TODO: 17.08.2021 Repository
     fun createDebt(debtFor: String, amount: Int, fromUser: User, toUser: User) {
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())

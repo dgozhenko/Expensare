@@ -62,6 +62,7 @@ class AvatarViewModel @Inject constructor(): ViewModel() {
             _avatarList.postValue(imagesArrayList)
         }
     }
+    // TODO: 17.08.2021 Repository
     private fun uploadExclusiveAvatars(imagesArrayList: ArrayList<Avatar>) {
         if (FirebaseAuth.getInstance().uid == "ZukjAziJ56ezbm57PqxVL2dQZZa2") {
             imagesArrayList.add(Avatar(Uri.parse("android.resource://com.example.expensare/drawable/" + R.drawable.exclusive_avatar), true))

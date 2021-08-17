@@ -71,7 +71,7 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
         getUser()
         getGroups()
     }
-
+    // TODO: 17.08.2021 Repository
     fun createDebt(amount: Int, fromUser: User, toUser: User) {
         val groupId = storage.groupId
         var operationDone = false
@@ -149,7 +149,7 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
             )
         }
     }
-
+    // TODO: 17.08.2021 Repository
     fun createExpense(name: String, amount: Int, user: UserEntity, connection: Boolean) {
         val groupId = storage.groupId
         val pattern = "dd.MM.yyyy"
@@ -188,7 +188,7 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
             }
         }
     }
-
+    // TODO: 17.08.2021 Repository
     fun getUsersFromGroup(group: Group) {
         val userId = FirebaseAuth.getInstance().uid
         val userIdArrayList = arrayListOf<String>()
