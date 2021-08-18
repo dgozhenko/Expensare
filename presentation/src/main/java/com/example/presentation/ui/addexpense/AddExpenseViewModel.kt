@@ -15,6 +15,7 @@ import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Group
 import com.example.domain.models.UserDebt
 import com.example.data.storage.Storage
+import com.example.domain.models.Response
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
@@ -22,11 +23,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-sealed class AddExpenseResult {
-    object Success : AddExpenseResult()
-    data class Error(val exception: String) : AddExpenseResult()
-}
 
 sealed class AddDebtResult {
     object Success : AddDebtResult()
@@ -43,20 +39,20 @@ constructor(private val storage: Storage, database: ExpensareDatabase,
             private val getAllUsersFromGroup: GetAllUsersFromGroup,
             private val getGroupByGroupId: GetGroupByGroupId) : ViewModel() {
 
-    private val _user = MutableLiveData<UserEntity>()
-    val user: LiveData<UserEntity>
+    private val _user = MutableLiveData<Response<UserEntity>>()
+    val user: LiveData<Response<UserEntity>>
         get() = _user
 
-    private val _addExpenseResult = MutableLiveData<AddExpenseResult>()
-    val addExpenseResult: LiveData<AddExpenseResult>
+    private val _addExpenseResult = MutableLiveData<Response<String>>()
+    val addExpenseResult: LiveData<Response<String>>
         get() = _addExpenseResult
 
     private val _addDebtResult = MutableLiveData<AddDebtResult>()
     val addDebtResult: LiveData<AddDebtResult>
         get() = _addDebtResult
 
-    private val _group = MutableLiveData<Group>()
-    val group: LiveData<Group>
+    private val _group = MutableLiveData<Response<Group>>()
+    val group: LiveData<Response<Group>>
         get() = _group
 
     private val _users = MutableLiveData<ArrayList<UserEntity>>()
@@ -84,27 +80,27 @@ constructor(private val storage: Storage, database: ExpensareDatabase,
         val expenseId = UUID.randomUUID().toString()
 
         val expenseEntity = ExpenseEntity(expenseId, name, amount, user, groupId, neededDate, true)
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = createExpense.invoke(expenseEntity)
-            _addExpenseResult.postValue(AddExpenseResult.Success)
-
+        viewModelScope.launch(Dispatchers.Main) {
+            createExpense.invoke(expenseEntity).observeForever {
+                _addExpenseResult.postValue(it)
+            }
         }
 
     }
 
     private fun getUser() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val returnedUser = downloadUser.invoke()
-            if (returnedUser != UserEntity.EMPTY) {
-                _user.postValue(returnedUser)
+        viewModelScope.launch(Dispatchers.Main) {
+            downloadUser.invoke().observeForever {
+                _user.postValue(it)
             }
         }
     }
 
     private fun getGroups() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val group = getGroupByGroupId.invoke()
-            _group.postValue(group)
+        viewModelScope.launch(Dispatchers.Main) {
+            getGroupByGroupId.invoke().observeForever {
+                _group.postValue(it)
+            }
         }
     }
     // TODO: 17.08.2021 Repository
