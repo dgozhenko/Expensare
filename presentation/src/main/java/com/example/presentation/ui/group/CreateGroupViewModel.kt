@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.interactors.user.DownloadUser
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Group
+import com.example.domain.models.Response
 import com.example.domain.models.UserDebt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -24,8 +25,9 @@ sealed class CreateGroupResult {
 @HiltViewModel
 class CreateGroupViewModel @Inject constructor(private val downloadUser: DownloadUser) : ViewModel() {
 
-    private val _user = MutableLiveData<UserEntity>()
-    val user: LiveData<UserEntity> get() = _user
+    private val _user = MutableLiveData<Response<UserEntity>>()
+    val user: LiveData<Response<UserEntity>>
+        get() = _user
 
     private val _createGroupResult = MutableLiveData<CreateGroupResult>()
     val createGroupResult: LiveData<CreateGroupResult>
@@ -56,13 +58,10 @@ class CreateGroupViewModel @Inject constructor(private val downloadUser: Downloa
     }
 
     private fun getUserInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userInfo = downloadUser.invoke()
-            if (userInfo != UserEntity.EMPTY) {
-                _user.postValue(userInfo)
-            } else {
-                //error
-            }
+        viewModelScope.launch(Dispatchers.Main) {
+           downloadUser.invoke().observeForever {
+            _user.postValue(it)
+           }
         }
     }
 }

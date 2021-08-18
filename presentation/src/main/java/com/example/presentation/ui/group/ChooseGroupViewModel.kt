@@ -5,6 +5,7 @@ import com.example.data.interactors.user.DownloadUser
 import com.example.domain.models.Group
 import com.example.data.storage.Storage
 import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.Response
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,8 +22,9 @@ class ChooseGroupViewModel @Inject constructor(private val storage: Storage, pri
     private val _groups = MutableLiveData<ArrayList<Group>>()
     val groups: LiveData<ArrayList<Group>> get() = _groups
 
-    private val _user = MutableLiveData<UserEntity>()
-    val user: LiveData<UserEntity> get() = _user
+    private val _user = MutableLiveData<Response<UserEntity>>()
+    val user: LiveData<Response<UserEntity>>
+        get() = _user
 
     fun saveGroupID(groupId: String) {
         storage.groupId = groupId
@@ -61,12 +63,9 @@ class ChooseGroupViewModel @Inject constructor(private val storage: Storage, pri
     }
 
     private fun getUserInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userInfo = downloadUser.invoke()
-            if (userInfo != UserEntity.EMPTY) {
-                _user.postValue(userInfo)
-            } else {
-                //error
+        viewModelScope.launch(Dispatchers.Main) {
+            downloadUser.invoke().observeForever {
+             _user.postValue(it)
             }
         }
     }
