@@ -9,9 +9,7 @@ import com.example.domain.database.entities.UserDebtEntity
 @Dao
 interface UserDebtDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun createUserDebt(userDebtEntity: UserDebtEntity)
+  @Insert(onConflict = OnConflictStrategy.IGNORE) fun createUserDebt(userDebtEntity: UserDebtEntity)
 
-    @Query("select * from userDebt")
-    fun getAllUserDebt(): List<UserDebtEntity>
+  @Query("select * from userDebt") fun getAllUserDebt(): List<UserDebtEntity>
 }

@@ -5,17 +5,17 @@ import com.example.domain.database.entities.ListItemEntity
 
 class ListItemRepository(database: ExpensareDatabase) {
 
-    private val listItemDao = database.listItemDo()
+  private val listItemDao = database.listItemDo()
 
-    fun createListItem(listItemEntity: ListItemEntity) {
-        listItemDao.createItem(listItemEntity)
-    }
+  fun createListItem(listItemEntity: ListItemEntity) {
+    listItemDao.createItem(listItemEntity)
+  }
 
-    fun deleteListItem(listItemEntity: ListItemEntity) {
-        listItemDao.deleteItem(listItemEntity)
-    }
+  fun deleteListItem(listItemEntity: ListItemEntity) {
+    listItemDao.deleteItem(listItemEntity)
+  }
 
-    fun getAllListItems(): ArrayList<ListItemEntity> {
-        return listItemDao.getAllItems() as ArrayList<ListItemEntity>
-    }
+  fun getAllListItems(): ArrayList<ListItemEntity> {
+    return listItemDao.getAllItems() as ArrayList<ListItemEntity>
+  }
 }

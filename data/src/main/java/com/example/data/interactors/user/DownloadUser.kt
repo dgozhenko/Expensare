@@ -7,5 +7,5 @@ import com.example.domain.models.Response
 
 class DownloadUser(private val userRepository: UserRepository) {
 
-    suspend operator fun invoke(): LiveData<Response<UserEntity>> = userRepository.downloadUser()
+  suspend operator fun invoke(): LiveData<Response<UserEntity>> = userRepository.downloadUser()
 }

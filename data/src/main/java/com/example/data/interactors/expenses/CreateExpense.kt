@@ -7,7 +7,7 @@ import com.example.domain.models.Response
 
 class CreateExpense(private val expenseRepository: ExpenseRepository) {
 
-    suspend operator fun invoke(expenseEntity: ExpenseEntity): LiveData<Response<String>> {
-        return expenseRepository.create(expenseEntity)
-    }
+  suspend operator fun invoke(expenseEntity: ExpenseEntity): LiveData<Response<String>> {
+    return expenseRepository.create(expenseEntity)
+  }
 }

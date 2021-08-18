@@ -5,5 +5,5 @@
         android:id="@+id/save_expenses_button"
         android:title="@string/save_expense_menu_title"
         android:icon="@drawable/ic_save_30"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

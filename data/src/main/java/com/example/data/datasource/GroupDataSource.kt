@@ -17,35 +17,37 @@ import javax.inject.Inject
 class GroupDataSource
 @Inject
 constructor(private val database: ExpensareDatabase, private val storage: Storage) :
-    GroupInterface {
+  GroupInterface {
 
-    override suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity> {
-        return group.users
-    }
+  override suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity> {
+    return group.users
+  }
 
-    override suspend fun getGroupByGroupId(): LiveData<Response<Group>> {
-        val groupData = MutableLiveData<Response<Group>>()
-        val groupId = storage.groupId
-        val groups =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/groups/$groupId")
-        groupData.value = Response.loading(null)
-        groups.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val result = snapshot.getValue(Group::class.java)
-                    groupData.value = Response.success(result)
-                } else {
-                    groupData.value = Response.error("Group not found.", null)
-                }
-            }
+  override suspend fun getGroupByGroupId(): LiveData<Response<Group>> {
+    val groupData = MutableLiveData<Response<Group>>()
+    val groupId = storage.groupId
+    val groups =
+      FirebaseDatabase.getInstance(
+          "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
+        )
+        .getReference("/groups/$groupId")
+    groupData.value = Response.loading(null)
+    groups.addValueEventListener(
+      object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+          if (snapshot.exists()) {
+            val result = snapshot.getValue(Group::class.java)
+            groupData.value = Response.success(result)
+          } else {
+            groupData.value = Response.error("Group not found.", null)
+          }
+        }
 
-            override fun onCancelled(error: DatabaseError) {
-                groupData.value = Response.error(error.message, null)
-            }
-        })
-        return groupData
-    }
+        override fun onCancelled(error: DatabaseError) {
+          groupData.value = Response.error(error.message, null)
+        }
+      }
+    )
+    return groupData
+  }
 }

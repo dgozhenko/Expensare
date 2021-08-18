@@ -5,6 +5,5 @@ import com.example.domain.models.UserDebt
 
 class DebtRepository(private val debtInterface: DebtInterface) {
 
-    suspend fun create(debt: UserDebt) = debtInterface.create(debt)
-
+  suspend fun create(debt: UserDebt) = debtInterface.create(debt)
 }

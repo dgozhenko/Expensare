@@ -1,7 +1,5 @@
 package com.example.data.datasource
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.data.interfaces.AuthInterface
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Response
@@ -52,7 +50,6 @@ class AuthDataSource @Inject constructor() : AuthInterface {
                 }
               }
             )
-
           } else {
             response.value = Response.error("Verify yor account from email", null)
           }
@@ -60,12 +57,8 @@ class AuthDataSource @Inject constructor() : AuthInterface {
           response.value = Response.error("Login Canceled", null)
         }
       }
-      .addOnFailureListener {
-        response.value = Response.error(it.message!!, null)
-      }
-      .addOnCanceledListener {
-        response.value = Response.error("login error", null)
-      }
-      return response
+      .addOnFailureListener { response.value = Response.error(it.message!!, null) }
+      .addOnCanceledListener { response.value = Response.error("login error", null) }
+    return response
   }
 }

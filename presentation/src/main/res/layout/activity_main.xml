@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/navigation"
-            tools:ignore="FragmentTagUsage"/>
+            tools:ignore="FragmentTagUsage" />
 
     </LinearLayout>
 
@@ -33,5 +33,5 @@
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_menu"
         app:headerLayout="@layout/drawer_header"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start" />
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -6,12 +6,10 @@ import com.example.domain.database.entities.ManualDebtEntity
 @Dao
 interface ManualDebtDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun createManualDebt(manualDebtEntity: ManualDebtEntity)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun createManualDebt(manualDebtEntity: ManualDebtEntity)
 
-    @Query("SELECT * FROM manual_debt")
-    fun getAllDebts(): List<ManualDebtEntity>
+  @Query("SELECT * FROM manual_debt") fun getAllDebts(): List<ManualDebtEntity>
 
-    @Delete
-    fun deleteDebt(manualDebtEntity: ManualDebtEntity)
+  @Delete fun deleteDebt(manualDebtEntity: ManualDebtEntity)
 }

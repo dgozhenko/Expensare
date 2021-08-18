@@ -5,6 +5,5 @@ import com.example.domain.models.UserDebt
 
 class CreateDebt(private val debtRepository: DebtRepository) {
 
-    suspend operator fun invoke(debt: UserDebt) = debtRepository.create(debt)
-
+  suspend operator fun invoke(debt: UserDebt) = debtRepository.create(debt)
 }

@@ -8,7 +8,8 @@ import com.example.domain.models.Response
 
 class GroupRepository(private val groupInterface: GroupInterface) {
 
-    suspend fun getAllUsersFromGroup(groupEntity: Group): ArrayList<UserEntity> = groupInterface.getUsersFromGroup(groupEntity)
+  suspend fun getAllUsersFromGroup(groupEntity: Group): ArrayList<UserEntity> =
+    groupInterface.getUsersFromGroup(groupEntity)
 
-    suspend fun getGroupByGroupId(): LiveData<Response<Group>> = groupInterface.getGroupByGroupId()
+  suspend fun getGroupByGroupId(): LiveData<Response<Group>> = groupInterface.getGroupByGroupId()
 }

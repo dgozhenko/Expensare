@@ -21,7 +21,7 @@
             style="@style/ToolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/my_debts_title"/>
+            android:text="@string/my_debts_title" />
 
     </com.google.android.material.appbar.MaterialToolbar>
 
@@ -32,8 +32,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/abs_toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/debts_view_pager"
@@ -42,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@id/my_debts_tab_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/buttons_container"/>
+        app:layout_constraintBottom_toTopOf="@id/buttons_container" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttons_container"
@@ -68,7 +67,7 @@
             android:background="@drawable/rounded_button_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/debt_button"
-            app:layout_constraintEnd_toStartOf="@id/history_button"/>
+            app:layout_constraintEnd_toStartOf="@id/history_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/history_button"
@@ -84,7 +83,7 @@
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@id/list_button"
             app:layout_constraintTop_toTopOf="@id/debt_button"
-            app:layout_constraintEnd_toStartOf="@id/debt_button"/>
+            app:layout_constraintEnd_toStartOf="@id/debt_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/debt_button"
@@ -101,7 +100,7 @@
             android:background="@drawable/rounded_button_right"
             app:layout_constraintStart_toEndOf="@id/history_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -117,6 +116,6 @@
         android:layout_marginBottom="96dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

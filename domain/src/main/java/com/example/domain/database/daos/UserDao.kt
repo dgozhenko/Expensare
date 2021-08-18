@@ -9,12 +9,10 @@ import com.example.domain.database.entities.UserEntity
 @Dao
 interface UserDao {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-   suspend fun createUser(userEntity: UserEntity)
+  @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun createUser(userEntity: UserEntity)
 
-    @Query("select * from user")
-   suspend fun getAllUsers(): List<UserEntity>
+  @Query("select * from user") suspend fun getAllUsers(): List<UserEntity>
 
-   @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun downloadUsers(users: ArrayList<UserEntity>)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun downloadUsers(users: ArrayList<UserEntity>)
 }

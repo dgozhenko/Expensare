@@ -13,7 +13,5 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class StorageModule {
 
-    @Singleton
-    @Provides
-    fun providesStorage(@ApplicationContext context: Context) = Storage(context)
+  @Singleton @Provides fun providesStorage(@ApplicationContext context: Context) = Storage(context)
 }

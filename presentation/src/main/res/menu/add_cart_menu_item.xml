@@ -5,5 +5,5 @@
         android:id="@+id/add_cart_item"
         android:title="@string/save_expense_menu_title"
         android:icon="@drawable/ic_add_shopping_cart_24"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

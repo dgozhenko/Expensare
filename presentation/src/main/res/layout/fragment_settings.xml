@@ -35,7 +35,7 @@
         android:text="@string/change_your_name_text"
         app:layout_constraintTop_toBottomOf="@id/abs_toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/change_app_theme_button"
@@ -48,7 +48,7 @@
         android:text="@string/change_app_theme_text"
         app:layout_constraintTop_toBottomOf="@id/change_name_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/change_avatar_button"
@@ -61,6 +61,6 @@
         android:text="@string/change_your_avatar_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/change_app_theme_button"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

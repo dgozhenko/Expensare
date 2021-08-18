@@ -36,7 +36,8 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     get() = _adapter!!
 
   private var _navigationView: NavigationView? = null
-  private val navigationView get() = _navigationView!!
+  private val navigationView
+    get() = _navigationView!!
 
   private val dashboardViewModel: DashboardViewModel by viewModels()
 
@@ -107,13 +108,13 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     )
   }
 
-      private fun bindToolbarAndNavDrawer() {
-          val toolbar = binding.absToolbar
-          val drawer = requireActivity().findViewById<DrawerLayout>(R.id.test_drawer_layout)
-          toolbar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
-          val navigationView: NavigationView = requireActivity().findViewById(R.id.test_nav_view)
-          navigationView.setNavigationItemSelectedListener(this)
-      }
+  private fun bindToolbarAndNavDrawer() {
+    val toolbar = binding.absToolbar
+    val drawer = requireActivity().findViewById<DrawerLayout>(R.id.test_drawer_layout)
+    toolbar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
+    val navigationView: NavigationView = requireActivity().findViewById(R.id.test_nav_view)
+    navigationView.setNavigationItemSelectedListener(this)
+  }
 
   private fun bindButtons() {
     binding.listButton.setBackgroundResource(R.drawable.rounded_button_left)

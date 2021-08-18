@@ -6,9 +6,9 @@ import com.example.domain.models.Response
 
 interface ExpensesInterface {
 
-    suspend fun create(expenseEntity: ExpenseEntity): LiveData<Response<String>>
+  suspend fun create(expenseEntity: ExpenseEntity): LiveData<Response<String>>
 
-    suspend fun getAll(): ArrayList<ExpenseEntity>
+  suspend fun getAll(): ArrayList<ExpenseEntity>
 
-    suspend fun download(): LiveData<Response<ArrayList<ExpenseEntity>>>
+  suspend fun download(): LiveData<Response<ArrayList<ExpenseEntity>>>
 }

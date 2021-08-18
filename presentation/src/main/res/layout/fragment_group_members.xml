@@ -15,12 +15,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/abs_toolbar_title"
-        style="@style/ToolbarTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/members_text" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/abs_toolbar_title"
+            style="@style/ToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/members_text" />
 
     </com.google.android.material.appbar.MaterialToolbar>
 
@@ -31,6 +31,6 @@
         app:layout_constraintTop_toBottomOf="@id/abs_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

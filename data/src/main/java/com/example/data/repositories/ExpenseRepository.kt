@@ -7,16 +7,15 @@ import com.example.domain.models.Response
 
 class ExpenseRepository(private val expensesInterface: ExpensesInterface) {
 
-    suspend fun create(expenseEntity: ExpenseEntity): LiveData<Response<String>> {
-        return expensesInterface.create(expenseEntity)
-    }
+  suspend fun create(expenseEntity: ExpenseEntity): LiveData<Response<String>> {
+    return expensesInterface.create(expenseEntity)
+  }
 
-    suspend fun getAll(): ArrayList<ExpenseEntity> {
-        return expensesInterface.getAll()
-    }
+  suspend fun getAll(): ArrayList<ExpenseEntity> {
+    return expensesInterface.getAll()
+  }
 
-    suspend fun download(): LiveData<Response<ArrayList<ExpenseEntity>>> {
-        return expensesInterface.download()
-    }
-
+  suspend fun download(): LiveData<Response<ArrayList<ExpenseEntity>>> {
+    return expensesInterface.download()
+  }
 }

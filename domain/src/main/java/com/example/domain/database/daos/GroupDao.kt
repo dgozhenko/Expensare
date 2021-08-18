@@ -9,12 +9,10 @@ import com.example.domain.database.entities.GroupEntity
 @Dao
 interface GroupDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun createGroup(groupEntity: GroupEntity)
+  @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun createGroup(groupEntity: GroupEntity)
 
-    @Query("SELECT * FROM groups")
-    suspend fun getGroups(): List<GroupEntity>
+  @Query("SELECT * FROM groups") suspend fun getGroups(): List<GroupEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun downloadAllGroups(groups: ArrayList<GroupEntity>)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun downloadAllGroups(groups: ArrayList<GroupEntity>)
 }

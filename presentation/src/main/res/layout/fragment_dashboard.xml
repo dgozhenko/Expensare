@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@id/abs_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/buttons_container"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttons_container"
@@ -58,7 +58,7 @@
             android:background="@drawable/rounded_button_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/debt_button"
-            app:layout_constraintEnd_toStartOf="@id/history_button"/>
+            app:layout_constraintEnd_toStartOf="@id/history_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/history_button"
@@ -74,7 +74,7 @@
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@id/list_button"
             app:layout_constraintTop_toTopOf="@id/debt_button"
-            app:layout_constraintEnd_toStartOf="@id/debt_button"/>
+            app:layout_constraintEnd_toStartOf="@id/debt_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/debt_button"
@@ -91,7 +91,7 @@
             android:background="@drawable/rounded_button_right"
             app:layout_constraintStart_toEndOf="@id/history_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -106,7 +106,7 @@
         app:layout_constraintBottom_toBottomOf="@id/history_recycler_view"
         app:layout_constraintStart_toStartOf="@id/history_recycler_view"
         app:layout_constraintEnd_toEndOf="@id/history_recycler_view"
-        app:layout_constraintTop_toTopOf="@id/history_recycler_view"/>
+        app:layout_constraintTop_toTopOf="@id/history_recycler_view" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/no_history_text"
@@ -118,7 +118,7 @@
         app:layout_constraintBottom_toBottomOf="@id/history_recycler_view"
         app:layout_constraintStart_toStartOf="@id/history_recycler_view"
         app:layout_constraintEnd_toEndOf="@id/history_recycler_view"
-        app:layout_constraintTop_toTopOf="@id/history_recycler_view"/>
+        app:layout_constraintTop_toTopOf="@id/history_recycler_view" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_expenses"
@@ -132,6 +132,6 @@
         android:layout_marginBottom="96dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

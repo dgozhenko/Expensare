@@ -6,7 +6,7 @@ import com.example.domain.models.Group
 import com.example.domain.models.Response
 
 interface GroupInterface {
-    suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity>
+  suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity>
 
-    suspend fun getGroupByGroupId(): LiveData<Response<Group>>
+  suspend fun getGroupByGroupId(): LiveData<Response<Group>>
 }

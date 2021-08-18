@@ -8,26 +8,26 @@ import com.example.domain.database.entities.*
 import com.example.presentation.util.Converters
 
 @Database(
-    entities =
-        [
-            ExpenseEntity::class,
-            GroupEntity::class,
-            ListItemEntity::class,
-            ManualDebtEntity::class,
-            RequestEntity::class,
-            SecondUserEntity::class,
-            UserDebtEntity::class,
-            UserEntity::class],
-    version = 16,
-    exportSchema = false
+  entities =
+    [
+      ExpenseEntity::class,
+      GroupEntity::class,
+      ListItemEntity::class,
+      ManualDebtEntity::class,
+      RequestEntity::class,
+      SecondUserEntity::class,
+      UserDebtEntity::class,
+      UserEntity::class],
+  version = 16,
+  exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class ExpensareDatabase : RoomDatabase() {
-    abstract fun expenseDao(): ExpenseDao
-    abstract fun groupDao(): GroupDao
-    abstract fun listItemDo(): ListItemDao
-    abstract fun manualDebtDao(): ManualDebtDao
-    abstract fun requestDao(): RequestDao
-    abstract fun userDao(): UserDao
-    abstract fun userDebtDao(): UserDebtDao
+  abstract fun expenseDao(): ExpenseDao
+  abstract fun groupDao(): GroupDao
+  abstract fun listItemDo(): ListItemDao
+  abstract fun manualDebtDao(): ManualDebtDao
+  abstract fun requestDao(): RequestDao
+  abstract fun userDao(): UserDao
+  abstract fun userDebtDao(): UserDebtDao
 }
