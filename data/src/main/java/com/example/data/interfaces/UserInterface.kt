@@ -1,6 +1,8 @@
 package com.example.data.interfaces
 
+import androidx.lifecycle.LiveData
 import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.Response
 
 interface UserInterface {
 
@@ -8,6 +10,6 @@ interface UserInterface {
 
     suspend fun getAll(): ArrayList<UserEntity>
 
-    suspend fun downloadUser(): UserEntity
+    suspend fun downloadUser(): LiveData<Response<UserEntity>>
 
 }

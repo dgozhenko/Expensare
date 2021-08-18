@@ -13,7 +13,7 @@ class Storage(context: Context) {
     var groupId: String
         get() =
             sharedPreferences
-                .getString(KEY_GROUP_ID, "a7b3844f-6b0d-4092-9dc2-14b0c3b2c68d")
+                .getString(KEY_GROUP_ID, "def")
                 .toString()
         set(value) {
             sharedPreferences.edit().putString(KEY_GROUP_ID, value).apply()
