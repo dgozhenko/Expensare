@@ -1,6 +1,7 @@
 package com.example.expensare.di.modules
 
 import com.example.data.datasource.*
+import com.example.data.interactors.auth.LoginUser
 import com.example.domain.database.ExpensareDatabase
 import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
@@ -9,10 +10,7 @@ import com.example.data.interactors.group.GetAllUsersFromGroup
 import com.example.data.interactors.group.GetGroupByGroupId
 import com.example.data.interactors.user.CreateUser
 import com.example.data.interactors.user.DownloadUser
-import com.example.data.interfaces.DebtInterface
-import com.example.data.interfaces.ExpensesInterface
-import com.example.data.interfaces.GroupInterface
-import com.example.data.interfaces.UserInterface
+import com.example.data.interfaces.*
 import com.example.data.repositories.*
 import com.example.data.storage.Storage
 import dagger.Module
@@ -152,6 +150,32 @@ class RepositoryModule {
     @Provides
     fun providesDownloadUser(userRepository: UserRepository): DownloadUser {
         return DownloadUser(userRepository)
+    }
+
+    // Login Screen
+
+    @Singleton
+    @Provides
+    fun providesAuthInterface(): AuthInterface {
+        return AuthDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun providesAuthDataSource(): AuthDataSource {
+        return AuthDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun providesAuthRepository(authInterface: AuthInterface): AuthRepository {
+        return AuthRepository(authInterface)
+    }
+
+    @Singleton
+    @Provides
+    fun providesLoginUser(authRepository: AuthRepository): LoginUser {
+        return LoginUser(authRepository)
     }
 
 
