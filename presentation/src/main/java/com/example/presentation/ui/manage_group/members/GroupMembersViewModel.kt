@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.domain.models.Group
 import com.example.domain.models.User
 import com.example.data.storage.Storage
+import com.example.domain.database.entities.UserEntity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -20,8 +21,8 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
     val user: LiveData<ArrayList<User>>
         get() = _user
 
-    private val _userByEmail = MutableLiveData<User>()
-    val userByEmail: LiveData<User> get() = _userByEmail
+    private val _userByEmail = MutableLiveData<UserEntity>()
+    val userByEmail: LiveData<UserEntity> get() = _userByEmail
 
     private val _group = MutableLiveData<Group>()
     val group: LiveData<Group> get() = _group
@@ -57,7 +58,7 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
     }
 
     // TODO: 17.08.2021 Repository
-    fun addUserToGroup(user: User) {
+    fun addUserToGroup(user: UserEntity) {
         val groupId = storage.groupId
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,7 +66,6 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-
                             val group = it.getValue(Group::class.java)
                             if (group != null) {
                                 if (group.groupID == groupId) {
@@ -87,8 +87,8 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
     }
 
     // TODO: 17.08.2021 Repository
-    private fun createUserInGroup(user: User, groupKey: String?, usersIdArray: ArrayList<String>) {
-        usersIdArray.add(user.uid)
+    private fun createUserInGroup(user: UserEntity, groupKey: String?, usersIdArray: ArrayList<UserEntity>) {
+        usersIdArray.add(user)
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
         reference.child(groupKey!!).child("users").setValue(usersIdArray)
     }
@@ -106,10 +106,10 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             snapshot.children.forEach {
-                                val userInfo = it.getValue(User::class.java)
+                                val userInfo = it.getValue(UserEntity::class.java)
                                 if (userInfo != null) {
-                                    if (userInfo.email == email) {
-                                        users.add(userInfo.email)
+                                    if (userInfo.userEmail == email) {
+                                        users.add(userInfo.userEmail)
                                         _userByEmail.postValue(userInfo)
                                     }
                                 }
@@ -126,40 +126,7 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
 
     // TODO: 17.08.2021 Repository
      fun getUsersFromGroup(group: Group) {
-        val userIdArrayList = arrayListOf<String>()
-        val userArrayList = arrayListOf<User>()
-        group.users.forEach {
-            userIdArrayList.add(it)
-        }
-        userIdArrayList.forEach {
-            val userId = it
-            val reference =
-                FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("/users/")
-            viewModelScope.launch(Dispatchers.IO) {
-                reference.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach { userChild ->
-                                    val userInfo = userChild.getValue(User::class.java)
-                                    if (userInfo != null) {
-                                        if (userInfo.uid == userId) {
-                                            userArrayList.add(userInfo)
-                                        }
-                                    }
-                                }
-                                _user.postValue(userArrayList)
-                            }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {
-
-                        }
-                    })
-            }
-        }
 
     }
 

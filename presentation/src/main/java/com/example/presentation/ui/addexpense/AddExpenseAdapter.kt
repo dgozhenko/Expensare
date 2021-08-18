@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.database.entities.SecondUserEntity
+import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.User
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textview.MaterialTextView
@@ -16,7 +18,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<AddExpenseAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<User>()
+    private var list = arrayListOf<UserEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_expenses_item, parent, false)
@@ -38,13 +40,13 @@ class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerV
         return list.size
     }
 
-    fun getUsers(user: ArrayList<User>) {
+    fun getUsers(user: ArrayList<UserEntity>) {
         list = user
         notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(user: User) {
+        fun bind(user: UserEntity) {
             val userName = itemView.findViewById<MaterialTextView>(R.id.name_user)
             val imageView = itemView.findViewById<CircleImageView>(R.id.avatar)
 
@@ -64,6 +66,6 @@ class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerV
     }
 }
 
-class OnClickListener(val clickListener: (user: User) -> Unit) {
-    fun onClick(user: User) = clickListener(user)
+class OnClickListener(val clickListener: (user: UserEntity) -> Unit) {
+    fun onClick(user: UserEntity) = clickListener(user)
 }

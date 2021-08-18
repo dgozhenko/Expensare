@@ -8,9 +8,9 @@ import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.daos.ExpenseDao
 import com.example.domain.database.daos.UserDao
 import com.example.domain.database.entities.ExpenseEntity
-import com.example.domain.database.entities.GroupEntity
 import com.example.domain.database.entities.UserEntity
 import com.example.data.storage.Storage
+import com.example.domain.database.entities.GroupEntity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -19,7 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.exp
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(

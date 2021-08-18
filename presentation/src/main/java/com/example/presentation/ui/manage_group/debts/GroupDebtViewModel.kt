@@ -45,125 +45,125 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
     }
 
     // TODO: 17.08.2021 Repository
-    fun getDetailedDebts(user: User, debtToMe: Boolean) {
-        val groupId = storage.groupId
-        val userDebtArrayList = arrayListOf<UserDebt>()
-        if (debtToMe) {
-            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
-            referenceCheck.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val userDebt = it.getValue(UserDebt::class.java)!!
-                                if (userDebt.firstUser == user && userDebt.firstUserAmount > 0) {
-                                    // we need secondUser
-                                    userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
-                                } else if (userDebt.secondUser == user && userDebt.secondUserAmount > 0) {
-                                    // we need firsUser
-                                    userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
-                                }
-                            }
-                            _detailedUserDebt.postValue(userDebtArrayList)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
-        } else {
-            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
-            referenceCheck.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val userDebt = it.getValue(UserDebt::class.java)!!
-                                if (userDebt.firstUser == user && userDebt.firstUserAmount < 0) {
-                                    // we need secondUser
-                                    userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
-                                } else if (userDebt.secondUser == user && userDebt.secondUserAmount < 0) {
-                                    // we need firstUser
-                                    userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
-                                }
-                            }
-                            _detailedUserDebt.postValue(userDebtArrayList)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
-        }
-    }
-
-    // TODO: 17.08.2021 Repository
-    fun getDebts(user: ArrayList<User>, debtToMe: Boolean) {
-        val groupId = storage.groupId
-        var fullAmount = 0
-        val userDebtArrayList = arrayListOf<UserDebt>()
-        user.forEach { groupUser ->
-            if (debtToMe) {
-                val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
-                referenceCheck.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach {
-                                    val userDebt = it.getValue(UserDebt::class.java)!!
-                                    if (userDebt.firstUser == groupUser && userDebt.firstUserAmount > 0) {
-                                        fullAmount += userDebt.firstUserAmount
-                                    } else if (userDebt.secondUser == groupUser && userDebt.secondUserAmount > 0) {
-                                        fullAmount += userDebt.secondUserAmount
-                                    }
-                                }
-                                if (fullAmount != 0) {
-                                    userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount, fullAmount, false))
-                                    fullAmount = 0
-                                    _userDebt.postValue(userDebtArrayList)
-                                }
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-                    }
-                )
-            } else {
-                val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
-                referenceCheck.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach {
-                                    val userDebt = it.getValue(UserDebt::class.java)!!
-                                    if (userDebt.firstUser == groupUser && userDebt.firstUserAmount < 0) {
-                                        fullAmount += userDebt.firstUserAmount
-                                    } else if (userDebt.secondUser == groupUser && userDebt.secondUserAmount < 0) {
-                                        fullAmount += userDebt.secondUserAmount
-                                    }
-                                }
-                                if (fullAmount != 0) {
-                                    userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount * -1, fullAmount * -1, false))
-                                    fullAmount = 0
-                                    _userDebt.postValue(userDebtArrayList)
-                                }
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-                    }
-                )
-            }
-        }
-    }
+//    fun getDetailedDebts(user: User, debtToMe: Boolean) {
+//        val groupId = storage.groupId
+//        val userDebtArrayList = arrayListOf<UserDebt>()
+//        if (debtToMe) {
+//            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+//            referenceCheck.addListenerForSingleValueEvent(
+//                object : ValueEventListener {
+//                    override fun onDataChange(snapshot: DataSnapshot) {
+//                        if (snapshot.exists()) {
+//                            snapshot.children.forEach {
+//                                val userDebt = it.getValue(UserDebt::class.java)!!
+//                                if (userDebt.firstUser == user && userDebt.firstUserAmount > 0) {
+//                                    // we need secondUser
+//                                    userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
+//                                } else if (userDebt.secondUser == user && userDebt.secondUserAmount > 0) {
+//                                    // we need firsUser
+//                                    userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
+//                                }
+//                            }
+//                            _detailedUserDebt.postValue(userDebtArrayList)
+//                        }
+//                    }
+//
+//                    override fun onCancelled(error: DatabaseError) {
+//                        TODO("Not yet implemented")
+//                    }
+//                }
+//            )
+//        } else {
+//            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+//            referenceCheck.addListenerForSingleValueEvent(
+//                object : ValueEventListener {
+//                    override fun onDataChange(snapshot: DataSnapshot) {
+//                        if (snapshot.exists()) {
+//                            snapshot.children.forEach {
+//                                val userDebt = it.getValue(UserDebt::class.java)!!
+//                                if (userDebt.firstUser == user && userDebt.firstUserAmount < 0) {
+//                                    // we need secondUser
+//                                    userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
+//                                } else if (userDebt.secondUser == user && userDebt.secondUserAmount < 0) {
+//                                    // we need firstUser
+//                                    userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
+//                                }
+//                            }
+//                            _detailedUserDebt.postValue(userDebtArrayList)
+//                        }
+//                    }
+//
+//                    override fun onCancelled(error: DatabaseError) {
+//                        TODO("Not yet implemented")
+//                    }
+//                }
+//            )
+//        }
+//    }
+//
+//    // TODO: 17.08.2021 Repository
+//    fun getDebts(user: ArrayList<User>, debtToMe: Boolean) {
+//        val groupId = storage.groupId
+//        var fullAmount = 0
+//        val userDebtArrayList = arrayListOf<UserDebt>()
+//        user.forEach { groupUser ->
+//            if (debtToMe) {
+//                val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+//                referenceCheck.addListenerForSingleValueEvent(
+//                    object : ValueEventListener {
+//                        override fun onDataChange(snapshot: DataSnapshot) {
+//                            if (snapshot.exists()) {
+//                                snapshot.children.forEach {
+//                                    val userDebt = it.getValue(UserDebt::class.java)!!
+//                                    if (userDebt.firstUser == groupUser && userDebt.firstUserAmount > 0) {
+//                                        fullAmount += userDebt.firstUserAmount
+//                                    } else if (userDebt.secondUser == groupUser && userDebt.secondUserAmount > 0) {
+//                                        fullAmount += userDebt.secondUserAmount
+//                                    }
+//                                }
+//                                if (fullAmount != 0) {
+//                                    userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount, fullAmount, false))
+//                                    fullAmount = 0
+//                                    _userDebt.postValue(userDebtArrayList)
+//                                }
+//                            }
+//                        }
+//
+//                        override fun onCancelled(error: DatabaseError) {
+//                            TODO("Not yet implemented")
+//                        }
+//                    }
+//                )
+//            } else {
+//                val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+//                referenceCheck.addListenerForSingleValueEvent(
+//                    object : ValueEventListener {
+//                        override fun onDataChange(snapshot: DataSnapshot) {
+//                            if (snapshot.exists()) {
+//                                snapshot.children.forEach {
+//                                    val userDebt = it.getValue(UserDebt::class.java)!!
+//                                    if (userDebt.firstUser == groupUser && userDebt.firstUserAmount < 0) {
+//                                        fullAmount += userDebt.firstUserAmount
+//                                    } else if (userDebt.secondUser == groupUser && userDebt.secondUserAmount < 0) {
+//                                        fullAmount += userDebt.secondUserAmount
+//                                    }
+//                                }
+//                                if (fullAmount != 0) {
+//                                    userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount * -1, fullAmount * -1, false))
+//                                    fullAmount = 0
+//                                    _userDebt.postValue(userDebtArrayList)
+//                                }
+//                            }
+//                        }
+//
+//                        override fun onCancelled(error: DatabaseError) {
+//                            TODO("Not yet implemented")
+//                        }
+//                    }
+//                )
+//            }
+//        }
+//    }
 
     // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
@@ -238,37 +238,6 @@ class GroupDebtViewModel @Inject constructor(private val storage: Storage) : Vie
 
     // TODO: 17.08.2021 Repository
     fun getUsersFromGroup(group: Group) {
-        val userIdArrayList = arrayListOf<String>()
-        val userArrayList = arrayListOf<User>()
-        group.users.forEach { userIdArrayList.add(it) }
-        userIdArrayList.forEach {
-            val userId = it
-            val reference =
-                FirebaseDatabase.getInstance(
-                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                    )
-                    .getReference("/users/")
-            viewModelScope.launch(Dispatchers.IO) {
-                reference.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach { user ->
-                                    val userInfo = user.getValue(User::class.java)
-                                    if (userInfo != null) {
-                                        if (userInfo.uid == userId) {
-                                            userArrayList.add(userInfo)
-                                        }
-                                    }
-                                }
-                                _users.postValue(userArrayList)
-                            }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {}
-                    }
-                )
-            }
-        }
     }
 }

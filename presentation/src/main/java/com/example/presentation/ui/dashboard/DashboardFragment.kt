@@ -1,6 +1,5 @@
 package com.example.presentation.ui.dashboard
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -11,23 +10,21 @@ import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.presentation.ui.base.BaseFragment
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.appdistribution.models.App
 import com.google.firebase.auth.FirebaseAuth
 import com.inner_circles_apps.myapplication.R
+
 import com.inner_circles_apps.myapplication.databinding.FragmentDashboardBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelectedListener {
 
     var context = this
-    var connectivity: ConnectivityManager? = null
-    var info: NetworkInfo? = null
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding
@@ -37,15 +34,12 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     private val adapter
         get() = _adapter!!
 
-    private lateinit var navigationView: NavigationView
-    private var userExists: Boolean = false
-
     private val dashboardViewModel: DashboardViewModel by viewModels()
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentDashboardBinding.inflate(inflater)
+
         //bindToolbarAndNavDrawer()
-        getUserInfo()
         bindExpensesRecyclerView()
         return binding.root
     }
@@ -53,6 +47,8 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // FIXME: 09.08.2021 c
+
+       // getUserInfo()
         bindButtons()
     }
 
@@ -92,9 +88,9 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
 
 //    private fun bindToolbarAndNavDrawer() {
 //        val toolbar = binding.absToolbar
-//        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+//        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.test_drawer_layout)
 //        toolbar.setNavigationOnClickListener { drawer.openDrawer(GravityCompat.START) }
-//        navigationView = requireActivity().findViewById(R.id.navigation_view)
+//        val navigationView: NavigationView = requireActivity().findViewById(R.id.test_nav_view)
 //        navigationView.setNavigationItemSelectedListener(this)
 //    }
 
@@ -122,7 +118,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.test_drawer_layout)
         when (item.itemId) {
             R.id.dashboard -> {
                 drawer.closeDrawer(GravityCompat.START)

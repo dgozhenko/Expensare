@@ -30,9 +30,9 @@ class RequestsViewPagerFragment: BaseFragment(), NavigationView.OnNavigationItem
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val toolbar = binding.absToolbar
-        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.test_drawer_layout)
 
-        val navigationView = requireActivity().findViewById<NavigationView>(R.id.navigation_view)
+        val navigationView = requireActivity().findViewById<NavigationView>(R.id.test_nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
         toolbar.setNavigationOnClickListener {
@@ -71,7 +71,7 @@ class RequestsViewPagerFragment: BaseFragment(), NavigationView.OnNavigationItem
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val drawer = requireActivity().findViewById<DrawerLayout>(R.id.test_drawer_layout)
         when(item.itemId) {
             R.id.dashboard -> {
                 drawer.closeDrawer(GravityCompat.START)

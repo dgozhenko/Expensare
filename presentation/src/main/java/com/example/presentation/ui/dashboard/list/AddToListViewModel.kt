@@ -159,42 +159,9 @@ class AddToListViewModel @Inject constructor(private val storage: Storage): View
 
     // TODO: 17.08.2021 Repository
     fun getUsersFromGroup(group: Group) {
-        val userId = FirebaseAuth.getInstance().uid
-        val userIdArrayList = arrayListOf<String>()
-        val userArrayList = arrayListOf<User>()
-        group.users.forEach {
-            if (userId != it) {
-                userIdArrayList.add(it)
-            }
-        }
-        userIdArrayList.forEach { currentUserId ->
-            val reference =
-                FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                    .getReference("/users/")
-            viewModelScope.launch(Dispatchers.IO) {
-                reference.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach {
-                                    val userInfo = it.getValue(User::class.java)
-                                    if (userInfo != null) {
-                                        if (userInfo.uid == currentUserId) {
-                                            userArrayList.add(userInfo)
-                                        }
-                                    }
-                                }
-                                _users.postValue(userArrayList)
-                            }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {}
-                    }
-                )
-            }
-        }
     }
+
+
 
 }

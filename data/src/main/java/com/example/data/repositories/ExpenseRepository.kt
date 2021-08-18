@@ -2,11 +2,10 @@ package com.example.data.repositories
 
 import com.example.data.interfaces.ExpensesInterface
 import com.example.domain.database.entities.ExpenseEntity
-import java.lang.Exception
 
 class ExpenseRepository(private val expensesInterface: ExpensesInterface) {
 
-    suspend fun create(expenseEntity: ExpenseEntity): Exception? {
+    suspend fun create(expenseEntity: ExpenseEntity) {
         return expensesInterface.create(expenseEntity)
     }
 

@@ -18,7 +18,7 @@ import com.example.presentation.util.Converters
             SecondUserEntity::class,
             UserDebtEntity::class,
             UserEntity::class],
-    version = 14,
+    version = 16,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

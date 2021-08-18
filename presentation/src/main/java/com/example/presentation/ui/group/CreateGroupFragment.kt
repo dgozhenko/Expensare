@@ -54,7 +54,9 @@ class CreateGroupFragment : BaseFragment() {
                     progress.visibility = View.GONE
                 }
                 else -> {
-                    createGroupViewModel.createGroup(groupNameEditText, "Home")
+                    createGroupViewModel.user.observe(viewLifecycleOwner, { user ->
+                        createGroupViewModel.createGroup(groupNameEditText, "Home", user)
+                    })
                     createGroupViewModel.createGroupResult.observe(viewLifecycleOwner, { result ->
                         when (result) {
                             is CreateGroupResult.Error -> {

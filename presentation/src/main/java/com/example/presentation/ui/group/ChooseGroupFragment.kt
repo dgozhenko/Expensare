@@ -53,7 +53,9 @@ class ChooseGroupFragment: BaseFragment() {
 
         binding.groupRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.groupRecyclerView.adapter = adapter
-        chooseGroupViewModel.listenForGroups()
+        chooseGroupViewModel.user.observe(viewLifecycleOwner, {
+            chooseGroupViewModel.listenForGroups(it)
+        })
         chooseGroupViewModel.groups.observe(viewLifecycleOwner, {
             adapter.getGroups(it)
         })

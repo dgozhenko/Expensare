@@ -41,23 +41,23 @@ class GroupDebtFragment: BaseFragment() {
         val toolbar = binding.absToolbar
         toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         getUsersFromGroup()
-        getDebts(true)
-        bindRecyclerView()
+        //getDebts(true)
+        //bindRecyclerView()
         isLent = true
         binding.pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 if (isLent) {
-                    getDebts(false)
+                   // getDebts(false)
                     isLent = false
                     binding.oweStatusText.setTextColor(resources.getColor(R.color.red, requireActivity().theme))
                     binding.oweStatusText.text = getString(R.string.they_need_to_return_debt)
                 } else {
-                    getDebts(true)
+                    //getDebts(true)
                     isLent = true
                     binding.oweStatusText.setTextColor(resources.getColor(R.color.dark_green, requireActivity().theme))
                     binding.oweStatusText.text = getString(R.string.they_are_waiting_for_debt_return)
                 }
-                bindRecyclerView()
+                //bindRecyclerView()
             }
             override fun onNothingSelected() {
 
@@ -71,44 +71,44 @@ class GroupDebtFragment: BaseFragment() {
         })
     }
 
-    private fun getDebts(isLent: Boolean) {
-        groupDebtViewModel.users.observe(viewLifecycleOwner, {
-            groupDebtViewModel.getDebts(it, isLent)
-        })
-    }
+//    private fun getDebts(isLent: Boolean) {
+//        groupDebtViewModel.users.observe(viewLifecycleOwner, {
+//            groupDebtViewModel.getDebts(it, isLent)
+//        })
+//    }
 
-    private fun bindRecyclerView() {
-        val adapter = GroupDebtAdapter(isLent, OnClickListener { userDebt, recyclerView ->
-            groupDebtViewModel.getDetailedDebts(userDebt.firstUser, isLent)
-            val detailAdapter = DetailedGroupDebtAdapter(isLent)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = detailAdapter
-            groupDebtViewModel.detailedUserDebt.observe(viewLifecycleOwner, {
-                detailAdapter.getDebts(it)
-            })
-        })
-
-        binding.groupDebtRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.groupDebtRecyclerView.adapter = adapter
-        groupDebtViewModel.userDebt.observe(viewLifecycleOwner, {
-            adapter.getDebts(it)
-            val pieChart = binding.pieChart
-            val entries = arrayListOf<PieEntry>()
-            val colors = arrayListOf<Int>()
-            val rnd = Random
-            it.forEach { debt ->
-                colors.add(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)))
-                entries.add(PieEntry(debt.firstUserAmount.toFloat(), debt.firstUser.username))
-            }
-            val dataSet = PieDataSet(entries, "users")
-            dataSet.colors = colors
-            pieChart.data = PieData(dataSet)
-            pieChart.highlightValue(null)
-            pieChart.invalidate()
-            val description = Description()
-            description.text = "Debt Chart"
-            pieChart.description = description
-            pieChart.spin( 500,0.0f,360f, Easing.EaseInOutQuad)
-        })
-    }
+//    private fun bindRecyclerView() {
+//        val adapter = GroupDebtAdapter(isLent, OnClickListener { userDebt, recyclerView ->
+//            groupDebtViewModel.getDetailedDebts(userDebt.firstUser, isLent)
+//            val detailAdapter = DetailedGroupDebtAdapter(isLent)
+//            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//            recyclerView.adapter = detailAdapter
+//            groupDebtViewModel.detailedUserDebt.observe(viewLifecycleOwner, {
+//                detailAdapter.getDebts(it)
+//            })
+//        })
+//
+//        binding.groupDebtRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        binding.groupDebtRecyclerView.adapter = adapter
+//        groupDebtViewModel.userDebt.observe(viewLifecycleOwner, {
+//            adapter.getDebts(it)
+//            val pieChart = binding.pieChart
+//            val entries = arrayListOf<PieEntry>()
+//            val colors = arrayListOf<Int>()
+//            val rnd = Random
+//            it.forEach { debt ->
+//                colors.add(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)))
+//                entries.add(PieEntry(debt.firstUserAmount.toFloat(), debt.firstUser.username))
+//            }
+//            val dataSet = PieDataSet(entries, "users")
+//            dataSet.colors = colors
+//            pieChart.data = PieData(dataSet)
+//            pieChart.highlightValue(null)
+//            pieChart.invalidate()
+//            val description = Description()
+//            description.text = "Debt Chart"
+//            pieChart.description = description
+//            pieChart.spin( 500,0.0f,360f, Easing.EaseInOutQuad)
+//        })
+//    }
 }

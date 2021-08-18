@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.example.domain.database.entities.SecondUserEntity
+import com.example.domain.database.entities.UserEntity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.inner_circles_apps.myapplication.R
 import com.inner_circles_apps.myapplication.databinding.DialogBottomSheetAddExpensesScreenBinding
 
 
-class AddExpenseBottomSheetDialog(val amount: Int, val user: SecondUserEntity): BottomSheetDialogFragment() {
+class AddExpenseBottomSheetDialog(val amount: Int, val user: UserEntity): BottomSheetDialogFragment() {
 
     interface OnDivideMethodListener {
-        fun onDivideMethodListener(divideAmount: Int, divideEqually: Boolean, user: SecondUserEntity, startAmount: Int)
+        fun onDivideMethodListener(divideAmount: Int, divideEqually: Boolean, user: UserEntity, startAmount: Int)
     }
 
     private var _binding: DialogBottomSheetAddExpensesScreenBinding? = null
@@ -61,7 +62,7 @@ class AddExpenseBottomSheetDialog(val amount: Int, val user: SecondUserEntity): 
     }
 
 
-    private fun getDivideMethod(divideAmount: Int, divideEqually: Boolean, user: SecondUserEntity, startAmount: Int) {
+    private fun getDivideMethod(divideAmount: Int, divideEqually: Boolean, user: UserEntity, startAmount: Int) {
         val listener = targetFragment as OnDivideMethodListener?
         listener?.onDivideMethodListener(divideAmount, divideEqually, user, startAmount)
         dismiss()

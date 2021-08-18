@@ -1,13 +1,17 @@
 package com.example.expensare.di.modules
 
-import com.example.data.datasource.ExpenseDataSource
+import com.example.data.datasource.*
 import com.example.domain.database.ExpensareDatabase
-import com.example.data.datasource.UserDataSource
+import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
+import com.example.data.interactors.group.GetAllUsersFromGroup
+import com.example.data.interactors.group.GetGroupByGroupId
 import com.example.data.interactors.user.CreateUser
 import com.example.data.interactors.user.DownloadUser
+import com.example.data.interfaces.DebtInterface
 import com.example.data.interfaces.ExpensesInterface
+import com.example.data.interfaces.GroupInterface
 import com.example.data.interfaces.UserInterface
 import com.example.data.repositories.*
 import com.example.data.storage.Storage
@@ -23,15 +27,10 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun providesUserDebtRepository(database: ExpensareDatabase): UserDebtRepository {
-        return UserDebtRepository(database)
-    }
-
-    @Singleton
-    @Provides
     fun providesRequestRepository(database: ExpensareDatabase): RequestRepository {
         return RequestRepository(database)
     }
+
 
     // Expenses
 
@@ -65,7 +64,63 @@ class RepositoryModule {
         return DownloadExpenses(expenseRepository)
     }
 
+    // Group
 
+    @Singleton
+    @Provides
+    fun providesGroupInterface(database: ExpensareDatabase, storage: Storage): GroupInterface {
+        return GroupDataSource(database, storage)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGroupRepository(groupInterface: GroupInterface): GroupRepository {
+        return GroupRepository(groupInterface)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGroupDataSource(database: ExpensareDatabase, storage: Storage): GroupDataSource {
+        return GroupDataSource(database, storage)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGetAllUsersFromGroups(groupRepository: GroupRepository): GetAllUsersFromGroup {
+        return GetAllUsersFromGroup(groupRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGetGroupByGroupId(groupRepository: GroupRepository): GetGroupByGroupId {
+        return GetGroupByGroupId(groupRepository)
+    }
+
+    // Debt
+
+    @Singleton
+    @Provides
+    fun providesDebtInterface(database: ExpensareDatabase, storage: Storage): DebtInterface {
+        return DebtDataSource(database, storage)
+    }
+
+    @Singleton
+    @Provides
+    fun providesDebtRepository(debtInterface: DebtInterface): DebtRepository {
+        return DebtRepository(debtInterface)
+    }
+
+    @Singleton
+    @Provides
+    fun providesDebtDataSource(database: ExpensareDatabase, storage: Storage): DebtDataSource {
+        return DebtDataSource(database, storage)
+    }
+
+    @Singleton
+    @Provides
+    fun providesCreateDebt(debtRepository: DebtRepository): CreateDebt {
+        return CreateDebt(debtRepository)
+    }
 
     // User
 

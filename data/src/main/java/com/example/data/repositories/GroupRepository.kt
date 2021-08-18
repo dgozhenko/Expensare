@@ -1,20 +1,12 @@
 package com.example.data.repositories
 
-import com.example.domain.database.ExpensareDatabase
-import com.example.domain.database.entities.GroupEntity
+import com.example.data.interfaces.GroupInterface
+import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.Group
 
-class GroupRepository(database: ExpensareDatabase) {
-    private val groupDao = database.groupDao()
+class GroupRepository(private val groupInterface: GroupInterface) {
 
-    suspend fun createGroup(groupEntity: GroupEntity) {
-        groupDao.createGroup(groupEntity)
-    }
+    suspend fun getAllUsersFromGroup(groupEntity: Group): ArrayList<UserEntity> = groupInterface.getUsersFromGroup(groupEntity)
 
-    suspend fun getGroups(): ArrayList<GroupEntity> {
-        return groupDao.getGroups() as ArrayList<GroupEntity>
-    }
-
-    fun createGroupInFirebase(groupEntity: GroupEntity) {
-
-    }
+    suspend fun getGroupByGroupId(): Group = groupInterface.getGroupByGroupId()
 }

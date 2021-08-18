@@ -1,26 +1,21 @@
 package com.example.presentation.ui.addexpense
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
-import com.example.data.interactors.expenses.DownloadExpenses
+import com.example.data.interactors.group.GetAllUsersFromGroup
+import com.example.data.interactors.group.GetGroupByGroupId
 import com.example.data.interactors.user.DownloadUser
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.ExpenseEntity
-import com.example.domain.database.entities.GroupEntity
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Group
-import com.example.domain.models.User
 import com.example.domain.models.UserDebt
 import com.example.data.storage.Storage
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +25,7 @@ import kotlinx.coroutines.launch
 
 sealed class AddExpenseResult {
     object Success : AddExpenseResult()
-    data class Error(val exception: Exception) : AddExpenseResult()
+    data class Error(val exception: String) : AddExpenseResult()
 }
 
 sealed class AddDebtResult {
@@ -41,11 +36,12 @@ sealed class AddDebtResult {
 @HiltViewModel
 class AddExpenseViewModel
 @Inject
-constructor(private val storage: Storage, database: ExpensareDatabase, private val downloadUser: DownloadUser, private val createExpense: CreateExpense) : ViewModel() {
-
-    private val createUserDao = database.userDao()
-    private val groupDao = database.groupDao()
-    private val expenseDao = database.expenseDao()
+constructor(private val storage: Storage, database: ExpensareDatabase,
+            private val downloadUser: DownloadUser,
+            private val createExpense: CreateExpense,
+            private val createDebt: CreateDebt,
+            private val getAllUsersFromGroup: GetAllUsersFromGroup,
+            private val getGroupByGroupId: GetGroupByGroupId) : ViewModel() {
 
     private val _user = MutableLiveData<UserEntity>()
     val user: LiveData<UserEntity>
@@ -59,12 +55,12 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
     val addDebtResult: LiveData<AddDebtResult>
         get() = _addDebtResult
 
-    private val _group = MutableLiveData<GroupEntity>()
-    val group: LiveData<GroupEntity>
+    private val _group = MutableLiveData<Group>()
+    val group: LiveData<Group>
         get() = _group
 
-    private val _users = MutableLiveData<ArrayList<User>>()
-    val users: LiveData<ArrayList<User>>
+    private val _users = MutableLiveData<ArrayList<UserEntity>>()
+    val users: LiveData<ArrayList<UserEntity>>
         get() = _users
 
     init {
@@ -72,84 +68,13 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
         getGroups()
     }
     // TODO: 17.08.2021 Repository
-    fun createDebt(amount: Int, fromUser: User, toUser: User) {
-        val groupId = storage.groupId
-        var operationDone = false
+    fun createDebt(amount: Int, fromUser: UserEntity, toUser: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            val reference =
-                FirebaseDatabase.getInstance(
-                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                    )
-                    .getReference("group_debts/$groupId")
-                    .push()
-            val referenceCheck =
-                FirebaseDatabase.getInstance(
-                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                    )
-                    .getReference("group_debts/$groupId/")
-            val referenceAdd =
-                FirebaseDatabase.getInstance(
-                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                    )
-                    .getReference("group_debts/$groupId")
-            referenceCheck.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val key = it.key
-                                val userDebt = it.getValue(UserDebt::class.java)!!
-                                if (userDebt.firstUser == toUser && userDebt.secondUser == fromUser
-                                ) {
-                                    operationDone = true
-                                    referenceAdd
-                                        .child("/$key/")
-                                        .setValue(
-                                            UserDebt(
-                                                userDebt.firstUser,
-                                                userDebt.secondUser,
-                                                userDebt.firstUserAmount + amount,
-                                                userDebt.secondUserAmount - amount,
-                                                false
-                                            )
-                                        )
-                                    _addDebtResult.postValue(AddDebtResult.Success)
-                                } else if (userDebt.firstUser == fromUser &&
-                                        userDebt.secondUser == toUser
-                                ) {
-                                    operationDone = true
-                                    referenceAdd
-                                        .child("/$key/")
-                                        .setValue(
-                                            UserDebt(
-                                                userDebt.firstUser,
-                                                userDebt.secondUser,
-                                                userDebt.firstUserAmount - amount,
-                                                userDebt.secondUserAmount + amount,
-                                                false
-                                            )
-                                        )
-                                    _addDebtResult.postValue(AddDebtResult.Success)
-                                }
-                            }
-                            if (!operationDone) {
-                                reference.setValue(
-                                    UserDebt(toUser, fromUser, amount, -amount, false)
-                                )
-                            }
-                        } else {
-                            reference.setValue(UserDebt(toUser, fromUser, amount, -amount, false))
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
+            val debt = UserDebt(toUser, fromUser, amount, amount, false)
+            createDebt.invoke(debt)
         }
     }
-    // TODO: 17.08.2021 Repository
+
     fun createExpense(name: String, amount: Int, user: UserEntity, connection: Boolean) {
         val groupId = storage.groupId
         val pattern = "dd.MM.yyyy"
@@ -160,12 +85,8 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
 
         val expenseEntity = ExpenseEntity(expenseId, name, amount, user, groupId, neededDate, true)
         viewModelScope.launch(Dispatchers.IO) {
-            val exception = createExpense.invoke(expenseEntity)
-            if (exception == null) {
-                _addExpenseResult.postValue(AddExpenseResult.Success)
-            } else {
-                _addExpenseResult.postValue(AddExpenseResult.Error(exception))
-            }
+            val result = createExpense.invoke(expenseEntity)
+            _addExpenseResult.postValue(AddExpenseResult.Success)
 
         }
 
@@ -182,49 +103,23 @@ constructor(private val storage: Storage, database: ExpensareDatabase, private v
 
     private fun getGroups() {
         viewModelScope.launch(Dispatchers.IO) {
-            val returnedGroup = groupDao.getGroups()
-            if (returnedGroup.isNotEmpty()) {
-                _group.postValue(returnedGroup.first())
-            }
+            val group = getGroupByGroupId.invoke()
+            _group.postValue(group)
         }
     }
     // TODO: 17.08.2021 Repository
+    // SecondUser ??????
     fun getUsersFromGroup(group: Group) {
-        val userId = FirebaseAuth.getInstance().uid
-        val userIdArrayList = arrayListOf<String>()
-        val userArrayList = arrayListOf<User>()
-        group.users.forEach {
-            if (userId != it) {
-                userIdArrayList.add(it)
+        val myUid = FirebaseAuth.getInstance().uid
+        val filteredUserArrayList = arrayListOf<UserEntity>()
+        viewModelScope.launch(Dispatchers.IO) {
+            val usersFromGroup = getAllUsersFromGroup.invoke(group)
+            usersFromGroup.forEach {
+                if (it.userUidId != myUid) {
+                    filteredUserArrayList.add(it)
+                }
             }
-        }
-        userIdArrayList.forEach { currentUserId ->
-            val reference =
-                FirebaseDatabase.getInstance(
-                        "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                    )
-                    .getReference("/users/")
-            viewModelScope.launch(Dispatchers.IO) {
-                reference.addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                snapshot.children.forEach {
-                                    val userInfo = it.getValue(User::class.java)
-                                    if (userInfo != null) {
-                                        if (userInfo.uid == currentUserId) {
-                                            userArrayList.add(userInfo)
-                                        }
-                                    }
-                                }
-                                _users.postValue(userArrayList)
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {}
-                    }
-                )
-            }
+            _users.postValue(filteredUserArrayList)
         }
     }
 }
