@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
+import com.example.domain.util.Constants
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -19,13 +20,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         firebaseAnalytics = Firebase.analytics
         val intentMessage = intent.getStringExtra("logged_in")
-        if (intentMessage == "Dashboard") {
+        if (intentMessage == Constants.DASHBOARD) {
             val navController = Navigation.findNavController(this, R.id.fragment)
             navController.navigate(R.id.dashboardFragment)
-        } else if (intentMessage == "Login"){
+        } else if (intentMessage == Constants.LOGIN) {
             val navController = Navigation.findNavController(this, R.id.fragment)
             navController.navigate(R.id.loginFragment)
-        } else if (intentMessage == "ChooseName"){
+        } else if (intentMessage == Constants.CHOOSE_NAME) {
             val navController = Navigation.findNavController(this, R.id.fragment)
             navController.popBackStack(R.id.chooseNameFragment, true)
         }
