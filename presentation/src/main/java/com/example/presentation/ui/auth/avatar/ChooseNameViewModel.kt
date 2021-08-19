@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.data.storage.Storage
 import com.example.domain.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -19,10 +20,37 @@ sealed class ChooseNameResult {
 }
 
 @HiltViewModel
-class ChooseNameViewModel @Inject constructor(): ViewModel() {
+class ChooseNameViewModel @Inject constructor(private val storage: Storage): ViewModel() {
 
     private val _chooseNameResult = MutableLiveData<ChooseNameResult>()
     val chooseNameResult: LiveData<ChooseNameResult> get() = _chooseNameResult
+
+    private val _email = MutableLiveData<String>()
+    val email: LiveData<String> get() = _email
+
+    private val _avatar = MutableLiveData<String>()
+    val avatar: LiveData<String> get() = _avatar
+
+    init {
+        getStoredAvatar()
+        getStoredEmail()
+    }
+
+    private fun getStoredEmail() {
+        _email.postValue(storage.userEmail)
+    }
+
+    private fun getStoredAvatar() {
+        _avatar.postValue(storage.userAvatar)
+    }
+
+    fun deleteStoredAvatar() {
+        storage.userAvatar = "def"
+    }
+
+    fun deleteStoredEmail() {
+        storage.userEmail = "def"
+    }
 
     // TODO: 17.08.2021 Repository
         private fun createUserInDatabase(username: String, avatarUri: String, email: String) {

@@ -1,20 +1,16 @@
 package com.example.presentation.ui.auth.avatar
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.domain.models.Input
 import com.example.presentation.ui.base.BaseFragment
 import com.inner_circles_apps.myapplication.databinding.FragmentAvatarPickerBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AvatarPickerFragment: BaseFragment() {
@@ -28,15 +24,13 @@ class AvatarPickerFragment: BaseFragment() {
         return binding.root
     }
 
-    private val args: AvatarPickerFragmentArgs by navArgs()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         val adapter = AvatarGridAdapter(OnClickListener {
-            findNavController().navigate(AvatarPickerFragmentDirections.actionAvatarPickerFragmentToChooseNameFragment(
-                Input(it, args.email)
-            ))
+            avatarViewModel.storeAvatar(it.avatar.toString())
+            findNavController().navigate(AvatarPickerFragmentDirections.actionAvatarPickerFragmentToChooseNameFragment()
+            )
         })
         binding.avatarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.avatarRecyclerView.adapter = adapter

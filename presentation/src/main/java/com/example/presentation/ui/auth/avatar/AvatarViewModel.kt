@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.storage.Storage
 import com.example.domain.models.Avatar
 import com.google.firebase.auth.FirebaseAuth
 import com.inner_circles_apps.myapplication.R
@@ -14,12 +15,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AvatarViewModel @Inject constructor(): ViewModel() {
+class AvatarViewModel @Inject constructor(private val storage: Storage): ViewModel() {
     private var _avatarList = MutableLiveData<ArrayList<Avatar>>()
     val avatarList: LiveData<ArrayList<Avatar>> get() = _avatarList
 
     init {
         getAvatars()
+    }
+
+    fun storeAvatar(avatar: String) {
+        storage.userAvatar = avatar
+        val test = storage.userAvatar
+        val testt = storage.userAvatar
     }
 
     private fun getAvatars() {

@@ -49,13 +49,8 @@ class DashboardViewModel @Inject constructor(
         get() = _refreshedExpenses
 
     init {
-        getGroupByGroupId()
-    }
-
-     fun syncWithFirebase() {
-        getGroupExpenses()
-        // Repos
         getUserInfo()
+
     }
 
      private fun getUserInfo() {
@@ -66,7 +61,7 @@ class DashboardViewModel @Inject constructor(
          }
     }
 
-    private fun getGroupByGroupId() {
+     fun getGroupByGroupId() {
         viewModelScope.launch(Dispatchers.Main) {
             getGroupByGroupId.invoke().observeForever {
                 _group.postValue(it)
@@ -83,7 +78,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun getGroupExpenses() {
+     fun getGroupExpenses() {
         viewModelScope.launch(Dispatchers.Main){
             downloadExpenses.invoke().observeForever {
                 _expenses.postValue(it)
