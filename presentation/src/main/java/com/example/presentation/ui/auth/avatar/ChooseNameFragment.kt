@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.domain.models.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.util.Extensions.hideKeyboard
 import com.inner_circles_apps.myapplication.R
@@ -58,12 +59,20 @@ class ChooseNameFragment : BaseFragment() {
                     if (username.isNotEmpty()) {
                         chooseNameViewModel.uploadImage(avatarString.toUri(), username, email)
                         chooseNameViewModel.chooseNameResult.observe(viewLifecycleOwner, { result ->
-                            when (result) {
-                                is ChooseNameResult.Error -> {
-                                    Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT).show()
+                            when (result.status) {
+                                 Status.ERROR -> {
+                                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
                                     progressBar.visibility = View.GONE
                                 }
-                                ChooseNameResult.Success -> {
+                                Status.SUCCESS -> {
+
+                                    chooseNameViewModel.createUserInDatabase(username, result.data.toString(), email)
+                                }
+                            }
+                        })
+                        chooseNameViewModel.createUser.observe(viewLifecycleOwner, {userResult ->
+                            when(userResult.status) {
+                                Status.SUCCESS -> {
                                     chooseNameViewModel.deleteStoredAvatar()
                                     chooseNameViewModel.deleteStoredEmail()
                                     findNavController()
@@ -72,7 +81,15 @@ class ChooseNameFragment : BaseFragment() {
                                                 .actionChooseNameFragmentToChooseGroupFragment())
                                     progressBar.visibility = View.GONE
                                 }
+                                Status.ERROR -> {
+                                    Toast.makeText(requireContext(), userResult.message, Toast.LENGTH_SHORT).show()
+                                    progressBar.visibility = View.GONE
+                                }
+                                Status.LOADING -> {
+                                    progressBar.visibility = View.VISIBLE
+                                }
                             }
+
                         })
                     } else {
                         Toast.makeText(requireContext(), "How should we call you?", Toast.LENGTH_SHORT).show()

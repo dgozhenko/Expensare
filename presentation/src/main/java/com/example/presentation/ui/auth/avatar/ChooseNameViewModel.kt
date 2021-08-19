@@ -4,26 +4,37 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.data.interactors.auth.avatar.CreateUserInDatabase
+import com.example.data.interactors.auth.avatar.UploadImage
 import com.example.data.storage.Storage
+import com.example.domain.models.Response
 import com.example.domain.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
 sealed class ChooseNameResult {
-    object Success: ChooseNameResult()
-    data class Error (val exception: Exception): ChooseNameResult()
+    object Success : ChooseNameResult()
+    data class Error(val exception: Exception) : ChooseNameResult()
 }
 
 @HiltViewModel
-class ChooseNameViewModel @Inject constructor(private val storage: Storage): ViewModel() {
+class ChooseNameViewModel @Inject constructor(private val storage: Storage,
+private val uploadImage: UploadImage,
+private val createUserInDatabase: CreateUserInDatabase) : ViewModel() {
 
-    private val _chooseNameResult = MutableLiveData<ChooseNameResult>()
-    val chooseNameResult: LiveData<ChooseNameResult> get() = _chooseNameResult
+    private val _chooseNameResult = MutableLiveData<Response<Uri>>()
+    val chooseNameResult: LiveData<Response<Uri>> get() = _chooseNameResult
+
+    private val _createUserInDatabase = MutableLiveData<Response<String>>()
+    val createUser: LiveData<Response<String>> get() = _createUserInDatabase
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> get() = _email
@@ -53,28 +64,21 @@ class ChooseNameViewModel @Inject constructor(private val storage: Storage): Vie
     }
 
     // TODO: 17.08.2021 Repository
-        private fun createUserInDatabase(username: String, avatarUri: String, email: String) {
-        val uid = FirebaseAuth.getInstance().uid ?: ""
-        val user = User(uid, username, email, avatarUri)
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users/$uid")
-        reference.setValue(user).addOnSuccessListener {
-           _chooseNameResult.postValue(ChooseNameResult.Success)
-        }
-            .addOnFailureListener {
-                _chooseNameResult.postValue(ChooseNameResult.Error(it))
-            }
+     fun createUserInDatabase(username: String, avatarUri: String, email: String) {
+       viewModelScope.launch(Dispatchers.Main) {
+           createUserInDatabase.invoke(username, avatarUri, email).observeForever {
+               _createUserInDatabase.postValue(it)
+           }
+       }
     }
 
     // TODO: 17.08.2021 Repository
     fun uploadImage(uri: Uri, username: String, email: String) {
-        val filename = UUID.randomUUID().toString()
-        val reference = FirebaseStorage.getInstance("gs://expensare.appspot.com").getReference("/avatars/$filename")
-        reference.putFile(uri)
-            .addOnSuccessListener {
-                reference.downloadUrl.addOnSuccessListener {
-                    createUserInDatabase(username, it.toString(), email)
-                }
+        viewModelScope.launch(Dispatchers.Main) {
+            uploadImage.invoke(uri, username, email).observeForever {
+                _chooseNameResult.postValue(it)
             }
+        }
     }
 
 }

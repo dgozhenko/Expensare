@@ -3,6 +3,8 @@ package com.example.expensare.di.modules
 import com.example.data.datasource.*
 import com.example.data.interactors.auth.LoginUser
 import com.example.data.interactors.auth.RegisterUser
+import com.example.data.interactors.auth.avatar.CreateUserInDatabase
+import com.example.data.interactors.auth.avatar.UploadImage
 import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
@@ -182,5 +184,36 @@ class RepositoryModule {
   @Provides
   fun providesRegisterUser(authRepository: AuthRepository): RegisterUser {
     return RegisterUser(authRepository)
+  }
+
+  //Choose Name
+  @Singleton
+  @Provides
+  fun providesChooseNameInterface(): ChooseNameInterface {
+    return ChooseNameDataSource()
+  }
+
+  @Singleton
+  @Provides
+  fun providesChooseNameDataSource(): ChooseNameDataSource {
+    return ChooseNameDataSource()
+  }
+
+  @Singleton
+  @Provides
+  fun providesChooseNameRepository(chooseNameInterface: ChooseNameInterface): ChooseNameRepository {
+    return ChooseNameRepository(chooseNameInterface)
+  }
+
+  @Singleton
+  @Provides
+  fun providesCreateUserInDatabase(chooseNameRepository: ChooseNameRepository): CreateUserInDatabase {
+    return CreateUserInDatabase(chooseNameRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesUploadImage(chooseNameRepository: ChooseNameRepository): UploadImage {
+    return UploadImage(chooseNameRepository)
   }
 }
