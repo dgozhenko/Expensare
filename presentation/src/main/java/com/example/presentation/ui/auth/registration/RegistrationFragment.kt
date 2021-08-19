@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.domain.models.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.util.Extensions.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
@@ -18,25 +19,25 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RegistrationFragment : BaseFragment() {
 
-  private var _binding: FragmentRegistrationBinding? = null
-  private val binding
-    get() = _binding!!
+    private var _binding: FragmentRegistrationBinding? = null
+    private val binding
+        get() = _binding!!
 
-  private val registrationViewModel: RegistrationViewModel by viewModels()
+    private val registrationViewModel: RegistrationViewModel by viewModels()
 
-  override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
-    _binding = FragmentRegistrationBinding.inflate(inflater)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-      registrationButtonClicked()
-    binding.alreadyHaveAnAccountText.setOnClickListener {
-      findNavController()
-          .navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
+    override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
+        _binding = FragmentRegistrationBinding.inflate(inflater)
+        return binding.root
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        registrationButtonClicked()
+        binding.alreadyHaveAnAccountText.setOnClickListener {
+            findNavController()
+                .navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
+        }
+    }
 
     private fun registrationButtonClicked() {
         val progressBar = binding.registrationProgress
@@ -67,26 +68,25 @@ class RegistrationFragment : BaseFragment() {
 
                 else -> {
                     registrationViewModel.registerUser(email, password)
-                    registrationViewModel.error.observe(viewLifecycleOwner, { error ->
-                        if (error != null) {
-                            errorFree = false
-                            progressBar.visibility = View.GONE
-                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
-                        }
-                    })
-                    registrationViewModel.isRegisterComplete.observe(viewLifecycleOwner, { complete ->
-                        if (errorFree) {
-                            if (complete) {
-                                progressBar.visibility = View.GONE
-                                findNavController()
-                                    .navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment())
-                                Snackbar.make(this.requireView(), "Verification E-mail sent to you", Snackbar.LENGTH_SHORT).show()
-                                registrationViewModel.registerCompleted()
+                    registrationViewModel.userLiveData.observe(
+                        viewLifecycleOwner,
+                        { registerResponse ->
+                            when (registerResponse.status) {
+                                Status.ERROR -> {
+                                    progressBar.visibility = View.GONE
+                                    Toast.makeText(
+                                        requireContext(),
+                                        registerResponse.message,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                Status.LOADING -> progressBar.visibility = View.VISIBLE
+                                Status.SUCCESS -> findNavController().navigate(
+                                    RegistrationFragmentDirections.actionRegistrationFragmentToLoginFragment()
+                                )
                             }
-                        } else {
-                            registrationViewModel.errorCompleted()
-                        }
-                    })
+                        })
+
                 }
             }
 

@@ -1,6 +1,9 @@
 package com.example.presentation.ui.auth.registration
 
 import androidx.lifecycle.*
+import com.example.data.interactors.auth.RegisterUser
+import com.example.domain.models.Response
+import com.example.domain.models.SingleLiveEvent
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -9,39 +12,17 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class RegistrationViewModel @Inject constructor(): ViewModel() {
+class RegistrationViewModel @Inject constructor(private val registerUserUseCase: RegisterUser) :
+    ViewModel() {
 
-    private val _isRegisterComplete = MutableLiveData<Boolean>()
-    val isRegisterComplete: LiveData<Boolean> get() = _isRegisterComplete
-
-    private val _error = MutableLiveData<Exception>()
-    val error: LiveData<Exception> get() = _error
+    private val _userLiveData: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    val userLiveData: LiveData<Response<String>>
+        get() = _userLiveData
 
     // TODO: 17.08.2021 Repository
     fun registerUser(email: String, password: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        _isRegisterComplete.postValue(true)
-                        FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
-                        FirebaseAuth.getInstance().signOut()
-                    } else {
-                        return@addOnCompleteListener
-                    }
-                }
-                .addOnFailureListener {
-                    _error.postValue(it)
-                    return@addOnFailureListener
-                }
+        viewModelScope.launch(Dispatchers.Main) {
+            registerUserUseCase(email, password).observeForever { _userLiveData.postValue(it) }
         }
-    }
-
-    fun registerCompleted() {
-        _isRegisterComplete.postValue(null)
-    }
-
-    fun errorCompleted() {
-        _error.postValue(null)
     }
 }
