@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.domain.models.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.inner_circles_apps.myapplication.databinding.FragmentAddListItemScreenBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,14 +36,25 @@ class AddToListFragment: BaseFragment() {
 
     private fun getUsers() {
         addToListViewModel.group.observe(viewLifecycleOwner, {
-            addToListViewModel.getUsersFromGroup(it)
+            when(it.status) {
+                Status.ERROR -> {
+                    binding.progressCircular.visibility = View.GONE
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
+                Status.SUCCESS -> {
+                    binding.progressCircular.visibility = View.GONE
+                    addToListViewModel.getUsersFromGroup(it.data!!)
+                }
+                Status.LOADING -> {
+                    binding.progressCircular.visibility = View.VISIBLE
+                }
+            }
+
         })
     }
 
     private fun addToListButtonClicked() {
         binding.addToListButton.setOnClickListener {
-            val progressBar = binding.progressCircular
-            progressBar.visibility = View.VISIBLE
             val name = binding.itemNameEditText.text.toString()
             var quantity = 0
             if (binding.quantityEditText.text.toString().isNotEmpty()) {
@@ -58,22 +70,38 @@ class AddToListFragment: BaseFragment() {
                         Toast.LENGTH_SHORT
                     )
                         .show()
-                    progressBar.visibility = View.GONE
                 }
                 else -> {
                     addToListViewModel.user.observe(viewLifecycleOwner, {
-                        addToListViewModel.createListItem(category, name, it, quantity, shop)
+                        when(it.status) {
+                            Status.LOADING -> {
+                                binding.progressCircular.visibility = View.VISIBLE
+                            }
+                            Status.SUCCESS -> {
+                                binding.progressCircular.visibility = View.GONE
+                                addToListViewModel.createListItem(category, name, it.data!!, quantity, shop)
+                            }
+                            Status.ERROR -> {
+                                binding.progressCircular.visibility = View.GONE
+                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+
                     })
+
                     addToListViewModel.addToListResult.observe(viewLifecycleOwner, { result ->
-                        when(result) {
-                            AddToListResult.Success -> {
-                                Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
-                                progressBar.visibility = View.GONE
+                        when(result.status) {
+                            Status.SUCCESS -> {
+                                Toast.makeText(requireContext(), result.data, Toast.LENGTH_SHORT).show()
+                                binding.progressCircular.visibility = View.GONE
                                 findNavController().navigateUp()
                             }
-                           is AddToListResult.Error -> {
-                                Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT).show()
-                               progressBar.visibility = View.GONE
+                          Status.ERROR -> {
+                                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                              binding.progressCircular.visibility = View.GONE
+                            }
+                            Status.LOADING -> {
+                                binding.progressCircular.visibility = View.VISIBLE
                             }
                         }
                     })
