@@ -92,8 +92,8 @@ class ChooseNameFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         chooseNameViewModel.deleteStoredAvatar()
         chooseNameViewModel.deleteStoredEmail()
     }
