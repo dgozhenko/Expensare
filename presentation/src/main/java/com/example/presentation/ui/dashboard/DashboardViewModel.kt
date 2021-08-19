@@ -46,22 +46,18 @@ constructor(
         get() = _refreshedExpenses
 
     init {
-        getGroupByGroupId()
-    }
-
-    fun syncWithFirebase() {
-        getGroupExpenses()
-        // Repos
         getUserInfo()
     }
 
-    private fun getUserInfo() {
+
+
+     private fun getUserInfo() {
         viewModelScope.launch(Dispatchers.Main) {
             downloadUser.invoke().observeForever { _user.postValue(it) }
         }
     }
 
-    private fun getGroupByGroupId() {
+     fun getGroupByGroupId() {
         viewModelScope.launch(Dispatchers.Main) {
             getGroupByGroupId.invoke().observeForever { _group.postValue(it) }
         }
@@ -73,7 +69,7 @@ constructor(
         }
     }
 
-    private fun getGroupExpenses() {
+     fun getGroupExpenses() {
         viewModelScope.launch(Dispatchers.Main) {
             downloadExpenses.invoke().observeForever { _expenses.postValue(it) }
         }
