@@ -3,17 +3,23 @@ package com.example.data.datasource
 import com.example.data.interfaces.DebtInterface
 import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
+import com.example.domain.models.Response
+import com.example.domain.models.SingleLiveEvent
 import com.example.domain.models.UserDebt
-import com.google.android.gms.tasks.Tasks
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import javax.inject.Inject
 
 class DebtDataSource
 @Inject
 constructor(private val database: ExpensareDatabase, private val storage: Storage) : DebtInterface {
-  override suspend fun create(debt: UserDebt) {
+
+  override suspend fun create(debt: UserDebt): SingleLiveEvent<Response<String>> {
+    val response: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    response.value = Response.loading(null)
     val groupId = storage.groupId
-    var operationDone = false
     // Get all firebase references
     val groupDebts =
       FirebaseDatabase.getInstance(
@@ -34,64 +40,108 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
         )
         .getReference("group_debts/$groupId")
 
-    // try to get results and wait for all data
-    val check = groupDebtsCheck.get()
-    Tasks.await(check)
-    // if it result exists for each result find needed data and modify it, else create new
-    if (check.result!!.exists()) {
-      check.result!!.children.forEach {
-        val key = it.key
-        val userDebt = it.getValue(UserDebt::class.java)!!
-        if (userDebt.firstUser == debt.firstUser && userDebt.secondUser == debt.secondUser) {
-          operationDone = true
-          groupDebtsAdd
-            .child("/$key/")
-            .setValue(
+    groupDebtsCheck.addListenerForSingleValueEvent(object : ValueEventListener{
+      override fun onDataChange(snapshot: DataSnapshot) {
+        var operationDone = false
+        if (snapshot.exists()) {
+          snapshot.children.forEach {
+            val key = it.key
+            val userDebt = it.getValue(UserDebt::class.java)!!
+            if (userDebt.firstUser == debt.firstUser && userDebt.secondUser == debt.secondUser) {
+              operationDone = true
+              groupDebtsAdd.child("/$key/")
+                .setValue(
+                  UserDebt(
+                    userDebt.firstUser,
+                    userDebt.secondUser,
+                    userDebt.firstUserAmount + debt.firstUserAmount,
+                    userDebt.secondUserAmount - debt.secondUserAmount,
+                    false
+                  )
+                ).addOnSuccessListener {
+                  response.value = Response.success("Debt updated")
+                }
+                .addOnFailureListener { e ->
+                  response.value = Response.error(e.message!!, null)
+                }
+                .addOnCanceledListener {
+                  response.value = Response.error("Debt update canceled", null)
+                }
+            } else if (userDebt.firstUser == debt.secondUser && userDebt.secondUser == debt.firstUser) {
+              operationDone = true
+              groupDebtsAdd
+                .child("/$key/")
+                .setValue(
+                  UserDebt(
+                    userDebt.firstUser,
+                    userDebt.secondUser,
+                    userDebt.firstUserAmount - debt.firstUserAmount,
+                    userDebt.secondUserAmount + debt.firstUserAmount,
+                    false
+                  )
+                )
+                .addOnSuccessListener {
+                  response.value = Response.success("Debt updated")
+                }
+                .addOnFailureListener { e ->
+                  response.value = Response.error(e.message!!, null)
+                }
+                .addOnCanceledListener {
+                  response.value = Response.error("Debt update canceled", null)
+                }
+            }
+          }
+
+          if (!operationDone) {
+            groupDebts.setValue(
               UserDebt(
-                userDebt.firstUser,
-                userDebt.secondUser,
-                userDebt.firstUserAmount + debt.firstUserAmount,
-                userDebt.secondUserAmount - debt.secondUserAmount,
+                debt.firstUser,
+                debt.secondUser,
+                debt.firstUserAmount,
+                -debt.firstUserAmount,
                 false
               )
             )
-        } else if (userDebt.firstUser == debt.secondUser && userDebt.secondUser == debt.firstUser) {
+              .addOnSuccessListener {
+                response.value = Response.success("Debt created")
+              }
+              .addOnFailureListener { e ->
+                response.value = Response.error(e.message!!, null)
+              }
+              .addOnCanceledListener {
+                response.value = Response.error("Debt creation canceled", null)
+              }
+          }
+
+        } else {
           operationDone = true
-          groupDebtsAdd
-            .child("/$key/")
-            .setValue(
-              UserDebt(
-                userDebt.firstUser,
-                userDebt.secondUser,
-                userDebt.firstUserAmount - debt.firstUserAmount,
-                userDebt.secondUserAmount + debt.firstUserAmount,
-                false
-              )
+          groupDebts.setValue(
+            UserDebt(
+              debt.firstUser,
+              debt.secondUser,
+              debt.firstUserAmount,
+              -debt.firstUserAmount,
+              false
             )
+          )
+            .addOnSuccessListener {
+              response.value = Response.success("Debt created")
+            }
+            .addOnFailureListener { e ->
+              response.value = Response.error(e.message!!, null)
+            }
+            .addOnCanceledListener {
+              response.value = Response.error("Debt creation canceled", null)
+            }
         }
       }
 
-      if (!operationDone) {
-        groupDebts.setValue(
-          UserDebt(
-            debt.firstUser,
-            debt.secondUser,
-            debt.firstUserAmount,
-            -debt.firstUserAmount,
-            false
-          )
-        )
+      override fun onCancelled(error: DatabaseError) {
+        response.value = Response.error(error.message, null)
       }
-    } else {
-      groupDebts.setValue(
-        UserDebt(
-          debt.firstUser,
-          debt.secondUser,
-          debt.firstUserAmount,
-          -debt.firstUserAmount,
-          false
-        )
-      )
-    }
+
+    })
+
+    return response
   }
 }

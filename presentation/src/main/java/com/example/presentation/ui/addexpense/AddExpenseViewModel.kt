@@ -16,6 +16,7 @@ import com.example.domain.models.Group
 import com.example.domain.models.UserDebt
 import com.example.data.storage.Storage
 import com.example.domain.models.Response
+import com.example.domain.models.SingleLiveEvent
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
@@ -47,8 +48,8 @@ constructor(private val storage: Storage, database: ExpensareDatabase,
     val addExpenseResult: LiveData<Response<String>>
         get() = _addExpenseResult
 
-    private val _addDebtResult = MutableLiveData<AddDebtResult>()
-    val addDebtResult: LiveData<AddDebtResult>
+    private val _addDebtResult: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    val addDebtResult: LiveData<Response<String>>
         get() = _addDebtResult
 
     private val _group = MutableLiveData<Response<Group>>()
@@ -65,9 +66,11 @@ constructor(private val storage: Storage, database: ExpensareDatabase,
     }
     // TODO: 17.08.2021 Repository
     fun createDebt(amount: Int, fromUser: UserEntity, toUser: UserEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val debt = UserDebt(toUser, fromUser, amount, amount, false)
-            createDebt.invoke(debt)
+        val debt = UserDebt(toUser, fromUser, amount, amount, false)
+        viewModelScope.launch(Dispatchers.Main) {
+            createDebt.invoke(debt).observeForever {
+                _addDebtResult.postValue(it)
+            }
         }
     }
 
@@ -109,7 +112,7 @@ constructor(private val storage: Storage, database: ExpensareDatabase,
         val myUid = FirebaseAuth.getInstance().uid
         val filteredUserArrayList = arrayListOf<UserEntity>()
         viewModelScope.launch(Dispatchers.IO) {
-            val usersFromGroup = getAllUsersFromGroup.invoke(group)
+            val usersFromGroup = group.users
             usersFromGroup.forEach {
                 if (it.userUidId != myUid) {
                     filteredUserArrayList.add(it)

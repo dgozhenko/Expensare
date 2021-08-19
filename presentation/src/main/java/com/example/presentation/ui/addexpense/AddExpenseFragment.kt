@@ -226,25 +226,28 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
                     Status.SUCCESS -> {
                       if (divideAmount == 0 && !divideEqually) {
                         progressBar.visibility = View.GONE
+                        findNavController().navigateUp()
                       } else {
                         if (debtsArray.isNotEmpty()) {
                           debtsArray.forEach { debt ->
                             addExpenseViewModel.createDebt(debt.amount, debt.fromUser, debt.toUser)
-                            addExpenseViewModel.addDebtResult.observe(
-                              viewLifecycleOwner,
-                              { debtResult ->
-                                when (debtResult) {
-                                  is AddDebtResult.Error -> {
+                            addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
+                                when (debtResult.status) {
+                                   Status.ERROR -> {
                                     Toast.makeText(
                                         requireContext(),
-                                        debtResult.exception.message,
-                                        Toast.LENGTH_SHORT
-                                      )
+                                        debtResult.message,
+                                        Toast.LENGTH_LONG)
                                       .show()
                                     progressBar.visibility = View.GONE
                                   }
-                                  AddDebtResult.Success -> {
+                                  Status.SUCCESS -> {
                                     progressBar.visibility = View.GONE
+                                    Toast.makeText(requireContext(), debtResult.data, Toast.LENGTH_LONG).show()
+                                    findNavController().navigateUp()
+                                  }
+                                  Status.LOADING -> {
+                                    progressBar.visibility = View.VISIBLE
                                   }
                                 }
                               }
@@ -259,18 +262,23 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
                             addExpenseViewModel.addDebtResult.observe(
                               viewLifecycleOwner,
                               { debtResult ->
-                                when (debtResult) {
-                                  is AddDebtResult.Error -> {
+                                when (debtResult.status) {
+                                   Status.ERROR -> {
                                     Toast.makeText(
                                         requireContext(),
-                                        debtResult.exception.message,
-                                        Toast.LENGTH_SHORT
+                                        debtResult.message,
+                                        Toast.LENGTH_LONG
                                       )
                                       .show()
                                     progressBar.visibility = View.GONE
                                   }
-                                  AddDebtResult.Success -> {
+                                  Status.SUCCESS -> {
                                     progressBar.visibility = View.GONE
+                                    Toast.makeText(requireContext(), debtResult.data, Toast.LENGTH_LONG).show()
+                                    findNavController().navigateUp()
+                                  }
+                                  Status.LOADING -> {
+                                    progressBar.visibility = View.VISIBLE
                                   }
                                 }
                               }
@@ -280,7 +288,7 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
                       }
                     }
                   }
-                  findNavController().navigateUp()
+
                 }
               )
             }
