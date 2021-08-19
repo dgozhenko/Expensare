@@ -34,7 +34,9 @@ class ChooseNameFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         bindButtons()
         chooseNameViewModel.avatar.observe(viewLifecycleOwner, {
-            binding.chooseAvatar.setImageURI(it.toUri())
+            if (it != "def" && it.isNotBlank()) {
+                binding.chooseAvatar.setImageURI(it.toUri())
+            }
         })
     }
 

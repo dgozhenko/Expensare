@@ -30,6 +30,6 @@ class Storage(context: Context) {
             sharedPreferences
                 .getString(
                     KEY_AVATAR,
-                    "android.resource://com.example.expensare/drawable/" + R.drawable.ic_for).toString()
+                    "def").toString()
         set(value) = sharedPreferences.edit().putString(KEY_AVATAR, value).apply()
 }
