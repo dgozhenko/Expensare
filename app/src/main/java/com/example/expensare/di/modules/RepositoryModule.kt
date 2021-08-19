@@ -2,6 +2,7 @@ package com.example.expensare.di.modules
 
 import com.example.data.datasource.*
 import com.example.data.interactors.auth.LoginUser
+import com.example.data.interactors.auth.RegisterUser
 import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
@@ -175,5 +176,11 @@ class RepositoryModule {
   @Provides
   fun providesLoginUser(authRepository: AuthRepository): LoginUser {
     return LoginUser(authRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesRegisterUser(authRepository: AuthRepository): RegisterUser {
+    return RegisterUser(authRepository)
   }
 }

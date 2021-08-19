@@ -44,6 +44,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
   override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
     _binding = FragmentDashboardBinding.inflate(inflater)
     _navigationView = requireActivity().findViewById(R.id.test_nav_view)
+    getUserInfo()
     bindToolbarAndNavDrawer()
     bindExpensesRecyclerView()
     return binding.root
@@ -53,7 +54,6 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
     super.onViewCreated(view, savedInstanceState)
     // FIXME: 09.08.2021 c
 
-    getUserInfo()
     bindButtons()
   }
 
@@ -193,6 +193,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
             FirebaseAuth.getInstance().signOut()
           }
           Status.SUCCESS -> {
+            dashboardViewModel.getGroupByGroupId()
             binding.progressCircular.visibility = View.GONE
             val header = navigationView.getHeaderView(0)
             val drawerHeaderNameText = header.findViewById<MaterialTextView>(R.id.user_name)
@@ -217,7 +218,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
           Status.SUCCESS -> {
             binding.progressCircular.visibility = View.GONE
             binding.absToolbarTitle.text = it.data!!.groupName
-            dashboardViewModel.syncWithFirebase()
+            dashboardViewModel.getGroupExpenses()
           }
           Status.ERROR -> {
             binding.progressCircular.visibility = View.GONE

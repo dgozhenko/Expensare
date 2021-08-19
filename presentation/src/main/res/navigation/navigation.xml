@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     app:startDestination="@id/loginFragment">
 
@@ -71,9 +72,6 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/chooseNameFragment"
             app:popUpToInclusive="true" />
-        <argument
-            android:name="input"
-            app:argType="com.example.domain.models.Input"/>
 
 
     </fragment>
@@ -89,9 +87,6 @@
             app:popUpTo="@id/avatarPickerFragment"
             app:popUpToInclusive="true">
         </action>
-        <argument
-            android:name="email"
-            app:argType="string"/>
     </fragment>
     <fragment
         android:id="@+id/dashboardFragment"
@@ -528,4 +523,9 @@
             android:id="@+id/action_listFragment_to_finishShopSessionFragment"
             app:destination="@id/finishShopSessionFragment" />
     </fragment>
+    <activity
+        android:id="@+id/splashScreen"
+        android:name="com.example.presentation.ui.splash.SplashScreen"
+        android:label="activity_splash_screen"
+        tools:layout="@layout/activity_splash_screen" />
 </navigation>

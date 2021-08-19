@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/sasha/Expensare/presentation/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22708333333333333" />
         <entry key="presentation/src/main/res/layout/activity_main.xml" value="0.22708333333333333" />
         <entry key="presentation/src/main/res/layout/activity_splash_screen.xml" value="0.22708333333333333" />

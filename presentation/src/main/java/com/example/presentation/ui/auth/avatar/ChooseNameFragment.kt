@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,8 +25,6 @@ class ChooseNameFragment : BaseFragment() {
 
     private val chooseNameViewModel: ChooseNameViewModel by viewModels()
 
-    private val args: ChooseNameFragmentArgs by navArgs()
-
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
         _binding = FragmentNameRegistrationBinding.inflate(inflater)
         return binding.root
@@ -34,9 +33,9 @@ class ChooseNameFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindButtons()
-        if (args.input.Avatar.fromAvatarPicker) {
-            binding.chooseAvatar.setImageURI(args.input.Avatar.avatar)
-        }
+        chooseNameViewModel.avatar.observe(viewLifecycleOwner, {
+            binding.chooseAvatar.setImageURI(it.toUri())
+        })
     }
 
     private fun bindButtons() {
@@ -45,44 +44,55 @@ class ChooseNameFragment : BaseFragment() {
         progressBar.setIndicatorColor(resources.getColor(R.color.red, requireActivity().theme))
 
         binding.thatsMeButton.setOnClickListener {
+            var email = ""
+            chooseNameViewModel.email.observe(viewLifecycleOwner, {emailString ->
+                email = emailString
+            })
             it.hideKeyboard()
             progressBar.visibility = View.VISIBLE
-            if (args.input.Avatar.fromAvatarPicker) {
-                val username = binding.nameEditText.text.toString()
-                val avatar = args.input.Avatar
-                if (username.isNotEmpty()) {
-                    chooseNameViewModel.uploadImage(avatar.avatar, username, args.input.email)
-                    chooseNameViewModel.chooseNameResult.observe(viewLifecycleOwner, { result ->
-                        when (result) {
-                            is ChooseNameResult.Error -> {
-                                Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT).show()
-                                progressBar.visibility = View.GONE
+            chooseNameViewModel.avatar.observe(viewLifecycleOwner, {avatarString ->
+                if (avatarString != "def" && avatarString.isNotBlank()) {
+                    val username = binding.nameEditText.text.toString()
+                    if (username.isNotEmpty()) {
+                        chooseNameViewModel.uploadImage(avatarString.toUri(), username, email)
+                        chooseNameViewModel.chooseNameResult.observe(viewLifecycleOwner, { result ->
+                            when (result) {
+                                is ChooseNameResult.Error -> {
+                                    Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT).show()
+                                    progressBar.visibility = View.GONE
+                                }
+                                ChooseNameResult.Success -> {
+                                    findNavController()
+                                        .navigate(
+                                            ChooseNameFragmentDirections
+                                                .actionChooseNameFragmentToChooseGroupFragment())
+                                    progressBar.visibility = View.GONE
+                                }
                             }
-                            ChooseNameResult.Success -> {
-                                findNavController()
-                                    .navigate(
-                                        ChooseNameFragmentDirections
-                                           .actionChooseNameFragmentToChooseGroupFragment())
-                                progressBar.visibility = View.GONE
-                            }
-                        }
-                    })
+                        })
+                    } else {
+                        Toast.makeText(requireContext(), "How should we call you?", Toast.LENGTH_SHORT).show()
+                        progressBar.visibility = View.GONE
+                    }
                 } else {
-                    Toast.makeText(requireContext(), "How should we call you?", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Choose avatar", Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
-            } else {
-                Toast.makeText(requireContext(), "Choose avatar", Toast.LENGTH_SHORT).show()
-                progressBar.visibility = View.GONE
-            }
+            })
         }
 
         binding.chooseAvatar.setOnClickListener {
             it.hideKeyboard()
             findNavController()
                 .navigate(
-                    ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment(args.input.email)
+                    ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment()
                 )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        chooseNameViewModel.deleteStoredAvatar()
+        chooseNameViewModel.deleteStoredEmail()
     }
 }

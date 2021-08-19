@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domain.models.Avatar
-import com.example.domain.models.Input
 import com.example.domain.models.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.inner_circles_apps.myapplication.R
@@ -69,7 +68,7 @@ class LoginFragment : BaseFragment() {
                 Status.ERROR -> {
                   if (loginResponse.message == "No user found") {
                       findNavController()
-                          .navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment(Input(Avatar(Uri.EMPTY, false), email)))
+                          .navigate(LoginFragmentDirections.actionLoginFragmentToChooseNameFragment())
                   } else {
                       progressBar.visibility = View.GONE
                       Toast.makeText(requireContext(), loginResponse.message, Toast.LENGTH_LONG).show()
