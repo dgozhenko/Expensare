@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.list.DeleteListItem
+import com.example.data.interactors.list.GetList
 import com.example.data.storage.Storage
 import com.example.domain.models.Group
 import com.example.domain.models.ListItem
+import com.example.domain.models.Response
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -17,159 +21,60 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ListViewModel @Inject constructor(private val storage: Storage) : ViewModel() {
+class ListViewModel @Inject constructor(private val storage: Storage,
+                                        private val deleteListItem: DeleteListItem,
+                                        private val getList: GetList,
+                                        private val getGroupByGroupId: GetGroupByGroupId) : ViewModel() {
 
-    private val _group = MutableLiveData<Group>()
-    val group: LiveData<Group>
+    private val _group = MutableLiveData<Response<Group>>()
+    val group: LiveData<Response<Group>>
         get() = _group
 
-    private val _groceryList = MutableLiveData<ArrayList<ListItem>>()
-    val groceryList: LiveData<ArrayList<ListItem>>
+    private val _groceryList = MutableLiveData<Response<ArrayList<ListItem>>>()
+    val groceryList: LiveData<Response<ArrayList<ListItem>>>
         get() = _groceryList
 
-    private val _refreshedGroceryList = MutableLiveData<ArrayList<ListItem>>()
-    val refreshedGroceryList: LiveData<ArrayList<ListItem>>
+    private val _refreshedGroceryList = MutableLiveData<Response<ArrayList<ListItem>>>()
+    val refreshedGroceryList: LiveData<Response<ArrayList<ListItem>>>
         get() = _refreshedGroceryList
 
+    private val _deleteResult = MutableLiveData<Response<String>>()
+    val deleteResult: LiveData<Response<String>> get() = _deleteResult
+
     init {
-       // TODO: 17.08.2021 Repository
         getGroupByGroupId()
-        // TODO: 17.08.2021 Repository
         getGroupGroceryList()
     }
 
-    // TODO: 17.08.2021 Repository
     fun refreshGroceryList() {
-        val groupId = storage.groupId
-        val groceryListArray = arrayListOf<ListItem>()
-        val reference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/grocery_list/$groupId/")
-        reference.keepSynced(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val groceryListItem = it.getValue(ListItem::class.java)
-                                if (groceryListItem != null) {
-                                    groceryListArray.add(groceryListItem)
-                                }
-                            }
-                            _refreshedGroceryList.postValue(groceryListArray)
-                        } else {
-                            _refreshedGroceryList.postValue(null)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
+        viewModelScope.launch(Dispatchers.Main) {
+            getList.invoke().observeForever {
+                _refreshedGroceryList.postValue(it)
+            }
         }
     }
 
-    // TODO: 17.08.2021 Repository
     fun deleteGroceryItem(item: ListItem) {
-        val groupId = storage.groupId
-        val reference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/grocery_list/$groupId/")
-        val deleteReference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/grocery_list/$groupId/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val listItem = it.getValue(ListItem::class.java)
-                                if (item == listItem) {
-                                    val key = it.key
-                                    deleteReference.child("${key!!}/").removeValue()
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
+        viewModelScope.launch(Dispatchers.Main) {
+            deleteListItem.invoke(item).observeForever {
+                _deleteResult.postValue(it)
+            }
         }
     }
 
     private fun getGroupGroceryList() {
-        val groupId = storage.groupId
-        val groceryListArray = arrayListOf<ListItem>()
-        val reference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/grocery_list/$groupId/")
-        reference.keepSynced(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val groceryListItem = it.getValue(ListItem::class.java)
-                                if (groceryListItem != null) {
-                                    groceryListArray.add(groceryListItem)
-                                }
-                            }
-                            _groceryList.postValue(groceryListArray)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
+        viewModelScope.launch(Dispatchers.Main) {
+            getList.invoke().observeForever {
+                _groceryList.postValue(it)
+            }
         }
     }
 
     private fun getGroupByGroupId() {
-        val groupId = storage.groupId
-        val reference =
-            FirebaseDatabase.getInstance(
-                    "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference("/groups/")
-        reference.keepSynced(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val groupInfo = it.getValue(Group::class.java)
-                                if (groupInfo != null) {
-                                    if (groupInfo.groupID == groupId) {
-                                        _group.postValue(groupInfo)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                }
-            )
+        viewModelScope.launch(Dispatchers.Main) {
+            getGroupByGroupId.invoke().observeForever {
+                _group.postValue(it)
+            }
         }
     }
 }

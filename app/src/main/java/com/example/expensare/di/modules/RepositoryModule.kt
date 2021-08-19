@@ -8,6 +8,9 @@ import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
 import com.example.data.interactors.group.GetAllUsersFromGroup
 import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.list.CreateListItem
+import com.example.data.interactors.list.DeleteListItem
+import com.example.data.interactors.list.GetList
 import com.example.data.interactors.user.CreateUser
 import com.example.data.interactors.user.DownloadUser
 import com.example.data.interfaces.*
@@ -182,5 +185,43 @@ class RepositoryModule {
   @Provides
   fun providesRegisterUser(authRepository: AuthRepository): RegisterUser {
     return RegisterUser(authRepository)
+  }
+
+  // Grocery List
+
+  @Singleton
+  @Provides
+  fun providesListInterface(database: ExpensareDatabase, storage: Storage): ListInterface {
+    return ListDataSource(database, storage)
+  }
+
+  @Singleton
+  @Provides
+  fun providesListDataSource(database: ExpensareDatabase, storage: Storage): ListDataSource {
+    return ListDataSource(database, storage)
+  }
+
+  @Singleton
+  @Provides
+  fun providesListRepository(listInterface: ListInterface): ListItemRepository {
+    return ListItemRepository(listInterface)
+  }
+
+  @Singleton
+  @Provides
+  fun providesCreateListItem(listItemRepository: ListItemRepository): CreateListItem {
+    return CreateListItem(listItemRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesDeleteListItem(listItemRepository: ListItemRepository): DeleteListItem {
+    return DeleteListItem(listItemRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetList(listItemRepository: ListItemRepository): GetList {
+    return GetList(listItemRepository)
   }
 }

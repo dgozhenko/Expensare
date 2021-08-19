@@ -127,7 +127,6 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage): V
     // TODO: 17.08.2021 Repository
      fun getUsersFromGroup(group: Group) {
 
-
     }
 
 }

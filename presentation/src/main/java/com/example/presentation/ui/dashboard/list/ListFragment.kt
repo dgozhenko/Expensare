@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.ListItem
+import com.example.domain.models.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.util.SwipeToDeleteCallback
 import com.inner_circles_apps.myapplication.R
@@ -47,8 +48,20 @@ class ListFragment: BaseFragment() {
         super.onResume()
         listViewModel.refreshGroceryList()
         listViewModel.refreshedGroceryList.observe(viewLifecycleOwner, {
-            if (it != null) {
-                adapter.getListItems(it)
+            when(it.status) {
+                Status.LOADING -> {
+                    binding.progressCircular.visibility = View.VISIBLE
+                }
+                Status.SUCCESS -> {
+                    binding.noListText.visibility = View.GONE
+                    binding.progressCircular.visibility = View.GONE
+                    adapter.getListItems(it.data!!)
+                }
+                Status.ERROR -> {
+                    binding.noListText.visibility = View.VISIBLE
+                    binding.progressCircular.visibility = View.GONE
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
             }
         })
     }
@@ -78,13 +91,21 @@ class ListFragment: BaseFragment() {
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(binding.listRecyclerView)
         listViewModel.groceryList.observe(viewLifecycleOwner, {
-            if (it != null) {
-                binding.noListText.visibility = View.GONE
-                adapter.getListItems(it)
-                binding.progressCircular.visibility = View.GONE
-            } else {
-                binding.noListText.visibility = View.VISIBLE
-                binding.progressCircular.visibility = View.GONE
+            when(it.status) {
+                Status.LOADING -> {
+                    binding.noListText.visibility = View.VISIBLE
+                    binding.progressCircular.visibility = View.VISIBLE
+                }
+                Status.SUCCESS -> {
+                    binding.noListText.visibility = View.GONE
+                    binding.progressCircular.visibility = View.GONE
+                    adapter.getListItems(it.data!!)
+                }
+                Status.ERROR -> {
+                    binding.noListText.visibility = View.VISIBLE
+                    binding.progressCircular.visibility = View.GONE
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
             }
         })
 
