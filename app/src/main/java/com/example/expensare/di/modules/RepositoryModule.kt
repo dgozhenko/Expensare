@@ -3,11 +3,16 @@ package com.example.expensare.di.modules
 import com.example.data.datasource.*
 import com.example.data.interactors.auth.LoginUser
 import com.example.data.interactors.auth.RegisterUser
+import com.example.data.interactors.auth.avatar.CreateUserInDatabase
+import com.example.data.interactors.auth.avatar.UploadImage
 import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
 import com.example.data.interactors.group.GetAllUsersFromGroup
 import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.list.CreateListItem
+import com.example.data.interactors.list.DeleteListItem
+import com.example.data.interactors.list.GetList
 import com.example.data.interactors.user.CreateUser
 import com.example.data.interactors.user.DownloadUser
 import com.example.data.interfaces.*
@@ -182,5 +187,75 @@ class RepositoryModule {
   @Provides
   fun providesRegisterUser(authRepository: AuthRepository): RegisterUser {
     return RegisterUser(authRepository)
+  }
+
+  //Choose Name
+  @Singleton
+  @Provides
+  fun providesChooseNameInterface(): ChooseNameInterface {
+    return ChooseNameDataSource()
+  }
+
+  @Singleton
+  @Provides
+  fun providesChooseNameDataSource(): ChooseNameDataSource {
+    return ChooseNameDataSource()
+  }
+
+  @Singleton
+  @Provides
+  fun providesChooseNameRepository(chooseNameInterface: ChooseNameInterface): ChooseNameRepository {
+    return ChooseNameRepository(chooseNameInterface)
+  }
+
+  @Singleton
+  @Provides
+  fun providesCreateUserInDatabase(chooseNameRepository: ChooseNameRepository): CreateUserInDatabase {
+    return CreateUserInDatabase(chooseNameRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesUploadImage(chooseNameRepository: ChooseNameRepository): UploadImage {
+    return UploadImage(chooseNameRepository)
+  }
+
+
+  // Grocery List
+
+  @Singleton
+  @Provides
+  fun providesListInterface(database: ExpensareDatabase, storage: Storage): ListInterface {
+    return ListDataSource(database, storage)
+  }
+
+  @Singleton
+  @Provides
+  fun providesListDataSource(database: ExpensareDatabase, storage: Storage): ListDataSource {
+    return ListDataSource(database, storage)
+  }
+
+  @Singleton
+  @Provides
+  fun providesListRepository(listInterface: ListInterface): ListItemRepository {
+    return ListItemRepository(listInterface)
+  }
+
+  @Singleton
+  @Provides
+  fun providesCreateListItem(listItemRepository: ListItemRepository): CreateListItem {
+    return CreateListItem(listItemRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesDeleteListItem(listItemRepository: ListItemRepository): DeleteListItem {
+    return DeleteListItem(listItemRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetList(listItemRepository: ListItemRepository): GetList {
+    return GetList(listItemRepository)
   }
 }
