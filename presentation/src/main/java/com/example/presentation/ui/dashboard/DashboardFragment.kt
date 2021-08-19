@@ -52,8 +52,6 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    // FIXME: 09.08.2021 c
-
     bindButtons()
   }
 
