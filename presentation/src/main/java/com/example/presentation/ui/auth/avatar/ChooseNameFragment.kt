@@ -64,6 +64,8 @@ class ChooseNameFragment : BaseFragment() {
                                     progressBar.visibility = View.GONE
                                 }
                                 ChooseNameResult.Success -> {
+                                    chooseNameViewModel.deleteStoredAvatar()
+                                    chooseNameViewModel.deleteStoredEmail()
                                     findNavController()
                                         .navigate(
                                             ChooseNameFragmentDirections
@@ -90,11 +92,5 @@ class ChooseNameFragment : BaseFragment() {
                     ChooseNameFragmentDirections.actionChooseNameFragmentToAvatarPickerFragment()
                 )
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        chooseNameViewModel.deleteStoredAvatar()
-        chooseNameViewModel.deleteStoredEmail()
     }
 }
