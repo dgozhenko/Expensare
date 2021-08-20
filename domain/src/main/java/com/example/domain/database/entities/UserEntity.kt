@@ -12,9 +12,10 @@ data class UserEntity(
   @ColumnInfo(name = "userEmail") val userEmail: String = "",
   @ColumnInfo(name = "username") val username: String = "",
   @ColumnInfo(name = "password") val password: String = "",
-  @ColumnInfo(name = "avatar") val avatar: String? = ""
+  @ColumnInfo(name = "avatar") val avatar: String? = "",
+  @ColumnInfo(name = "groups") val groups: ArrayList<String>? = arrayListOf()
 ) : Serializable {
   companion object {
-    val EMPTY: UserEntity = UserEntity(0, "", "", "", "", null)
+    val EMPTY: UserEntity = UserEntity(0, "", "", "", "", null, arrayListOf())
   }
 }

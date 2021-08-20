@@ -77,6 +77,33 @@ class ChooseGroupFragment : BaseFragment() {
         }
       }
     )
-    chooseGroupViewModel.groups.observe(viewLifecycleOwner, { adapter.getGroups(it) })
+    chooseGroupViewModel.groupIds.observe(viewLifecycleOwner, {
+      when(it.status) {
+        Status.LOADING -> {
+          // TODO: 18.08.2021 add progressBar
+        }
+        Status.ERROR -> {
+          Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+        }
+        Status.SUCCESS -> {
+          chooseGroupViewModel.getAllGroups(it.data!!)
+        }
+      }
+    })
+
+    chooseGroupViewModel.groups.observe(viewLifecycleOwner, {
+    when (it.status) {
+      Status.SUCCESS -> {
+        adapter.getGroups(it.data!!)
+      }
+      Status.ERROR -> {
+        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+      }
+      Status.LOADING -> {
+        // TODO: 18.08.2021 add progressBar
+      }
+    }
+
+    })
   }
 }

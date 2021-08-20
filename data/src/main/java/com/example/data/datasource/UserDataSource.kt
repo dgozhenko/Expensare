@@ -41,7 +41,7 @@ class UserDataSource @Inject constructor(private val database: ExpensareDatabase
         .getReference("/users/")
         .child(userId)
 
-    users.addValueEventListener(
+    users.addListenerForSingleValueEvent(
       object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
           if (snapshot.exists()) {

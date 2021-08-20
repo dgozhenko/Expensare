@@ -8,8 +8,7 @@ import com.example.data.interactors.auth.avatar.UploadImage
 import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
-import com.example.data.interactors.group.GetAllUsersFromGroup
-import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.group.*
 import com.example.data.interactors.list.CreateListItem
 import com.example.data.interactors.list.DeleteListItem
 import com.example.data.interactors.list.GetList
@@ -97,6 +96,24 @@ class RepositoryModule {
   @Provides
   fun providesGetGroupByGroupId(groupRepository: GroupRepository): GetGroupByGroupId {
     return GetGroupByGroupId(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetGroups(groupRepository: GroupRepository): GetAllGroups {
+    return GetAllGroups(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesCreateGroup(groupRepository: GroupRepository): CreateGroup {
+    return CreateGroup(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesListenFor(groupRepository: GroupRepository): ListenForGroups {
+    return ListenForGroups(groupRepository)
   }
 
   // Debt
