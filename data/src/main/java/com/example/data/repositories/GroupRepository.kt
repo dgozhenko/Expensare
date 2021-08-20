@@ -23,4 +23,8 @@ class GroupRepository(private val groupInterface: GroupInterface) {
   suspend fun addUserToGroup(userEntity: UserEntity): LiveData<Response<UserGroupData>> = groupInterface.addUserToGroup(userEntity)
 
   suspend fun createUserInGroup(userGroupData: UserGroupData): LiveData<Response<String>> = groupInterface.createUserInGroup(userGroupData)
+
+  suspend fun getGroupDebts(users: ArrayList<UserEntity>, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>> = groupInterface.getGroupDebts(users, debtToMe)
+
+  suspend fun getGroupDetailedDebt(user: UserEntity, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>> = groupInterface.getGroupDetailedDebt(user, debtToMe)
 }

@@ -134,6 +134,18 @@ class RepositoryModule {
     return GetUserByEmail(groupRepository)
   }
 
+  @Singleton
+  @Provides
+  fun providesGetGroupDebts(groupRepository: GroupRepository): GetGroupDebts {
+    return GetGroupDebts(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetGroupDetailedDebts(groupRepository: GroupRepository): GetGroupDetailedDebt {
+    return GetGroupDetailedDebt(groupRepository)
+  }
+
   // Debt
 
   @Singleton

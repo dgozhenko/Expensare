@@ -6,9 +6,7 @@ import com.example.data.interfaces.GroupInterface
 import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Group
-import com.example.domain.models.Response
-import com.example.domain.models.UserGroupData
+import com.example.domain.models.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -19,10 +17,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class GroupDataSource
-@Inject
-constructor(private val database: ExpensareDatabase, private val storage: Storage) :
-  GroupInterface {
+class GroupDataSource @Inject constructor(private val database: ExpensareDatabase, private val storage: Storage) : GroupInterface {
 
   override suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity> {
     return group.users
@@ -256,6 +251,140 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
       .addOnCanceledListener {
         response.value = Response.error("User creation in group was canceled", null)
       }
+    return response
+  }
+
+  override suspend fun getGroupDebts(users: ArrayList<UserEntity>, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>> {
+    val response = MutableLiveData<Response<ArrayList<UserDebt>>>()
+    response.value = Response.loading(null)
+
+    val groupId = storage.groupId
+    var fullAmount = 0
+    val userDebtArrayList = arrayListOf<UserDebt>()
+    users.forEach { groupUser ->
+      if (debtToMe) {
+        val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+        referenceCheck.addListenerForSingleValueEvent(
+          object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+              if (snapshot.exists()) {
+                snapshot.children.forEach {
+                  val userDebt = it.getValue(UserDebt::class.java)!!
+                  if (userDebt.firstUser.userUidId == groupUser.userUidId && userDebt.firstUserAmount > 0) {
+                    fullAmount += userDebt.firstUserAmount
+                  } else if (userDebt.secondUser.userUidId == groupUser.userUidId && userDebt.secondUserAmount > 0) {
+                    fullAmount += userDebt.secondUserAmount
+                  }
+                }
+                if (fullAmount != 0) {
+                  userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount, fullAmount, false))
+                  fullAmount = 0
+                  response.value = Response.success(userDebtArrayList)
+                }
+              } else {
+                response.value = Response.error("No group debts was found", null)
+              }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+              response.value = Response.error(error.message, null)
+            }
+          }
+        )
+      } else {
+        val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+        referenceCheck.addListenerForSingleValueEvent(
+          object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+              if (snapshot.exists()) {
+                snapshot.children.forEach {
+                  val userDebt = it.getValue(UserDebt::class.java)!!
+                  if (userDebt.firstUser.userUidId == groupUser.userUidId && userDebt.firstUserAmount < 0) {
+                    fullAmount += userDebt.firstUserAmount
+                  } else if (userDebt.secondUser.userUidId == groupUser.userUidId && userDebt.secondUserAmount < 0) {
+                    fullAmount += userDebt.secondUserAmount
+                  }
+                }
+                if (fullAmount != 0) {
+                  userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount * -1, fullAmount * -1, false))
+                  fullAmount = 0
+                  response.value = Response.success(userDebtArrayList)
+                }
+              } else {
+                response.value = Response.error("No group debts was found", null)
+              }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+              response.value = Response.error(error.message, null)
+            }
+          }
+        )
+      }
+    }
+    return response
+  }
+
+  override suspend fun getGroupDetailedDebt(user: UserEntity, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>> {
+    val response = MutableLiveData<Response<ArrayList<UserDebt>>>()
+    response.value = Response.loading(null)
+    val groupId = storage.groupId
+    val userDebtArrayList = arrayListOf<UserDebt>()
+    if (debtToMe) {
+      val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+      referenceCheck.addListenerForSingleValueEvent(
+        object : ValueEventListener {
+          override fun onDataChange(snapshot: DataSnapshot) {
+            if (snapshot.exists()) {
+              snapshot.children.forEach {
+                val userDebt = it.getValue(UserDebt::class.java)!!
+                if (userDebt.firstUser.userUidId == user.userUidId && userDebt.firstUserAmount > 0) {
+                  // we need secondUser
+                  userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
+                } else if (userDebt.secondUser.userUidId == user.userUidId && userDebt.secondUserAmount > 0) {
+                  // we need firsUser
+                  userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
+                }
+              }
+              response.value = Response.success(userDebtArrayList)
+            } else {
+              response.value = Response.error("There no debts", null)
+            }
+          }
+
+          override fun onCancelled(error: DatabaseError) {
+            response.value = Response.error(error.message, null)
+          }
+        }
+      )
+    } else {
+      val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
+      referenceCheck.addListenerForSingleValueEvent(
+        object : ValueEventListener {
+          override fun onDataChange(snapshot: DataSnapshot) {
+            if (snapshot.exists()) {
+              snapshot.children.forEach {
+                val userDebt = it.getValue(UserDebt::class.java)!!
+                if (userDebt.firstUser.userUidId == user.userUidId && userDebt.firstUserAmount < 0) {
+                  // we need secondUser
+                  userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
+                } else if (userDebt.secondUser.userUidId == user.userUidId && userDebt.secondUserAmount < 0) {
+                  // we need firstUser
+                  userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
+                }
+              }
+              response.value = Response.success(userDebtArrayList)
+            } else {
+              response.value = Response.error("There no debts", null)
+            }
+          }
+
+          override fun onCancelled(error: DatabaseError) {
+            response.value = Response.error(error.message, null)
+          }
+        }
+      )
+    }
     return response
   }
 }

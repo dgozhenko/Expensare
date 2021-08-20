@@ -2,10 +2,7 @@ package com.example.data.interfaces
 
 import androidx.lifecycle.LiveData
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Group
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
-import com.example.domain.models.UserGroupData
+import com.example.domain.models.*
 
 interface GroupInterface {
   suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity>
@@ -23,4 +20,8 @@ interface GroupInterface {
   suspend fun addUserToGroup(userEntity: UserEntity): LiveData<Response<UserGroupData>>
 
   suspend fun createUserInGroup(userGroupData: UserGroupData): LiveData<Response<String>>
+
+  suspend fun getGroupDebts(users: ArrayList<UserEntity>, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>>
+
+  suspend fun getGroupDetailedDebt(user: UserEntity, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>>
 }
