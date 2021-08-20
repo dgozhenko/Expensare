@@ -2,10 +2,7 @@ package com.example.presentation.ui.mydebts.create_debt
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.domain.models.Group
 import com.example.domain.models.ManualDebt
 import com.example.domain.models.User
@@ -28,7 +25,7 @@ sealed class CreateDebtResult {
 }
 
 @HiltViewModel
-class CreateDebtViewModel @Inject constructor(private val getApplication: Application) : AndroidViewModel(getApplication) {
+class CreateDebtViewModel @Inject constructor() : ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -89,8 +86,8 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
 
     // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
-        val storage = Storage(getApplication.baseContext)
-        val groupId = storage.groupId
+        //val storage = Storage(getApplication.baseContext)
+        //val groupId = storage.groupId
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -99,9 +96,9 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
                         snapshot.children.forEach {
                             val groupInfo = it.getValue(Group::class.java)
                             if (groupInfo != null) {
-                                if (groupInfo.groupID == groupId) {
-                                    _group.postValue(groupInfo)
-                                }
+                                //if (groupInfo.groupID == groupId) {
+                                //    _group.postValue(groupInfo)
+                                //}
                             }
                         }
                     }

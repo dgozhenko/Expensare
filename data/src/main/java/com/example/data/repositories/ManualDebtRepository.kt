@@ -1,21 +1,30 @@
 package com.example.data.repositories
 
-import com.example.domain.database.ExpensareDatabase
+import androidx.lifecycle.LiveData
+import com.example.data.interfaces.ManualDebtInterface
 import com.example.domain.database.entities.ManualDebtEntity
+import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.ManualDebt
+import com.example.domain.models.Response
+import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.User
 
-class ManualDebtRepository(database: ExpensareDatabase) {
+class ManualDebtRepository(private val manualDebtInterface: ManualDebtInterface) {
+    suspend fun getUserInfo(): LiveData<UserEntity> =
+        manualDebtInterface.getUserInfo()
 
-  private val manualDebtDao = database.manualDebtDao()
+    suspend fun createDebt(debtFor: String, amount: Int, fromUser: User, toUser: User): SingleLiveEvent<Response<String>> =
+        manualDebtInterface.createDebt(debtFor, amount, fromUser, toUser)
 
-  fun createManualDebt(manualDebtEntity: ManualDebtEntity) {
-    manualDebtDao.createManualDebt(manualDebtEntity)
-  }
+    suspend fun getLentDebts(): LiveData<ManualDebtEntity> =
+        manualDebtInterface.getLentDebts()
 
-  fun deleteManualDebt(manualDebtEntity: ManualDebtEntity) {
-    manualDebtDao.deleteDebt(manualDebtEntity)
-  }
+    suspend fun getOweDebts(): LiveData<ManualDebtEntity> =
+        manualDebtInterface.getOweDebts()
 
-  fun getAllManualDebts(): ArrayList<ManualDebtEntity> {
-    return manualDebtDao.getAllDebts() as ArrayList<ManualDebtEntity>
-  }
+    suspend fun refreshLentDebts(): LiveData<ManualDebtEntity> =
+        manualDebtInterface.refreshLentDebts()
+
+    suspend fun refreshOweDebts(): LiveData<ManualDebtEntity> =
+        manualDebtInterface.refreshOweDebts()
 }
