@@ -1,10 +1,16 @@
 package com.example.presentation.ui.manage_group.members
 
 import androidx.lifecycle.*
+import com.example.data.interactors.group.AddUserToGroup
+import com.example.data.interactors.group.CreateUserInGroup
+import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.group.GetUserByEmail
 import com.example.domain.models.Group
 import com.example.domain.models.User
 import com.example.data.storage.Storage
 import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.Response
+import com.example.domain.models.UserGroupData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -15,118 +21,72 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupMembersViewModel @Inject constructor(private val storage: Storage): ViewModel() {
+class GroupMembersViewModel @Inject constructor(private val storage: Storage,
+                                                private val getGroupByGroupId: GetGroupByGroupId,
+                                                private val addUserToGroup: AddUserToGroup,
+                                                private val getUserByEmail: GetUserByEmail,
+                                                private val createUserInGroup: CreateUserInGroup): ViewModel() {
 
-    private val _user = MutableLiveData<ArrayList<User>>()
-    val user: LiveData<ArrayList<User>>
+    private val _user = MutableLiveData<ArrayList<UserEntity>>()
+    val user: LiveData<ArrayList<UserEntity>>
         get() = _user
 
-    private val _userByEmail = MutableLiveData<UserEntity>()
-    val userByEmail: LiveData<UserEntity> get() = _userByEmail
+    private val _addUserToGroupResult = MutableLiveData<Response<UserGroupData>>()
+    val addUserToGroupResult: LiveData<Response<UserGroupData>>
+        get() = _addUserToGroupResult
 
-    private val _group = MutableLiveData<Group>()
-    val group: LiveData<Group> get() = _group
+    private val _createUserInGroupResult = MutableLiveData<Response<String>>()
+    val createUserInGroupResult: LiveData<Response<String>>
+        get() = _createUserInGroupResult
+
+    private val _userByEmail = MutableLiveData<Response<UserEntity>>()
+    val userByEmail: LiveData<Response<UserEntity>> get() = _userByEmail
+
+    private val _group = MutableLiveData<Response<Group>>()
+    val group: LiveData<Response<Group>> get() = _group
 
     init {
         getGroupByGroupId()
     }
-    // TODO: 17.08.2021 Repository
+    // TODO: 17.08.2021 Fragment
     private fun getGroupByGroupId() {
-        val groupId = storage.groupId
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val groupInfo = it.getValue(Group::class.java)
-                            if (groupInfo != null) {
-                                if (groupInfo.groupID == groupId) {
-                                    _group.postValue(groupInfo)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+        viewModelScope.launch(Dispatchers.Main) {
+            getGroupByGroupId.invoke().observeForever {
+                _group.postValue(it)
+            }
         }
     }
 
     // TODO: 17.08.2021 Repository
     fun addUserToGroup(user: UserEntity) {
-        val groupId = storage.groupId
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent((object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val group = it.getValue(Group::class.java)
-                            if (group != null) {
-                                if (group.groupID == groupId) {
-                                    val groupKey = it.key
-                                    val usersIdArray = group.users
-                                    createUserInGroup(user, groupKey, usersIdArray)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            }))
+        viewModelScope.launch(Dispatchers.Main) {
+            addUserToGroup.invoke(user).observeForever {
+                _addUserToGroupResult.postValue(it)
+            }
         }
     }
 
     // TODO: 17.08.2021 Repository
-    private fun createUserInGroup(user: UserEntity, groupKey: String?, usersIdArray: ArrayList<UserEntity>) {
-        usersIdArray.add(user)
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
-        reference.child(groupKey!!).child("users").setValue(usersIdArray)
+     fun createUserInGroup(userGroupData: UserGroupData) {
+        viewModelScope.launch(Dispatchers.Main) {
+            createUserInGroup.invoke(userGroupData).observeForever {
+                _createUserInGroupResult.postValue(it)
+            }
+        }
     }
 
     // TODO: 17.08.2021 Repository
     fun getUserByEmail(email: String) {
-        val users = arrayListOf<String>()
-        val reference =
-            FirebaseDatabase.getInstance(
-                "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("/users/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            snapshot.children.forEach {
-                                val userInfo = it.getValue(UserEntity::class.java)
-                                if (userInfo != null) {
-                                    if (userInfo.userEmail == email) {
-                                        users.add(userInfo.userEmail)
-                                        _userByEmail.postValue(userInfo)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-
-                    }
-                })
+        viewModelScope.launch(Dispatchers.Main) {
+            getUserByEmail.invoke(email).observeForever {
+                _userByEmail.postValue(it)
+            }
         }
     }
 
-    // TODO: 17.08.2021 Repository
+    // TODO: 17.08.2021 Fragment
      fun getUsersFromGroup(group: Group) {
-
+        _user.postValue(group.users)
     }
 
 }
