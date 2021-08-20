@@ -31,6 +31,7 @@ class CreateGroupFragment : BaseFragment() {
     super.onViewCreated(view, savedInstanceState)
     binding.absToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     createGroupButtonClicked()
+    listenForCreateResult()
   }
 
   private fun createGroupButtonClicked() {
@@ -65,24 +66,27 @@ class CreateGroupFragment : BaseFragment() {
               }
             }
           )
-          createGroupViewModel.createGroupResult.observe(
-            viewLifecycleOwner,
-            { result ->
-              when (result) {
-                is CreateGroupResult.Error -> {
-                  Toast.makeText(requireContext(), result.exception.message, Toast.LENGTH_SHORT)
-                    .show()
-                  progress.visibility = View.GONE
-                }
-                CreateGroupResult.Success -> {
-                  progress.visibility = View.GONE
-                  findNavController().navigateUp()
-                }
-              }
-            }
-          )
         }
       }
     }
+  }
+
+  private fun listenForCreateResult() {
+    createGroupViewModel.createGroupResult.observe(viewLifecycleOwner, { result ->
+      when (result.status) {
+        Status.ERROR -> {
+          Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+          binding.progressBar.visibility = View.GONE
+        }
+        Status.SUCCESS -> {
+          binding.progressBar.visibility = View.GONE
+          findNavController().navigateUp()
+        }
+        Status.LOADING -> {
+          binding.progressBar.visibility = View.VISIBLE
+        }
+      }
+    }
+    )
   }
 }

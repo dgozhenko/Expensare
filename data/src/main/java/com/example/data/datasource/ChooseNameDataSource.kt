@@ -2,6 +2,7 @@ package com.example.data.datasource
 
 import android.net.Uri
 import com.example.data.interfaces.ChooseNameInterface
+import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Response
 import com.example.domain.models.SingleLiveEvent
 import com.example.domain.models.User
@@ -21,7 +22,7 @@ class ChooseNameDataSource @Inject constructor(): ChooseNameInterface {
         val response: SingleLiveEvent<Response<String>> = SingleLiveEvent()
         response.value = Response.loading(null)
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val user = User(uid, username, email, avatarUri)
+        val user = UserEntity(userId = 0,userUidId = uid,username = username, userEmail = email, avatar = avatarUri, groups = null)
         val users =
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("/users/$uid")
