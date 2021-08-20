@@ -2,9 +2,6 @@ package com.example.presentation.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 
 import android.view.View
 import android.widget.Toast
@@ -12,17 +9,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Status
+import com.example.domain.models.User
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.MainActivity
-import com.example.presentation.ui.dashboard.DashboardFragmentDirections
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.inner_circles_apps.myapplication.R
-import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.Dispatchers
 
 @AndroidEntryPoint
 class SplashScreen : AppCompatActivity() {
@@ -52,7 +45,7 @@ class SplashScreen : AppCompatActivity() {
                         finish()
                     }
                     Status.ERROR -> {
-                        if (it.data == UserEntity.EMPTY) {
+                        if (it.data == User()) {
                             progressBar.visibility = View.GONE
                             val intent = Intent(this, MainActivity::class.java).apply {
                                 putExtra("logged_in", "ChooseName")

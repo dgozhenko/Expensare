@@ -7,16 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.example.domain.models.Status
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.util.Extensions.hideKeyboard
 import com.inner_circles_apps.myapplication.R
 import com.inner_circles_apps.myapplication.databinding.FragmentNameRegistrationBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ChooseNameFragment : BaseFragment() {

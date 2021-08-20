@@ -1,8 +1,8 @@
 package com.example.data.interactors.auth.avatar
 
 import com.example.data.repositories.ChooseNameRepository
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 
 class CreateUserInDatabase(private val chooseNameRepository: ChooseNameRepository) {
     suspend operator fun invoke(

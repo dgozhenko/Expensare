@@ -2,8 +2,8 @@ package com.example.data.datasource
 
 import com.example.data.interfaces.AuthInterface
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

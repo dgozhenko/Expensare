@@ -3,9 +3,9 @@ package com.example.data.datasource
 import com.example.data.interfaces.DebtInterface
 import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
-import com.example.domain.models.UserDebt
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
+import com.example.domain.models.GroupDebt
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -16,7 +16,7 @@ class DebtDataSource
 @Inject
 constructor(private val database: ExpensareDatabase, private val storage: Storage) : DebtInterface {
 
-  override suspend fun create(debt: UserDebt): SingleLiveEvent<Response<String>> {
+  override suspend fun create(debt: GroupDebt): SingleLiveEvent<Response<String>> {
     val response: SingleLiveEvent<Response<String>> = SingleLiveEvent()
     response.value = Response.loading(null)
     val groupId = storage.groupId
@@ -46,17 +46,18 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
         if (snapshot.exists()) {
           snapshot.children.forEach {
             val key = it.key
-            val userDebt = it.getValue(UserDebt::class.java)!!
-            if (userDebt.firstUser == debt.firstUser && userDebt.secondUser == debt.secondUser) {
+            val userDebt = it.getValue(GroupDebt::class.java)!!
+            if (userDebt.lentUser == debt.lentUser && userDebt.oweUser == debt.oweUser) {
               operationDone = true
               groupDebtsAdd.child("/$key/")
                 .setValue(
-                  UserDebt(
-                    userDebt.firstUser,
-                    userDebt.secondUser,
-                    userDebt.firstUserAmount + debt.firstUserAmount,
-                    userDebt.secondUserAmount - debt.secondUserAmount,
-                    false
+                  GroupDebt(
+                    userDebt.lentUser,
+                    userDebt.oweUser,
+                    userDebt.lentedAmount + debt.lentedAmount,
+                    userDebt.owedAmount - debt.owedAmount,
+                    expanded = false,
+                    true
                   )
                 ).addOnSuccessListener {
                   response.value = Response.success("Debt updated")
@@ -67,17 +68,18 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
                 .addOnCanceledListener {
                   response.value = Response.error("Debt update canceled", null)
                 }
-            } else if (userDebt.firstUser == debt.secondUser && userDebt.secondUser == debt.firstUser) {
+            } else if (userDebt.lentUser == debt.oweUser && userDebt.oweUser == debt.lentUser) {
               operationDone = true
               groupDebtsAdd
                 .child("/$key/")
                 .setValue(
-                  UserDebt(
-                    userDebt.firstUser,
-                    userDebt.secondUser,
-                    userDebt.firstUserAmount - debt.firstUserAmount,
-                    userDebt.secondUserAmount + debt.firstUserAmount,
-                    false
+                  GroupDebt(
+                    userDebt.lentUser,
+                    userDebt.oweUser,
+                    userDebt.lentedAmount - debt.lentedAmount,
+                    userDebt.owedAmount + debt.owedAmount,
+                    expanded = false,
+                    true
                   )
                 )
                 .addOnSuccessListener {
@@ -94,12 +96,13 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
 
           if (!operationDone) {
             groupDebts.setValue(
-              UserDebt(
-                debt.firstUser,
-                debt.secondUser,
-                debt.firstUserAmount,
-                -debt.firstUserAmount,
-                false
+              GroupDebt(
+                debt.lentUser,
+                debt.oweUser,
+                debt.lentedAmount,
+                -debt.lentedAmount,
+                expanded = false,
+                true
               )
             )
               .addOnSuccessListener {
@@ -116,12 +119,13 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
         } else {
           operationDone = true
           groupDebts.setValue(
-            UserDebt(
-              debt.firstUser,
-              debt.secondUser,
-              debt.firstUserAmount,
-              -debt.firstUserAmount,
-              false
+            GroupDebt(
+              debt.lentUser,
+              debt.oweUser,
+              debt.lentedAmount,
+              -debt.lentedAmount,
+              expanded = false,
+              true
             )
           )
             .addOnSuccessListener {

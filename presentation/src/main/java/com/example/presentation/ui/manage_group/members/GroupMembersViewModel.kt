@@ -6,15 +6,11 @@ import com.example.data.interactors.group.CreateUserInGroup
 import com.example.data.interactors.group.GetGroupByGroupId
 import com.example.data.interactors.group.GetUserByEmail
 import com.example.domain.models.Group
-import com.example.domain.models.User
 import com.example.data.storage.Storage
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Response
-import com.example.domain.models.UserGroupData
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.domain.models.User
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.UserGroupData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,8 +23,8 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage,
                                                 private val getUserByEmail: GetUserByEmail,
                                                 private val createUserInGroup: CreateUserInGroup): ViewModel() {
 
-    private val _user = MutableLiveData<ArrayList<UserEntity>>()
-    val user: LiveData<ArrayList<UserEntity>>
+    private val _user = MutableLiveData<ArrayList<User>>()
+    val user: LiveData<ArrayList<User>>
         get() = _user
 
     private val _addUserToGroupResult = MutableLiveData<Response<UserGroupData>>()
@@ -39,8 +35,8 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage,
     val createUserInGroupResult: LiveData<Response<String>>
         get() = _createUserInGroupResult
 
-    private val _userByEmail = MutableLiveData<Response<UserEntity>>()
-    val userByEmail: LiveData<Response<UserEntity>> get() = _userByEmail
+    private val _userByEmail = MutableLiveData<Response<User>>()
+    val userByEmail: LiveData<Response<User>> get() = _userByEmail
 
     private val _group = MutableLiveData<Response<Group>>()
     val group: LiveData<Response<Group>> get() = _group
@@ -58,7 +54,7 @@ class GroupMembersViewModel @Inject constructor(private val storage: Storage,
     }
 
     // TODO: 17.08.2021 Repository
-    fun addUserToGroup(user: UserEntity) {
+    fun addUserToGroup(user: User) {
         viewModelScope.launch(Dispatchers.Main) {
             addUserToGroup.invoke(user).observeForever {
                 _addUserToGroupResult.postValue(it)

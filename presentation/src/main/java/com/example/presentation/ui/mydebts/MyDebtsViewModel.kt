@@ -6,10 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.domain.models.Group
-import com.example.domain.models.ManualDebt
 import com.example.domain.models.Request
 import com.example.domain.models.User
 import com.example.data.storage.Storage
+import com.example.domain.models.Debt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,28 +34,28 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     val group: LiveData<Group>
         get() = _group
 
-    private val _lentDebts = MutableLiveData<ArrayList<ManualDebt>>()
-    val lentDebts: LiveData<ArrayList<ManualDebt>>
+    private val _lentDebts = MutableLiveData<ArrayList<Debt>>()
+    val lentDebts: LiveData<ArrayList<Debt>>
         get() = _lentDebts
 
-    private val _oweDebts = MutableLiveData<ArrayList<ManualDebt>>()
-    val oweDebts: LiveData<ArrayList<ManualDebt>>
+    private val _oweDebts = MutableLiveData<ArrayList<Debt>>()
+    val oweDebts: LiveData<ArrayList<Debt>>
         get() = _oweDebts
 
-    private val _updatedOweDebts = MutableLiveData<ArrayList<ManualDebt>>()
-    val updatedOweDebts: LiveData<ArrayList<ManualDebt>>
+    private val _updatedOweDebts = MutableLiveData<ArrayList<Debt>>()
+    val updatedOweDebts: LiveData<ArrayList<Debt>>
         get() = _updatedOweDebts
 
-    private val _updatedLentDebts = MutableLiveData<ArrayList<ManualDebt>>()
-    val updatedLentDebts: LiveData<ArrayList<ManualDebt>>
+    private val _updatedLentDebts = MutableLiveData<ArrayList<Debt>>()
+    val updatedLentDebts: LiveData<ArrayList<Debt>>
         get() = _updatedLentDebts
 
-    private val _refreshedLentDebts = MutableLiveData<ArrayList<ManualDebt>>()
-    val refreshedLentDebts: LiveData<ArrayList<ManualDebt>>
+    private val _refreshedLentDebts = MutableLiveData<ArrayList<Debt>>()
+    val refreshedLentDebts: LiveData<ArrayList<Debt>>
         get() = _refreshedLentDebts
 
-    private val _refreshedOweDebts = MutableLiveData<ArrayList<ManualDebt>>()
-    val refreshedOweDebts: LiveData<ArrayList<ManualDebt>>
+    private val _refreshedOweDebts = MutableLiveData<ArrayList<Debt>>()
+    val refreshedOweDebts: LiveData<ArrayList<Debt>>
         get() = _refreshedOweDebts
 
     init {
@@ -132,15 +132,15 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     // TODO: 17.08.2021 Repository
      fun refreshLentDebts() {
         val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
+        val debtsArrayList = arrayListOf<Debt>()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
         viewModelScope.launch(Dispatchers.IO) {
             reference.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val lentDebt = it.getValue(ManualDebt::class.java)!!
-                            if (lentDebt.fromUser.uid == userId) {
+                            val lentDebt = it.getValue(Debt::class.java)!!
+                            if (lentDebt.oweUser.uid == userId) {
                                 debtsArrayList.add(lentDebt)
                             }
                         }
@@ -161,15 +161,15 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     // TODO: 17.08.2021 Repository
           private fun getLentDebts(){
             val userId = FirebaseAuth.getInstance().uid
-            val debtsArrayList = arrayListOf<ManualDebt>()
+            val debtsArrayList = arrayListOf<Debt>()
             val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
             viewModelScope.launch(Dispatchers.IO) {
                 reference.addListenerForSingleValueEvent(object : ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             snapshot.children.forEach {
-                                val lentDebt = it.getValue(ManualDebt::class.java)!!
-                                if (lentDebt.fromUser.uid == userId) {
+                                val lentDebt = it.getValue(Debt::class.java)!!
+                                if (lentDebt.oweUser.uid == userId) {
                                     debtsArrayList.add(lentDebt)
                                 }
                             }
@@ -188,7 +188,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     // TODO: 17.08.2021 Repository
      private fun getOweDebts(){
          val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
+        val debtsArrayList = arrayListOf<Debt>()
          debtsArrayList.clear()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/owe/")
         viewModelScope.launch(Dispatchers.IO) {
@@ -196,8 +196,8 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val oweDebt = it.getValue(ManualDebt::class.java)!!
-                            if (oweDebt.toUser.uid == userId) {
+                            val oweDebt = it.getValue(Debt::class.java)!!
+                            if (oweDebt.lentUser.uid == userId) {
                                 debtsArrayList.add(oweDebt)
                             }
                         }
@@ -218,7 +218,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     // TODO: 17.08.2021 Repository
      fun refreshOweDebts(){
         val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
+        val debtsArrayList = arrayListOf<Debt>()
         debtsArrayList.clear()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/owe/")
         viewModelScope.launch(Dispatchers.IO) {
@@ -226,8 +226,8 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val oweDebt = it.getValue(ManualDebt::class.java)!!
-                            if (oweDebt.toUser.uid == userId) {
+                            val oweDebt = it.getValue(Debt::class.java)!!
+                            if (oweDebt.lentUser.uid == userId) {
                                 debtsArrayList.add(oweDebt)
                             }
                         }
@@ -248,7 +248,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     // TODO: 17.08.2021 Repository
     private fun updateOweDebts(){
         val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
+        val debtsArrayList = arrayListOf<Debt>()
         debtsArrayList.clear()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/owe/")
         viewModelScope.launch(Dispatchers.IO) {
@@ -256,8 +256,8 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val oweDebt = it.getValue(ManualDebt::class.java)!!
-                            if (oweDebt.toUser.uid == userId) {
+                            val oweDebt = it.getValue(Debt::class.java)!!
+                            if (oweDebt.lentUser.uid == userId) {
                                 debtsArrayList.add(oweDebt)
                             }
                         }
@@ -278,7 +278,7 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     // TODO: 17.08.2021 Repository
     private fun updateLentDebts() {
         val userId = FirebaseAuth.getInstance().uid
-        val debtsArrayList = arrayListOf<ManualDebt>()
+        val debtsArrayList = arrayListOf<Debt>()
         debtsArrayList.clear()
         val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${userId}/lent/")
         viewModelScope.launch(Dispatchers.IO) {
@@ -286,8 +286,8 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val lentDebt = it.getValue(ManualDebt::class.java)!!
-                            if (lentDebt.fromUser.uid == userId) {
+                            val lentDebt = it.getValue(Debt::class.java)!!
+                            if (lentDebt.oweUser.uid == userId) {
                                 debtsArrayList.add(lentDebt)
                             }
                         }
@@ -306,21 +306,21 @@ class MyDebtsViewModel @Inject constructor(private val getApplication: Applicati
     }
 
     // TODO: 17.08.2021 Repository
-    fun createRequest(debt: ManualDebt){
+    fun createRequest(debt: Debt){
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         val newCalendar = Calendar.getInstance(Locale.getDefault())
         val neededDate = simpleDateFormat.format(newCalendar.time)
         viewModelScope.launch(Dispatchers.IO) {
-            val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.fromUser.uid}/lent/")
-            val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.toUser.uid}/owe/")
-            val referenceAddRequested = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.fromUser.uid}/requested")
-            val referenceAddPending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.toUser.uid}/pending")
+            val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.oweUser.uid}/lent/")
+            val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${debt.lentUser.uid}/owe/")
+            val referenceAddRequested = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.oweUser.uid}/requested")
+            val referenceAddPending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${debt.lentUser.uid}/pending")
 
-            oweReference.child(debt.debtId).removeValue().apply {
+            oweReference.child(debt.id).removeValue().apply {
                 updateOweDebts()
             }
-            lentReference.child(debt.debtId).removeValue().apply {
+            lentReference.child(debt.id).removeValue().apply {
                 updateLentDebts()
             }
             referenceAddPending.push().setValue(Request(debt, neededDate))

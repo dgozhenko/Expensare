@@ -7,19 +7,19 @@ import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.*
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.UserGroupData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class GroupDataSource @Inject constructor(private val database: ExpensareDatabase, private val storage: Storage) : GroupInterface {
 
-  override suspend fun getUsersFromGroup(group: Group): ArrayList<UserEntity> {
+  override suspend fun getUsersFromGroup(group: Group): ArrayList<User> {
     return group.users
   }
 
@@ -55,7 +55,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     val response = MutableLiveData<Response<String>>()
     response.value = Response.loading(null)
 
-    var user: UserEntity = UserEntity.EMPTY
+    var user: User = User()
     group.users.forEach {
       user = it
     }
@@ -64,7 +64,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
       FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
         .getReference("groups/$groupId/")
     val userRef = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-      .getReference("users/${user.userUidId}/")
+      .getReference("users/${user.uid}/")
 
     val groupsId = arrayListOf<String>()
     if (user.groups != null) {
@@ -79,7 +79,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
       .addOnCompleteListener {
         groupsId.add(groupId)
         userRef.setValue(
-          UserEntity(userId = user.userId, userEmail = user.userEmail, username = user.username, userUidId = user.userUidId, groups = groupsId, avatar = user.avatar)
+          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = groupsId)
         )
           .addOnSuccessListener {
             response.value = Response.success("Group created.")
@@ -92,12 +92,12 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     return response
   }
 
-  override suspend fun listenFor(userEntity: UserEntity): LiveData<Response<ArrayList<String>>> {
+  override suspend fun listenFor(user: User): LiveData<Response<ArrayList<String>>> {
     val response = MutableLiveData<Response<ArrayList<String>>>()
     response.value = Response.loading(null)
     val allGroups = arrayListOf<String>()
     val groups = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-      .getReference("users/${userEntity.userUidId}").child("groups")
+      .getReference("users/${user.uid}").child("groups")
       groups.addValueEventListener(object : ValueEventListener{
         override fun onDataChange(snapshot: DataSnapshot) {
           if (snapshot.exists()) {
@@ -149,8 +149,8 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     return response
   }
 
-  override suspend fun getUserByEmail(email: String): LiveData<Response<UserEntity>> {
-    val response = MutableLiveData<Response<UserEntity>>()
+  override suspend fun getUserByEmail(email: String): LiveData<Response<User>> {
+    val response = MutableLiveData<Response<User>>()
     response.value = Response.loading(null)
 
     val user =
@@ -163,9 +163,9 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
           override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
               snapshot.children.forEach {
-                val userInfo = it.getValue(UserEntity::class.java)
+                val userInfo = it.getValue(User::class.java)
                 if (userInfo != null) {
-                  if (userInfo.userEmail == email) {
+                  if (userInfo.email == email) {
                     response.value = Response.success(userInfo)
                   }
                 }
@@ -182,7 +182,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     return response
   }
 
-  override suspend fun addUserToGroup(userEntity: UserEntity): LiveData<Response<UserGroupData>> {
+  override suspend fun addUserToGroup(user: User): LiveData<Response<UserGroupData>> {
     val response = MutableLiveData<Response<UserGroupData>>()
     response.value = Response.loading(null)
     val groupId = storage.groupId
@@ -196,7 +196,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
               if (group.groupID == groupId) {
                 val groupKey = it.key
                 val usersIdArray = group.users
-                val userGroupData = UserGroupData(user = userEntity, groupKey = groupKey!!, groupId = usersIdArray)
+                val userGroupData = UserGroupData(user = user, groupKey = groupKey!!, groupId = usersIdArray)
                 response.value = Response.success(userGroupData)
               }
             }
@@ -231,13 +231,13 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     }
     usersIdArray.add(user)
     val userRef = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-      .getReference("users/${user.userUidId}/")
+      .getReference("users/${user.uid}/")
     val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
     reference.child(groupKey).child("users").setValue(usersIdArray)
       .addOnSuccessListener {
         groupsId.add(groupKey)
         userRef.setValue(
-          UserEntity(userId = user.userId, userEmail = user.userEmail, username = user.username, userUidId = user.userUidId, groups = groupsId, avatar = user.avatar)
+          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = groupsId)
         )
           .addOnSuccessListener {
             response.value = Response.success("User added to group")
@@ -254,13 +254,13 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     return response
   }
 
-  override suspend fun getGroupDebts(users: ArrayList<UserEntity>, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>> {
-    val response = MutableLiveData<Response<ArrayList<UserDebt>>>()
+  override suspend fun getGroupDebts(users: ArrayList<User>, debtToMe: Boolean): LiveData<Response<ArrayList<GroupDebt>>> {
+    val response = MutableLiveData<Response<ArrayList<GroupDebt>>>()
     response.value = Response.loading(null)
 
     val groupId = storage.groupId
     var fullAmount = 0
-    val userDebtArrayList = arrayListOf<UserDebt>()
+    val userDebtArrayList = arrayListOf<GroupDebt>()
     users.forEach { groupUser ->
       if (debtToMe) {
         val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
@@ -269,15 +269,15 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
             override fun onDataChange(snapshot: DataSnapshot) {
               if (snapshot.exists()) {
                 snapshot.children.forEach {
-                  val userDebt = it.getValue(UserDebt::class.java)!!
-                  if (userDebt.firstUser.userUidId == groupUser.userUidId && userDebt.firstUserAmount > 0) {
-                    fullAmount += userDebt.firstUserAmount
-                  } else if (userDebt.secondUser.userUidId == groupUser.userUidId && userDebt.secondUserAmount > 0) {
-                    fullAmount += userDebt.secondUserAmount
+                  val userDebt = it.getValue(GroupDebt::class.java)!!
+                  if (userDebt.lentUser.uid == groupUser.uid && userDebt.lentedAmount > 0) {
+                    fullAmount += userDebt.lentedAmount
+                  } else if (userDebt.oweUser.uid == groupUser.uid && userDebt.owedAmount > 0) {
+                    fullAmount += userDebt.owedAmount
                   }
                 }
                 if (fullAmount != 0) {
-                  userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount, fullAmount, false))
+                  userDebtArrayList.add(GroupDebt(groupUser, groupUser, fullAmount, fullAmount, expanded = false, true))
                   fullAmount = 0
                   response.value = Response.success(userDebtArrayList)
                 }
@@ -298,15 +298,15 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
             override fun onDataChange(snapshot: DataSnapshot) {
               if (snapshot.exists()) {
                 snapshot.children.forEach {
-                  val userDebt = it.getValue(UserDebt::class.java)!!
-                  if (userDebt.firstUser.userUidId == groupUser.userUidId && userDebt.firstUserAmount < 0) {
-                    fullAmount += userDebt.firstUserAmount
-                  } else if (userDebt.secondUser.userUidId == groupUser.userUidId && userDebt.secondUserAmount < 0) {
-                    fullAmount += userDebt.secondUserAmount
+                  val userDebt = it.getValue(GroupDebt::class.java)!!
+                  if (userDebt.lentUser.uid == groupUser.uid && userDebt.lentedAmount < 0) {
+                    fullAmount += userDebt.lentedAmount
+                  } else if (userDebt.oweUser.uid == groupUser.uid && userDebt.owedAmount < 0) {
+                    fullAmount += userDebt.owedAmount
                   }
                 }
                 if (fullAmount != 0) {
-                  userDebtArrayList.add(UserDebt(groupUser, groupUser, fullAmount * -1, fullAmount * -1, false))
+                  userDebtArrayList.add(GroupDebt(groupUser, groupUser, fullAmount * -1, fullAmount * -1, expanded = false, true))
                   fullAmount = 0
                   response.value = Response.success(userDebtArrayList)
                 }
@@ -325,11 +325,11 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     return response
   }
 
-  override suspend fun getGroupDetailedDebt(user: UserEntity, debtToMe: Boolean): LiveData<Response<ArrayList<UserDebt>>> {
-    val response = MutableLiveData<Response<ArrayList<UserDebt>>>()
+  override suspend fun getGroupDetailedDebt(user: User, debtToMe: Boolean): LiveData<Response<ArrayList<GroupDebt>>> {
+    val response = MutableLiveData<Response<ArrayList<GroupDebt>>>()
     response.value = Response.loading(null)
     val groupId = storage.groupId
-    val userDebtArrayList = arrayListOf<UserDebt>()
+    val userDebtArrayList = arrayListOf<GroupDebt>()
     if (debtToMe) {
       val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("group_debts/$groupId/")
       referenceCheck.addListenerForSingleValueEvent(
@@ -337,13 +337,13 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
           override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
               snapshot.children.forEach {
-                val userDebt = it.getValue(UserDebt::class.java)!!
-                if (userDebt.firstUser.userUidId == user.userUidId && userDebt.firstUserAmount > 0) {
+                val userDebt = it.getValue(GroupDebt::class.java)!!
+                if (userDebt.lentUser.uid == user.uid && userDebt.lentedAmount > 0) {
                   // we need secondUser
-                  userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
-                } else if (userDebt.secondUser.userUidId == user.userUidId && userDebt.secondUserAmount > 0) {
+                  userDebtArrayList.add(GroupDebt(userDebt.oweUser, userDebt.oweUser, userDebt.owedAmount, userDebt.owedAmount, expanded = false, true))
+                } else if (userDebt.oweUser.uid == user.uid && userDebt.owedAmount > 0) {
                   // we need firsUser
-                  userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
+                  userDebtArrayList.add(GroupDebt(userDebt.lentUser, userDebt.lentUser, userDebt.lentedAmount, userDebt.lentedAmount, expanded = false, true))
                 }
               }
               response.value = Response.success(userDebtArrayList)
@@ -364,13 +364,13 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
           override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
               snapshot.children.forEach {
-                val userDebt = it.getValue(UserDebt::class.java)!!
-                if (userDebt.firstUser.userUidId == user.userUidId && userDebt.firstUserAmount < 0) {
+                val userDebt = it.getValue(GroupDebt::class.java)!!
+                if (userDebt.lentUser.uid == user.uid && userDebt.lentedAmount < 0) {
                   // we need secondUser
-                  userDebtArrayList.add(UserDebt(userDebt.secondUser, userDebt.secondUser, userDebt.secondUserAmount, userDebt.secondUserAmount, false))
-                } else if (userDebt.secondUser.userUidId == user.userUidId && userDebt.secondUserAmount < 0) {
+                  userDebtArrayList.add(GroupDebt(userDebt.oweUser, userDebt.oweUser, userDebt.owedAmount, userDebt.owedAmount, expanded = false, true))
+                } else if (userDebt.oweUser.uid == user.uid && userDebt.owedAmount < 0) {
                   // we need firstUser
-                  userDebtArrayList.add(UserDebt(userDebt.firstUser, userDebt.firstUser, userDebt.firstUserAmount, userDebt.firstUserAmount, false))
+                  userDebtArrayList.add(GroupDebt(userDebt.lentUser, userDebt.lentUser, userDebt.lentedAmount, userDebt.lentedAmount, expanded = false, true))
                 }
               }
               response.value = Response.success(userDebtArrayList)

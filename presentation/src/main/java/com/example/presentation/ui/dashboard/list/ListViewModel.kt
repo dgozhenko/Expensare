@@ -9,12 +9,8 @@ import com.example.data.interactors.list.DeleteListItem
 import com.example.data.interactors.list.GetList
 import com.example.data.storage.Storage
 import com.example.domain.models.Group
-import com.example.domain.models.ListItem
-import com.example.domain.models.Response
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.domain.models.GroupList
+import com.example.domain.models.util.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -30,12 +26,12 @@ class ListViewModel @Inject constructor(private val storage: Storage,
     val group: LiveData<Response<Group>>
         get() = _group
 
-    private val _groceryList = MutableLiveData<Response<ArrayList<ListItem>>>()
-    val groceryList: LiveData<Response<ArrayList<ListItem>>>
+    private val _groceryList = MutableLiveData<Response<ArrayList<GroupList>>>()
+    val groceryGroupList: LiveData<Response<ArrayList<GroupList>>>
         get() = _groceryList
 
-    private val _refreshedGroceryList = MutableLiveData<Response<ArrayList<ListItem>>>()
-    val refreshedGroceryList: LiveData<Response<ArrayList<ListItem>>>
+    private val _refreshedGroceryList = MutableLiveData<Response<ArrayList<GroupList>>>()
+    val refreshedGroceryGroupList: LiveData<Response<ArrayList<GroupList>>>
         get() = _refreshedGroceryList
 
     private val _deleteResult = MutableLiveData<Response<String>>()
@@ -54,9 +50,9 @@ class ListViewModel @Inject constructor(private val storage: Storage,
         }
     }
 
-    fun deleteGroceryItem(item: ListItem) {
+    fun deleteGroceryItem(group: GroupList) {
         viewModelScope.launch(Dispatchers.Main) {
-            deleteListItem.invoke(item).observeForever {
+            deleteListItem.invoke(group).observeForever {
                 _deleteResult.postValue(it)
             }
         }

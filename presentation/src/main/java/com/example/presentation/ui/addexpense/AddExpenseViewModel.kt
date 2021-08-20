@@ -13,10 +13,12 @@ import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.ExpenseEntity
 import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.Expense
 import com.example.domain.models.Group
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
-import com.example.domain.models.UserDebt
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
+import com.example.domain.models.GroupDebt
+import com.example.domain.models.User
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
@@ -43,8 +45,8 @@ constructor(
     private val getGroupByGroupId: GetGroupByGroupId
 ) : ViewModel() {
 
-    private val _user = MutableLiveData<Response<UserEntity>>()
-    val user: LiveData<Response<UserEntity>>
+    private val _user = MutableLiveData<Response<User>>()
+    val user: LiveData<Response<User>>
         get() = _user
 
     private val _addExpenseResult = MutableLiveData<Response<String>>()
@@ -59,8 +61,8 @@ constructor(
     val group: LiveData<Response<Group>>
         get() = _group
 
-    private val _users = MutableLiveData<ArrayList<UserEntity>>()
-    val users: LiveData<ArrayList<UserEntity>>
+    private val _users = MutableLiveData<ArrayList<User>>()
+    val users: LiveData<ArrayList<User>>
         get() = _users
 
     init {
@@ -68,14 +70,14 @@ constructor(
         getGroups()
     }
 
-    fun createDebt(amount: Int, fromUser: UserEntity, toUser: UserEntity) {
-        val debt = UserDebt(toUser, fromUser, amount, amount, false)
+    fun createDebt(amount: Int, oweUser: User, lentUser: User) {
+        val debt = GroupDebt(lentUser, oweUser, amount, amount, expanded = false, true)
         viewModelScope.launch(Dispatchers.Main) {
             createDebt.invoke(debt).observeForever { _addDebtResult.postValue(it) }
         }
     }
 
-    fun createExpense(name: String, amount: Int, user: UserEntity, connection: Boolean) {
+    fun createExpense(name: String, amount: Int, user: User, connection: Boolean) {
         val groupId = storage.groupId
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
@@ -83,7 +85,7 @@ constructor(
         val neededDate = simpleDateFormat.format(newCalendar.time)
         val expenseId = UUID.randomUUID().toString()
 
-        val expenseEntity = ExpenseEntity(expenseId, name, amount, user, groupId, neededDate, true)
+        val expenseEntity = Expense(expenseId = expenseId, name = name, amount = amount, user = user, groupId = groupId, date = neededDate, uploaded = true)
         viewModelScope.launch(Dispatchers.Main) {
             createExpense.invoke(expenseEntity).observeForever { _addExpenseResult.postValue(it) }
         }
@@ -103,11 +105,11 @@ constructor(
 
     fun getUsersFromGroup(group: Group) {
         val myUid = FirebaseAuth.getInstance().uid
-        val filteredUserArrayList = arrayListOf<UserEntity>()
+        val filteredUserArrayList = arrayListOf<User>()
         viewModelScope.launch(Dispatchers.IO) {
             val usersFromGroup = group.users
             usersFromGroup.forEach {
-                if (it.userUidId != myUid) {
+                if (it.uid != myUid) {
                     filteredUserArrayList.add(it)
                 }
             }

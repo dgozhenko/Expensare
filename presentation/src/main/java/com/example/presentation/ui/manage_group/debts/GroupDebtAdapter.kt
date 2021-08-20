@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.models.UserDebt
+import com.example.domain.models.GroupDebt
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
 import com.squareup.picasso.Callback
@@ -21,7 +21,7 @@ private const val VIEW_TYPE_LENT = 2
 
 class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClickListener): RecyclerView.Adapter<GroupDebtAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<UserDebt>()
+    private var list = arrayListOf<GroupDebt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (viewType == VIEW_TYPE_OWE) {
@@ -57,8 +57,8 @@ class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClick
         return list.size
     }
 
-    fun getDebts(userDebt: ArrayList<UserDebt>) {
-        list = userDebt
+    fun getDebts(groupDebt: ArrayList<GroupDebt>) {
+        list = groupDebt
         notifyDataSetChanged()
     }
 
@@ -74,19 +74,19 @@ class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClick
         private val amount = itemView.findViewById<MaterialTextView>(R.id.money)
         private val image = itemView.findViewById<CircleImageView>(R.id.icon)
 
-        override fun bind(userDebt: UserDebt) {
-            super.bind(userDebt)
-                name.text = userDebt.firstUser.username
+        override fun bind(groupDebt: GroupDebt) {
+            super.bind(groupDebt)
+                name.text = groupDebt.lentUser.username
                 amount.setTextColor(itemView.context.resources.getColor(R.color.red, itemView.context.theme))
-                amount.text = "-$${userDebt.firstUserAmount}"
-            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
+                amount.text = "-$${groupDebt.lentedAmount}"
+            Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+                    Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).into(image)
                 }
 
             })
@@ -98,19 +98,19 @@ class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClick
         private val amount = itemView.findViewById<MaterialTextView>(R.id.money)
         private val image = itemView.findViewById<CircleImageView>(R.id.icon)
 
-        override fun bind(userDebt: UserDebt) {
-            super.bind(userDebt)
-            name.text = userDebt.firstUser.username
+        override fun bind(groupDebt: GroupDebt) {
+            super.bind(groupDebt)
+            name.text = groupDebt.lentUser.username
             amount.setTextColor(itemView.context.resources.getColor(R.color.dark_green, itemView.context.theme))
-            amount.text = "+$${userDebt.firstUserAmount}"
-            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
+            amount.text = "+$${groupDebt.lentedAmount}"
+            Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+                    Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).into(image)
                 }
 
             })
@@ -118,11 +118,11 @@ class GroupDebtAdapter(val isLent: Boolean, private val onClickListener: OnClick
     }
 
     open class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        open fun bind(userDebt: UserDebt) {
+        open fun bind(groupDebt: GroupDebt) {
 
         }
     }
 }
-class OnClickListener(val clickListener: (userDebt: UserDebt, recyclerView: RecyclerView) -> Unit) {
-    fun onClick(userDebt: UserDebt, recyclerView: RecyclerView) = clickListener(userDebt, recyclerView)
+class OnClickListener(val clickListener: (groupDebt: GroupDebt, recyclerView: RecyclerView) -> Unit) {
+    fun onClick(groupDebt: GroupDebt, recyclerView: RecyclerView) = clickListener(groupDebt, recyclerView)
 }

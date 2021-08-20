@@ -1,14 +1,15 @@
-package com.example.domain.models
+package com.example.domain.models.util
 
 import android.os.Parcelable
 import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.User
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserGroupData(
     val groupKey: String,
-    val user: UserEntity,
-    val groupId: ArrayList<UserEntity>
+    val user: User,
+    val groupId: ArrayList<User>
 ) : Parcelable {
-    constructor() : this("",  UserEntity.EMPTY,  arrayListOf())
+    constructor() : this("",  User(),  arrayListOf())
 }

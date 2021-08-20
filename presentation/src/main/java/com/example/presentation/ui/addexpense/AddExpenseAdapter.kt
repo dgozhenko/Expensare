@@ -18,7 +18,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<AddExpenseAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<UserEntity>()
+    private var list = arrayListOf<User>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_add_expenses_item, parent, false)
@@ -40,13 +40,13 @@ class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerV
         return list.size
     }
 
-    fun getUsers(user: ArrayList<UserEntity>) {
+    fun getUsers(user: ArrayList<User>) {
         list = user
         notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(user: UserEntity) {
+        fun bind(user: User) {
             val userName = itemView.findViewById<MaterialTextView>(R.id.name_user)
             val imageView = itemView.findViewById<CircleImageView>(R.id.avatar)
 
@@ -66,6 +66,6 @@ class AddExpenseAdapter(private val onClickListener: OnClickListener): RecyclerV
     }
 }
 
-class OnClickListener(val clickListener: (user: UserEntity) -> Unit) {
-    fun onClick(user: UserEntity) = clickListener(user)
+class OnClickListener(val clickListener: (user: User) -> Unit) {
+    fun onClick(user: User) = clickListener(user)
 }

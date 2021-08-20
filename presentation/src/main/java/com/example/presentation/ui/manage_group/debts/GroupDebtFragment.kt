@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.domain.models.Status
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Description
@@ -89,11 +89,11 @@ class GroupDebtFragment: BaseFragment() {
 
     private fun bindRecyclerView() {
         val adapter = GroupDebtAdapter(isLent, OnClickListener { userDebt, recyclerView ->
-            groupDebtViewModel.getDetailedDebts(userDebt.firstUser, isLent)
+            groupDebtViewModel.getDetailedDebts(userDebt.lentUser, isLent)
             val detailAdapter = DetailedGroupDebtAdapter(isLent)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = detailAdapter
-            groupDebtViewModel.detailedUserDebt.observe(viewLifecycleOwner, {
+            groupDebtViewModel.detailedGroupDebt.observe(viewLifecycleOwner, {
                 when(it.status) {
                     Status.SUCCESS -> {
                         detailAdapter.getDebts(it.data!!)
@@ -111,7 +111,7 @@ class GroupDebtFragment: BaseFragment() {
 
         binding.groupDebtRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.groupDebtRecyclerView.adapter = adapter
-        groupDebtViewModel.userDebt.observe(viewLifecycleOwner, {
+        groupDebtViewModel.groupDebt.observe(viewLifecycleOwner, {
             when(it.status) {
                 Status.ERROR -> {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
@@ -127,7 +127,7 @@ class GroupDebtFragment: BaseFragment() {
                     val rnd = Random
                     it.data!!.forEach { debt ->
                         colors.add(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)))
-                        entries.add(PieEntry(debt.firstUserAmount.toFloat(), debt.firstUser.username))
+                        entries.add(PieEntry(debt.lentedAmount.toFloat(), debt.lentUser.username))
                     }
                     val dataSet = PieDataSet(entries, "users")
                     dataSet.colors = colors

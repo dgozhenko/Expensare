@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.database.entities.ExpenseEntity
+import com.example.domain.models.Expense
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
 import com.squareup.picasso.Callback
@@ -15,7 +16,7 @@ import kotlin.collections.ArrayList
 
 class DashboardExpenseAdapter: RecyclerView.Adapter<DashboardExpenseAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<ExpenseEntity>()
+    private var list = arrayListOf<Expense>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_history_item, parent, false)
@@ -30,7 +31,7 @@ class DashboardExpenseAdapter: RecyclerView.Adapter<DashboardExpenseAdapter.View
         return list.size
     }
 
-    fun getExpenses(expenses: ArrayList<ExpenseEntity>) {
+    fun getExpenses(expenses: ArrayList<Expense>) {
         list.clear()
         notifyDataSetChanged()
         list.addAll(expenses)
@@ -38,23 +39,23 @@ class DashboardExpenseAdapter: RecyclerView.Adapter<DashboardExpenseAdapter.View
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(expense: ExpenseEntity) {
+        fun bind(expense: Expense) {
             val userName = itemView.findViewById<MaterialTextView>(R.id.name)
             val date = itemView.findViewById<MaterialTextView>(R.id.date)
             val money = itemView.findViewById<MaterialTextView>(R.id.money)
             val imageView = itemView.findViewById<CircleImageView>(R.id.icon)
 
-            userName.text = expense.expenseUser.username
-            date.text = expense.expenseDate
-            money.text = "-$${expense.expenseAmount}"
-            Picasso.with(itemView.context).load(expense.expenseUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, object :
+            userName.text = expense.user.username
+            date.text = expense.date
+            money.text = "-$${expense.amount}"
+            Picasso.with(itemView.context).load(expense.user.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(expense.expenseUser.avatar).into(imageView)
+                    Picasso.with(itemView.context).load(expense.user.avatar).into(imageView)
                 }
 
             })

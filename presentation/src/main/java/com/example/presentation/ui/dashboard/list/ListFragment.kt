@@ -1,26 +1,23 @@
 package com.example.presentation.ui.dashboard.list
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.models.ListItem
-import com.example.domain.models.Status
+import com.example.domain.models.GroupList
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.util.SwipeToDeleteCallback
 import com.inner_circles_apps.myapplication.R
 import com.inner_circles_apps.myapplication.databinding.FragmentListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListFragment: BaseFragment() {
@@ -47,7 +44,7 @@ class ListFragment: BaseFragment() {
     override fun onResume() {
         super.onResume()
         listViewModel.refreshGroceryList()
-        listViewModel.refreshedGroceryList.observe(viewLifecycleOwner, {
+        listViewModel.refreshedGroceryGroupList.observe(viewLifecycleOwner, {
             when(it.status) {
                 Status.LOADING -> {
                     binding.progressCircular.visibility = View.VISIBLE
@@ -69,7 +66,7 @@ class ListFragment: BaseFragment() {
     private fun bindGroceryListRecyclerView() {
         val progressBar = binding.progressCircular
         progressBar.visibility = View.VISIBLE
-        val checkedArray = arrayListOf<ListItem>()
+        val checkedArray = arrayListOf<GroupList>()
          _adapter = ListAdapter(OnClickListener {listItem, isChecked ->
             if (isChecked) {
                 checkedArray.add(listItem)
@@ -90,7 +87,7 @@ class ListFragment: BaseFragment() {
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(binding.listRecyclerView)
-        listViewModel.groceryList.observe(viewLifecycleOwner, {
+        listViewModel.groceryGroupList.observe(viewLifecycleOwner, {
             when(it.status) {
                 Status.LOADING -> {
                     binding.noListText.visibility = View.VISIBLE

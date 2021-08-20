@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.models.ListItem
+import com.example.domain.models.GroupList
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
@@ -16,7 +16,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class ListAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<ListItem>()
+    private var list = arrayListOf<GroupList>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_list_item, parent, false)
@@ -35,31 +35,31 @@ class ListAdapter(private val onClickListener: OnClickListener): RecyclerView.Ad
         return list.size
     }
 
-    fun removeAt(position: Int): ListItem{
+    fun removeAt(position: Int): GroupList{
         val item = list[position]
         list.removeAt(position)
         notifyDataSetChanged()
         return item
     }
 
-    fun getListItems(listItems: ArrayList<ListItem>) {
-        list = listItems
+    fun getListItems(groupLists: ArrayList<GroupList>) {
+        list = groupLists
         notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(listItem: ListItem) {
+        fun bind(groupList: GroupList) {
             val user = itemView.findViewById<CircleImageView>(R.id.user_icon)
             val type = itemView.findViewById<CircleImageView>(R.id.icon)
             val name = itemView.findViewById<MaterialTextView>(R.id.item_name)
             val price = itemView.findViewById<MaterialTextView>(R.id.list_item_price)
             val quantity = itemView.findViewById<MaterialTextView>(R.id.quantity_list)
-            name.text = listItem.name
+            name.text = groupList.name
             //TO-DO: Logic for price display
             price.text = ""
-            quantity.text = listItem.quantity.toString()
+            quantity.text = groupList.quantity.toString()
 
-            if (listItem.type == "Vegetables") {
+            if (groupList.type == "Vegetables") {
                 Picasso.with(itemView.context)
                     .load(
                         Uri.parse("android.resource://com.example.expensare/drawable/" + R.drawable.avatar1))
@@ -77,7 +77,7 @@ class ListAdapter(private val onClickListener: OnClickListener): RecyclerView.Ad
             }
 
             Picasso.with(itemView.context)
-                .load(listItem.user.avatar)
+                .load(groupList.user.avatar)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(
                     user,
@@ -85,7 +85,7 @@ class ListAdapter(private val onClickListener: OnClickListener): RecyclerView.Ad
                         override fun onSuccess() {}
 
                         override fun onError() {
-                            Picasso.with(itemView.context).load(listItem.user.avatar).into(user)
+                            Picasso.with(itemView.context).load(groupList.user.avatar).into(user)
                         }
                     }
                 )
@@ -93,6 +93,6 @@ class ListAdapter(private val onClickListener: OnClickListener): RecyclerView.Ad
     }
 }
 
-class OnClickListener(val clickListener: (listItem: ListItem, isChecked: Boolean) -> Unit) {
-    fun onClick(listItem: ListItem, isChecked: Boolean) = clickListener(listItem, isChecked)
+class OnClickListener(val clickListener: (groupList: GroupList, isChecked: Boolean) -> Unit) {
+    fun onClick(groupList: GroupList, isChecked: Boolean) = clickListener(groupList, isChecked)
 }

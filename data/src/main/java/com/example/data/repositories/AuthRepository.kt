@@ -1,8 +1,8 @@
 package com.example.data.repositories
 
 import com.example.data.interfaces.AuthInterface
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 
 class AuthRepository(private val authInterface: AuthInterface) {
 

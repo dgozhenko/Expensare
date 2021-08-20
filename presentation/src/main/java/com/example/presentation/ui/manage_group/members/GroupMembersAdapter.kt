@@ -15,7 +15,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class GroupMembersAdapter: RecyclerView.Adapter<GroupMembersAdapter.ViewHolder>() {
 
-    private var userItem = arrayListOf<UserEntity>()
+    private var userItem = arrayListOf<User>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_group_member_item, parent, false)
@@ -30,13 +30,13 @@ class GroupMembersAdapter: RecyclerView.Adapter<GroupMembersAdapter.ViewHolder>(
         return userItem.size
     }
 
-    fun setUser(user: ArrayList<UserEntity>) {
+    fun setUser(user: ArrayList<User>) {
         userItem = user
         notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(user: UserEntity) {
+        fun bind(user: User) {
             val imageView = itemView.findViewById<CircleImageView>(R.id.avatar)
             val name = itemView.findViewById<MaterialTextView>(R.id.member_name)
             Picasso.with(itemView.context).load(user.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, object :

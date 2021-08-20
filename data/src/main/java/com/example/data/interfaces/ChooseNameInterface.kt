@@ -1,8 +1,8 @@
 package com.example.data.interfaces
 
 import android.net.Uri
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 
 interface ChooseNameInterface {
 

@@ -6,7 +6,8 @@ import com.example.data.interfaces.ExpensesInterface
 import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.ExpenseEntity
-import com.example.domain.models.Response
+import com.example.domain.models.Expense
+import com.example.domain.models.util.Response
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -18,17 +19,17 @@ class ExpenseDataSource
 constructor(private val database: ExpensareDatabase, private val storage: Storage) :
   ExpensesInterface {
 
-  override suspend fun create(expenseEntity: ExpenseEntity): LiveData<Response<String>> {
+  override suspend fun create(expense: Expense): LiveData<Response<String>> {
     val response = MutableLiveData<Response<String>>()
     response.value = Response.loading(null)
     val expenses =
       FirebaseDatabase.getInstance(
           "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/"
         )
-        .getReference("expenses/${expenseEntity.expenseGroupId}")
+        .getReference("expenses/${expense.groupId}")
         .push()
 
-    val createdExpense = expenses.setValue(expenseEntity)
+    val createdExpense = expenses.setValue(expense)
     createdExpense
       .addOnSuccessListener { response.value = Response.success("Expense created") }
       .addOnFailureListener { response.value = Response.error(it.message!!, null) }
@@ -38,12 +39,12 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
     return response
   }
 
-  override suspend fun getAll(): ArrayList<ExpenseEntity> {
+  override suspend fun getAll(): ArrayList<Expense> {
     TODO("Not yet implemented")
   }
 
-  override suspend fun download(): LiveData<Response<ArrayList<ExpenseEntity>>> {
-    val response = MutableLiveData<Response<ArrayList<ExpenseEntity>>>()
+  override suspend fun download(): LiveData<Response<ArrayList<Expense>>> {
+    val response = MutableLiveData<Response<ArrayList<Expense>>>()
     response.value = Response.loading(null)
     val groupId = storage.groupId
     val expenses =
@@ -56,9 +57,9 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
       object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
           if (snapshot.exists()) {
-            val expensesArrayList = arrayListOf<ExpenseEntity>()
+            val expensesArrayList = arrayListOf<Expense>()
             snapshot.children.forEach {
-              val result = it.getValue(ExpenseEntity::class.java)
+              val result = it.getValue(Expense::class.java)
               if (result != null) {
                 expensesArrayList.add(result)
               }

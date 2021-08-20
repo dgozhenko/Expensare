@@ -2,9 +2,8 @@ package com.example.data.interactors.group
 
 import androidx.lifecycle.LiveData
 import com.example.data.repositories.GroupRepository
-import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Response
-import com.example.domain.models.UserGroupData
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.UserGroupData
 
 class CreateUserInGroup(private val groupRepository: GroupRepository) {
 

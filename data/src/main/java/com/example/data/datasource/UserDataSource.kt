@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.data.interfaces.UserInterface
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Response
+import com.example.domain.models.User
+import com.example.domain.models.util.Response
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,16 +16,16 @@ import javax.inject.Inject
 
 class UserDataSource @Inject constructor(private val database: ExpensareDatabase) : UserInterface {
 
-  override suspend fun create(user: UserEntity) {
-    database.userDao().createUser(user)
+  override suspend fun create(user: User) {
+    //database.userDao().createUser(user)
   }
 
-  override suspend fun getAll(): ArrayList<UserEntity> {
-    return database.userDao().getAllUsers() as ArrayList<UserEntity>
+  override suspend fun getAll(): ArrayList<User> {
+    return database.userDao().getAllUsers() as ArrayList<User>
   }
 
-  override suspend fun downloadUser(): LiveData<Response<UserEntity>> {
-    val response = MutableLiveData<Response<UserEntity>>()
+  override suspend fun downloadUser(): LiveData<Response<User>> {
+    val response = MutableLiveData<Response<User>>()
     response.value = Response.loading(null)
 
     var userId = ""
@@ -45,10 +46,10 @@ class UserDataSource @Inject constructor(private val database: ExpensareDatabase
       object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
           if (snapshot.exists()) {
-            val result = snapshot.getValue(UserEntity::class.java)
+            val result = snapshot.getValue(User::class.java)
             response.value = Response.success(result)
           } else {
-                    response.value = Response.error("No user was found", UserEntity.EMPTY)
+                    response.value = Response.error("No user was found", User())
           }
         }
 

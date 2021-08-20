@@ -11,7 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.domain.models.Status
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
