@@ -49,7 +49,7 @@ class UserDataSource @Inject constructor(private val database: ExpensareDatabase
             val result = snapshot.getValue(User::class.java)
             response.value = Response.success(result)
           } else {
-                    response.value = Response.error("No user was found", User())
+            response.value = Response.error("No user was found", User())
           }
         }
 

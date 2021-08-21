@@ -152,7 +152,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
   override suspend fun getUserByEmail(email: String): LiveData<Response<User>> {
     val response = MutableLiveData<Response<User>>()
     response.value = Response.loading(null)
-
+    var userFound = false
     val user =
       FirebaseDatabase.getInstance(
         "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -167,8 +167,12 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
                 if (userInfo != null) {
                   if (userInfo.email == email) {
                     response.value = Response.success(userInfo)
+                    userFound = true
                   }
                 }
+              }
+              if (!userFound) {
+                response.value = Response.error("There no user with that email - $email", null)
               }
             } else {
               response.value = Response.error("No user was found", null)

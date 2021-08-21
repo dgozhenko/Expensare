@@ -1,5 +1,6 @@
 package com.example.presentation.ui.manage_group.members
 
+import android.os.Binder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
+import com.example.presentation.ui.dialog.AddUserByEmailDialog
 import com.inner_circles_apps.myapplication.R
 import com.inner_circles_apps.myapplication.databinding.FragmentGroupMembersBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,12 +39,26 @@ class GroupMembersFragment : BaseFragment() {
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.add_member_menu_item -> {
-                    groupMembersViewModel.getUserByEmail("hearthstone.gozhenko@gmail.com")
+                    loadEmailDialog()
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private fun loadEmailDialog() {
+        AddUserByEmailDialog().apply {
+            listener = object : AddUserByEmailDialog.Listener {
+                override fun onDialogButtonClicked(add: Boolean, email: String?) {
+                    if (add && email!!.isNotBlank()) {
+                        groupMembersViewModel.getUserByEmail(email)
+                    } else {
+                        dismiss()
+                    }
+                }
+            }
+        }.show(childFragmentManager, "EmailDialog")
     }
 
     private fun bindRecyclerView() {

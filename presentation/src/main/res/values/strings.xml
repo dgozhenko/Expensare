@@ -133,4 +133,5 @@
     <string name="they_are_waiting_for_debt_return">They are waiting for debt return</string>
     <string name="touch_pie_to_change_debt_status">(touch pie to change debt status)</string>
     <string name="they_need_to_return_debt">They need to return debt</string>
+    <string name="enter_e_mail_hint">E-mail</string>
 </resources>
