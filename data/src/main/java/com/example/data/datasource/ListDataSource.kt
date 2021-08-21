@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.data.interfaces.ListInterface
 import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
-import com.example.domain.models.ListItem
-import com.example.domain.models.Response
+import com.example.domain.models.GroupList
+import com.example.domain.models.util.Response
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -17,7 +17,7 @@ class ListDataSource
 @Inject
 constructor(private val database: ExpensareDatabase, private val storage: Storage) : ListInterface {
 
-    override suspend fun create(listItem: ListItem): LiveData<Response<String>> {
+    override suspend fun create(groupList: GroupList): LiveData<Response<String>> {
         val response = MutableLiveData<Response<String>>()
         response.value = Response.loading(null)
 
@@ -28,18 +28,18 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
                 .getReference("grocery_list/$groupId")
                 .push()
 
-        list.setValue(listItem)
+        list.setValue(groupList)
             .addOnSuccessListener { response.value = Response.success("List Item created") }
             .addOnFailureListener { response.value = Response.error(it.message!!, null) }
             .addOnCanceledListener { response.value = Response.error("Item creation canceled", null) }
         return response
     }
 
-    override suspend fun getAll(): LiveData<Response<ArrayList<ListItem>>> {
-        val response = MutableLiveData<Response<ArrayList<ListItem>>>()
+    override suspend fun getAll(): LiveData<Response<ArrayList<GroupList>>> {
+        val response = MutableLiveData<Response<ArrayList<GroupList>>>()
         response.value = Response.loading(null)
         val groupId = storage.groupId
-        val groceryListArray = arrayListOf<ListItem>()
+        val groceryListArray = arrayListOf<GroupList>()
         val list =
             FirebaseDatabase.getInstance(
                     "https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -49,7 +49,7 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val groceryListItem = it.getValue(ListItem::class.java)
+                            val groceryListItem = it.getValue(GroupList::class.java)
                             if (groceryListItem != null) {
                                 groceryListArray.add(groceryListItem)
                             } else {
@@ -69,7 +69,7 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
         return response
     }
 
-    override suspend fun delete(listItem: ListItem): LiveData<Response<String>> {
+    override suspend fun delete(groupList: GroupList): LiveData<Response<String>> {
         val response = MutableLiveData<Response<String>>()
         response.value = Response.loading(null)
         val groupId = storage.groupId
@@ -87,8 +87,8 @@ constructor(private val database: ExpensareDatabase, private val storage: Storag
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         snapshot.children.forEach {
-                            val item = it.getValue(ListItem::class.java)
-                            if (item == listItem) {
+                            val item = it.getValue(GroupList::class.java)
+                            if (item == groupList) {
                                 val key = it.key
                                 deleteReference
                                     .child("${key!!}/")

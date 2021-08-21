@@ -5,6 +5,14 @@ import com.example.domain.database.entities.UserEntity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Debt(val toUser: UserEntity, val fromUser: UserEntity, val amount: Int) : Parcelable {
-  constructor() : this(UserEntity.EMPTY, UserEntity.EMPTY, 0)
+data class Debt(
+  val lentUser: User,
+  val oweUser: User,
+  val lentAmount: Int,
+  val oweAmount: Int,
+  val name: String,
+  val date: String,
+  val id: String
+  ) : Parcelable {
+  constructor() : this(User(), User(), 0, 0, "", "", "")
 }

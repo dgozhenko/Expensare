@@ -1,8 +1,8 @@
 package com.example.data.interactors.auth
 
 import com.example.data.repositories.AuthRepository
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 
 class RegisterUser(private val authRepository: AuthRepository) {
     suspend operator fun invoke(

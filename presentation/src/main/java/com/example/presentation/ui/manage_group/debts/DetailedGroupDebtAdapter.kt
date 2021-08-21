@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.models.UserDebt
+import com.example.domain.models.GroupDebt
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
 import com.squareup.picasso.Callback
@@ -17,7 +17,7 @@ private const val VIEW_TYPE_LENT = 2
 
 class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<DetailedGroupDebtAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<UserDebt>()
+    private var list = arrayListOf<GroupDebt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (viewType == VIEW_TYPE_OWE) {
@@ -35,8 +35,8 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
         return list.size
     }
 
-    fun getDebts(userDebt: ArrayList<UserDebt>) {
-        list = userDebt
+    fun getDebts(groupDebt: ArrayList<GroupDebt>) {
+        list = groupDebt
         notifyDataSetChanged()
     }
 
@@ -52,11 +52,11 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
         private val debt: MaterialTextView = itemView.findViewById(R.id.item_price)
         private val image: CircleImageView = itemView.findViewById(R.id.icon)
 
-        override fun bind(userDebt: UserDebt) {
-            name.text = "To: ${userDebt.firstUser.username}"
+        override fun bind(groupDebt: GroupDebt) {
+            name.text = "To: ${groupDebt.lentUser.username}"
             debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
-            debt.text = "$${userDebt.firstUserAmount}"
-            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).networkPolicy(
+            debt.text = "$${groupDebt.lentedAmount}"
+            Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).networkPolicy(
                 NetworkPolicy.OFFLINE).into(image, object :
                 Callback {
                 override fun onSuccess() {
@@ -64,7 +64,7 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+                    Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).into(image)
                 }
 
             })
@@ -76,18 +76,18 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
         private val debt: MaterialTextView = itemView.findViewById(R.id.item_price)
         private val image: CircleImageView = itemView.findViewById(R.id.icon)
 
-        override fun bind(userDebt: UserDebt) {
-            name.text = "From: ${userDebt.firstUser.username}"
+        override fun bind(groupDebt: GroupDebt) {
+            name.text = "From: ${groupDebt.lentUser.username}"
             debt.setTextColor(itemView.context.resources.getColor(R.color.black, itemView.context.theme))
-            debt.text = "$${userDebt.firstUserAmount}"
-            Picasso.with(itemView.context).load(userDebt.firstUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
+            debt.text = "$${groupDebt.lentedAmount}"
+            Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(image, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(userDebt.firstUser.avatar).into(image)
+                    Picasso.with(itemView.context).load(groupDebt.lentUser.avatar).into(image)
                 }
 
             })
@@ -95,7 +95,7 @@ class DetailedGroupDebtAdapter(val isLent: Boolean): RecyclerView.Adapter<Detail
     }
 
     open class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        open fun bind(userDebt: UserDebt) {
+        open fun bind(groupDebt: GroupDebt) {
 
         }
     }

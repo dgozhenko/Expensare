@@ -11,8 +11,10 @@ import com.example.data.storage.Storage
 import com.example.domain.database.ExpensareDatabase
 import com.example.domain.database.entities.ExpenseEntity
 import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.Expense
 import com.example.domain.models.Group
-import com.example.domain.models.Response
+import com.example.domain.models.User
+import com.example.domain.models.util.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -29,20 +31,20 @@ constructor(
     private val downloadExpenses: DownloadExpenses
 ) : ViewModel() {
 
-    private val _user = MutableLiveData<Response<UserEntity>>()
-    val user: LiveData<Response<UserEntity>>
+    private val _user = MutableLiveData<Response<User>>()
+    val user: LiveData<Response<User>>
         get() = _user
 
     private val _group = MutableLiveData<Response<Group>>()
     val group: LiveData<Response<Group>>
         get() = _group
 
-    private val _expenses = MutableLiveData<Response<ArrayList<ExpenseEntity>>>()
-    val expense: LiveData<Response<ArrayList<ExpenseEntity>>>
+    private val _expenses = MutableLiveData<Response<ArrayList<Expense>>>()
+    val expense: LiveData<Response<ArrayList<Expense>>>
         get() = _expenses
 
-    private val _refreshedExpenses = MutableLiveData<Response<ArrayList<ExpenseEntity>>>()
-    val refreshedExpenses: LiveData<Response<ArrayList<ExpenseEntity>>>
+    private val _refreshedExpenses = MutableLiveData<Response<ArrayList<Expense>>>()
+    val refreshedExpenses: LiveData<Response<ArrayList<Expense>>>
         get() = _refreshedExpenses
 
     init {

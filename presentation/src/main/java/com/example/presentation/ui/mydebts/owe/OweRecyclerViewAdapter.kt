@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.models.ManualDebt
+import com.example.domain.models.Debt
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
@@ -16,7 +16,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
 
-    private var list = arrayListOf<ManualDebt>()
+    private var list = arrayListOf<Debt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_from_me_debt_item, parent, false)
@@ -37,7 +37,7 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
         return list.size
     }
 
-    fun getDebts(debts: ArrayList<ManualDebt>) {
+    fun getDebts(debts: ArrayList<Debt>) {
         list.clear()
         notifyDataSetChanged()
         list.addAll(debts)
@@ -45,32 +45,32 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(debt: ManualDebt) {
+        fun bind(debt: Debt) {
             val userName = itemView.findViewById<MaterialTextView>(R.id.name_user)
             val date = itemView.findViewById<MaterialTextView>(R.id.date)
             val money = itemView.findViewById<MaterialTextView>(R.id.debt_amount)
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
 
-            userName.text = debt.fromUser.username
-            money.text = "-$${debt.amount}"
-            debtFor.text = debt.debtFor
+            userName.text = debt.oweUser.username
+            money.text = "-$${debt.oweAmount}"
+            debtFor.text = debt.name
             date.text = debt.date
-            Picasso.with(itemView.context).load(debt.fromUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(debt.oweUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(debt.fromUser.avatar).into(avatar)
+                    Picasso.with(itemView.context).load(debt.oweUser.avatar).into(avatar)
                 }
 
             })
         }
     }
 
-    class OnClickListener(val clickListener: (manualDebt: ManualDebt) -> Unit) {
-        fun onClick(manualDebt: ManualDebt) = clickListener(manualDebt)
+    class OnClickListener(val clickListener: (manualDebt: Debt) -> Unit) {
+        fun onClick(manualDebt: Debt) = clickListener(manualDebt)
     }
 }

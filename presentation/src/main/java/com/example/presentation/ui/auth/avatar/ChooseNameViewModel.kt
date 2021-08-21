@@ -8,16 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.interactors.auth.avatar.CreateUserInDatabase
 import com.example.data.interactors.auth.avatar.UploadImage
 import com.example.data.storage.Storage
-import com.example.domain.models.Response
-import com.example.domain.models.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
+import com.example.domain.models.util.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import java.util.*
 import javax.inject.Inject
 
 sealed class ChooseNameResult {

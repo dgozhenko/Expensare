@@ -116,6 +116,36 @@ class RepositoryModule {
     return ListenForGroups(groupRepository)
   }
 
+  @Singleton
+  @Provides
+  fun providesCreateUserInGroup(groupRepository: GroupRepository): CreateUserInGroup {
+    return CreateUserInGroup(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesAddUserToGroup(groupRepository: GroupRepository): AddUserToGroup {
+    return AddUserToGroup(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetUserByEmail(groupRepository: GroupRepository): GetUserByEmail {
+    return GetUserByEmail(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetGroupDebts(groupRepository: GroupRepository): GetGroupDebts {
+    return GetGroupDebts(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetGroupDetailedDebts(groupRepository: GroupRepository): GetGroupDetailedDebt {
+    return GetGroupDetailedDebt(groupRepository)
+  }
+
   // Debt
 
   @Singleton

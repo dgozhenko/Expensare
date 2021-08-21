@@ -10,7 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Debt
-import com.example.domain.models.Status
+import com.example.domain.models.GroupDebt
+import com.example.domain.models.User
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.inner_circles_apps.myapplication.R
 import com.inner_circles_apps.myapplication.databinding.FragmentAddExpensesBinding
@@ -22,8 +24,8 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
   private var divideEqually: Boolean = false
   private var divideAmount: Int = 0
   private val fromUserId = arrayListOf<String>()
-  private val debtsArray = arrayListOf<Debt>()
-  private val equalDebtsArray = arrayListOf<Debt>()
+  private val debtsArray = arrayListOf<GroupDebt>()
+  private val equalDebtsArray = arrayListOf<GroupDebt>()
 
   private var _binding: FragmentAddExpensesBinding? = null
   private val binding
@@ -48,7 +50,7 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
   override fun onDivideMethodListener(
     divideAmount: Int,
     divideEqually: Boolean,
-    user: UserEntity,
+    user: User,
     startAmount: Int
   ) {
     this.divideEqually = divideEqually
@@ -60,11 +62,11 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
           Status.SUCCESS -> {
             if (divideEqually) {
               binding.progressBar.visibility = View.GONE
-              val debt = Debt(it.data!!, user, divideAmount)
+              val debt = GroupDebt(it.data!!, user, divideAmount, divideAmount, expanded = false, false)
               equalDebtsArray.add(debt)
             } else {
               amount -= divideAmount
-              val debt = Debt(it.data!!, user, divideAmount)
+              val debt =  GroupDebt(it.data!!, user, divideAmount, divideAmount, expanded = false, false)
               debtsArray.add(debt)
               this.divideAmount = amount
             }
@@ -111,7 +113,7 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
             var noUserInEqualDebtArray = true
 
             debtsArray.forEach { debt ->
-              if (debt.fromUser == debt.fromUser) {
+              if (debt.lentUser == debt.lentUser) {
                 Toast.makeText(
                     requireContext(),
                     "You already added debt for this user",
@@ -123,7 +125,7 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
             }
 
             equalDebtsArray.forEach { equalDebt ->
-              if (equalDebt.fromUser == equalDebt.fromUser) {
+              if (equalDebt.oweUser == equalDebt.oweUser) {
                 Toast.makeText(
                     requireContext(),
                     "You already added debt for this user",
@@ -147,16 +149,16 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
     addExpenseViewModel.users.observe(viewLifecycleOwner, { adapter.getUsers(it) })
   }
 
-  private fun callDialog(user: UserEntity) {
+  private fun callDialog(user: User) {
     val amountEditText = binding.amountEditText.text.toString()
     if (amountEditText.isNotEmpty()) {
       if (divideAmount == 0) {
-        fromUserId.add(user.userUidId)
+        fromUserId.add(user.uid)
         val bottomSheetDialog = AddExpenseBottomSheetDialog(amountEditText.toInt(), user)
         bottomSheetDialog.setTargetFragment(this, 0)
         bottomSheetDialog.show(parentFragmentManager, "")
       } else {
-        fromUserId.add(user.userUidId)
+        fromUserId.add(user.uid)
         val bottomSheetDialog = AddExpenseBottomSheetDialog(divideAmount, user)
         bottomSheetDialog.setTargetFragment(this, 0)
         bottomSheetDialog.show(parentFragmentManager, "")
@@ -230,7 +232,7 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
                       } else {
                         if (debtsArray.isNotEmpty()) {
                           debtsArray.forEach { debt ->
-                            addExpenseViewModel.createDebt(debt.amount, debt.fromUser, debt.toUser)
+                            addExpenseViewModel.createDebt(debt.lentedAmount, debt.oweUser, debt.lentUser)
                             addExpenseViewModel.addDebtResult.observe(viewLifecycleOwner, { debtResult ->
                                 when (debtResult.status) {
                                    Status.ERROR -> {
@@ -258,7 +260,7 @@ class AddExpenseFragment : BaseFragment(), AddExpenseBottomSheetDialog.OnDivideM
                         if (equalDebtsArray.isNotEmpty()) {
                           equalDebtsArray.forEach { debt ->
                             val equalAmount = divideAmount / (1 + equalDebtsArray.size)
-                            addExpenseViewModel.createDebt(equalAmount, debt.fromUser, debt.toUser)
+                            addExpenseViewModel.createDebt(equalAmount, debt.oweUser, debt.lentUser)
                             addExpenseViewModel.addDebtResult.observe(
                               viewLifecycleOwner,
                               { debtResult ->

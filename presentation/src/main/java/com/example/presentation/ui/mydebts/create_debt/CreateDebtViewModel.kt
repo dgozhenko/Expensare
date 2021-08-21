@@ -4,9 +4,9 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.domain.models.Group
-import com.example.domain.models.ManualDebt
 import com.example.domain.models.User
 import com.example.data.storage.Storage
+import com.example.domain.models.Debt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -118,7 +118,7 @@ class CreateDebtViewModel @Inject constructor() : ViewModel() {
     }
 
     // TODO: 17.08.2021 Repository
-    fun createDebt(debtFor: String, amount: Int, fromUser: User, toUser: User) {
+    fun createDebt(debtFor: String, amount: Int, oweUser: User, lentUser: User) {
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         val newCalendar = Calendar.getInstance(Locale.getDefault())
@@ -126,13 +126,13 @@ class CreateDebtViewModel @Inject constructor() : ViewModel() {
         val debtId = UUID.randomUUID().toString()
 
         viewModelScope.launch(Dispatchers.IO) {
-            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${fromUser.uid}/")
-            val referenceAddLent = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${fromUser.uid}/lent/$debtId")
-            val referenceAddOwe = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${toUser.uid}/owe/$debtId")
+            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${oweUser.uid}/")
+            val referenceAddLent = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${oweUser.uid}/lent/$debtId")
+            val referenceAddOwe = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${lentUser.uid}/owe/$debtId")
             referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    referenceAddLent.setValue(ManualDebt(debtId,toUser, fromUser, amount, debtFor, neededDate))
-                    referenceAddOwe.setValue(ManualDebt(debtId, toUser, fromUser, amount, debtFor, neededDate))
+                    referenceAddLent.setValue(Debt(id = debtId, lentUser = lentUser, oweUser = oweUser, lentAmount = amount, oweAmount = amount, name = debtFor, date = neededDate))
+                    referenceAddOwe.setValue(Debt(id = debtId, lentUser = oweUser, oweUser = lentUser, lentAmount = amount, oweAmount = amount, name = debtFor, date = neededDate))
                     _createDebtResult.postValue(CreateDebtResult.Success)
                 }
 

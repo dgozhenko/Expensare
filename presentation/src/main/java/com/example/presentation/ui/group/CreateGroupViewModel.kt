@@ -8,11 +8,8 @@ import com.example.data.interactors.group.CreateGroup
 import com.example.data.interactors.user.DownloadUser
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Group
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
-import com.example.domain.models.UserDebt
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.example.domain.models.User
+import com.example.domain.models.util.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,8 +20,8 @@ import javax.inject.Inject
 class CreateGroupViewModel @Inject constructor(private val downloadUser: DownloadUser,
                                                private val createGroup: CreateGroup) : ViewModel() {
 
-    private val _user = MutableLiveData<Response<UserEntity>>()
-    val user: LiveData<Response<UserEntity>>
+    private val _user = MutableLiveData<Response<User>>()
+    val user: LiveData<Response<User>>
         get() = _user
 
     private val _createGroupResult = MutableLiveData<Response<String>>()
@@ -36,10 +33,10 @@ class CreateGroupViewModel @Inject constructor(private val downloadUser: Downloa
     }
 
     // TODO: 17.08.2021 Repository
-    fun createGroup(groupName: String, groupType: String, userEntity: UserEntity) {
-        val users = arrayListOf<UserEntity>()
+    fun createGroup(groupName: String, groupType: String, user: User) {
+        val users = arrayListOf<User>()
         val groupId = UUID.randomUUID().toString()
-        users.add(userEntity)
+        users.add(user)
         val group = Group(groupID = groupId, groupName = groupName, groupType = groupType, users = users)
         viewModelScope.launch(Dispatchers.Main) {
             createGroup.invoke(groupId = groupId, group = group).observeForever {

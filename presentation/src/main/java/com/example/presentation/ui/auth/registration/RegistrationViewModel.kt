@@ -2,13 +2,11 @@ package com.example.presentation.ui.auth.registration
 
 import androidx.lifecycle.*
 import com.example.data.interactors.auth.RegisterUser
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
-import com.google.firebase.auth.FirebaseAuth
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel

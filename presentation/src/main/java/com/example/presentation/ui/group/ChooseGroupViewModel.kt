@@ -6,8 +6,8 @@ import com.example.data.interactors.group.ListenForGroups
 import com.example.data.interactors.user.DownloadUser
 import com.example.domain.models.Group
 import com.example.data.storage.Storage
-import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.Response
+import com.example.domain.models.User
+import com.example.domain.models.util.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,8 +26,8 @@ class ChooseGroupViewModel @Inject constructor(private val storage: Storage,
     private val _groupIds = MutableLiveData<Response<ArrayList<String>>>()
     val groupIds: LiveData<Response<ArrayList<String>>> get() = _groupIds
 
-    private val _user = MutableLiveData<Response<UserEntity>>()
-    val user: LiveData<Response<UserEntity>>
+    private val _user = MutableLiveData<Response<User>>()
+    val user: LiveData<Response<User>>
         get() = _user
 
     fun saveGroupID(groupId: String) {
@@ -39,9 +39,9 @@ class ChooseGroupViewModel @Inject constructor(private val storage: Storage,
     }
 
     // TODO: 17.08.2021 Repository
-    fun listenForGroups(userEntity: UserEntity) {
+    fun listenForGroups(user: User) {
         viewModelScope.launch(Dispatchers.Main) {
-            listenForGroups.invoke(userEntity).observeForever {
+            listenForGroups.invoke(user).observeForever {
                 _groupIds.postValue(it)
             }
         }

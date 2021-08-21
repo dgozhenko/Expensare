@@ -9,7 +9,7 @@ data class Group(
   val groupID: String,
   val groupName: String,
   val groupType: String,
-  val users: ArrayList<UserEntity>
+  val users: ArrayList<User>
 ) : Parcelable {
   constructor() : this("", "", "", arrayListOf())
 }

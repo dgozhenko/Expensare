@@ -1,4 +1,4 @@
-package com.example.domain.models
+package com.example.domain.models.util
 
 data class Response<out T>(val status: Status, val data: T?, val message: String?) {
   companion object {

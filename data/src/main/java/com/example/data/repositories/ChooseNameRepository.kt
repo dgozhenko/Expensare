@@ -2,8 +2,8 @@ package com.example.data.repositories
 
 import android.net.Uri
 import com.example.data.interfaces.ChooseNameInterface
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 
 class ChooseNameRepository(private val chooseNameRepository: ChooseNameInterface) {
 

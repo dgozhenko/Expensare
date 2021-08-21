@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.User
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R

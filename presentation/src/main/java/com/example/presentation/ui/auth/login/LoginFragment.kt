@@ -1,7 +1,6 @@
 package com.example.presentation.ui.auth.login
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.domain.models.Avatar
-import com.example.domain.models.Status
+import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.inner_circles_apps.myapplication.R
 import com.inner_circles_apps.myapplication.databinding.FragmentLoginBinding

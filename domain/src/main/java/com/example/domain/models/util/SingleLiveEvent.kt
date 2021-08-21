@@ -1,4 +1,4 @@
-package com.example.domain.models
+package com.example.domain.models.util
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner

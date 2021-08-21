@@ -136,9 +136,9 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
         var requestedKey = ""
         var pendingKey = ""
         val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/$userId/lent/")
-        val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${request.debt.toUser.uid}/owe/")
+        val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${request.debt.lentUser.uid}/owe/")
         val referenceDeleteRequested = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/$userId/requested")
-        val referenceDeletePending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${request.debt.toUser.uid}/pending")
+        val referenceDeletePending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${request.debt.lentUser.uid}/pending")
 
         viewModelScope.launch(Dispatchers.IO) {
             referenceDeleteRequested.addListenerForSingleValueEvent(object : ValueEventListener{
@@ -146,7 +146,7 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
                     if (snapshot.exists()) {
                         snapshot.children.forEach{
                             val requestedRequest = it.getValue(Request::class.java)!!
-                            if (requestedRequest.debt.debtId == request.debt.debtId) {
+                            if (requestedRequest.debt.id == request.debt.id) {
                                 requestedKey = it.key!!
                             }
                         }
@@ -164,7 +164,7 @@ class RequestsViewModel @Inject constructor(private val getApplication: Applicat
                     if (snapshot.exists()) {
                         snapshot.children.forEach{
                             val pendingRequest = it.getValue(Request::class.java)!!
-                            if (pendingRequest.debt.debtId == request.debt.debtId) {
+                            if (pendingRequest.debt.id == request.debt.id) {
                                 pendingKey = it.key!!
                             }
                         }
