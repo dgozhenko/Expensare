@@ -4,27 +4,28 @@ import androidx.lifecycle.LiveData
 import com.example.data.interfaces.ManualDebtInterface
 import com.example.domain.database.entities.ManualDebtEntity
 import com.example.domain.database.entities.UserEntity
-import com.example.domain.models.ManualDebt
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.Debt
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import com.example.domain.models.User
+import java.util.ArrayList
 
 class ManualDebtRepository(private val manualDebtInterface: ManualDebtInterface) {
-    suspend fun getUserInfo(): LiveData<UserEntity> =
+    suspend fun getUserInfo(): LiveData<User> =
         manualDebtInterface.getUserInfo()
 
     suspend fun createDebt(debtFor: String, amount: Int, fromUser: User, toUser: User): SingleLiveEvent<Response<String>> =
         manualDebtInterface.createDebt(debtFor, amount, fromUser, toUser)
 
-    suspend fun getLentDebts(): LiveData<ManualDebtEntity> =
+    suspend fun getLentDebts(): LiveData<Response<ArrayList<Debt>>> =
         manualDebtInterface.getLentDebts()
 
-    suspend fun getOweDebts(): LiveData<ManualDebtEntity> =
+    suspend fun getOweDebts(): LiveData<Response<ArrayList<Debt>>> =
         manualDebtInterface.getOweDebts()
 
-    suspend fun refreshLentDebts(): LiveData<ManualDebtEntity> =
+    suspend fun refreshLentDebts(): LiveData<Response<ArrayList<Debt>>> =
         manualDebtInterface.refreshLentDebts()
 
-    suspend fun refreshOweDebts(): LiveData<ManualDebtEntity> =
+    suspend fun refreshOweDebts(): LiveData<Response<ArrayList<Debt>>> =
         manualDebtInterface.refreshOweDebts()
 }

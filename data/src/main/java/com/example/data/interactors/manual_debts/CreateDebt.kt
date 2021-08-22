@@ -1,8 +1,8 @@
 package com.example.data.interactors.manual_debts
 
 import com.example.data.repositories.ManualDebtRepository
-import com.example.domain.models.Response
-import com.example.domain.models.SingleLiveEvent
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import com.example.domain.models.User
 
 class CreateDebt(private val manualDebtRepository: ManualDebtRepository) {

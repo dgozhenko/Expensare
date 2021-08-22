@@ -8,7 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.domain.database.entities.SecondUserEntity
+import com.example.domain.database.entities.UserEntity
+import com.example.domain.models.util.Status
 import com.example.domain.models.User
+import com.example.presentation.ui.auth.registration.RegistrationFragmentDirections
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.dashboard.DashboardFragmentDirections
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,11 +23,12 @@ import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CreateDebtFragment: BaseFragment() {
+class CreateDebtFragment : BaseFragment() {
     private var _binding: FragmentCreateManualDebtBinding? = null
     private val binding get() = _binding!!
 
     private var userFrom: User? = null
+    private var userTo: User? = null
 
     private val createDebtViewModel: CreateDebtViewModel by viewModels()
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -37,21 +42,14 @@ class CreateDebtFragment: BaseFragment() {
         getUserInfo()
         getUsersFromGroup()
 
-        binding.toUserName.setOnClickListener{
-            var arraySize = 0
-            createDebtViewModel.users.observe(viewLifecycleOwner, {
-                it.forEach { user->
-                    arraySize++
-                }
-            })
-            var singleItems = Array<String>(arraySize){""}
+        binding.toUserName.setOnClickListener {
+            var arraySize = createDebtViewModel.users.size
+            var singleItems = Array<String>(arraySize) { "" }
             arraySize = 0
-            createDebtViewModel.users.observe(viewLifecycleOwner, {
-                it.forEach { user->
-                    singleItems[arraySize] = user.username
-                    arraySize++
-                }
-            })
+            createDebtViewModel.users.forEach { user ->
+                singleItems[arraySize] = user.username
+                arraySize++
+            }
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Choose debtor")
                 .setNegativeButton("Cancel") { dialog, which ->
@@ -61,17 +59,16 @@ class CreateDebtFragment: BaseFragment() {
                 .setPositiveButton("OK") { dialog, which -> }
                 .setSingleChoiceItems(singleItems, 0) { dialog, which ->
                     binding.toUserName.setText(singleItems[which])
-                    createDebtViewModel.users.observe(viewLifecycleOwner, {
-                        it.forEach { user->
-                            if (user.username == singleItems[which]){
-                                Picasso.with(this.context).load(user.avatar).into(binding.toUserAvatar)
-                            }
+                    createDebtViewModel.users.forEach { user ->
+                        if (user.username == singleItems[which]) {
+                            Picasso.with(this.context).load(user.avatar)
+                                .into(binding.toUserAvatar)
                         }
-                    })
+                    }
                 }
                 .show()
         }
-        binding.loginButton.setOnClickListener{
+        binding.loginButton.setOnClickListener {
             val debtFor = binding.debtForEditText.text.toString()
             val debtAmount = binding.debtAmountEditText.text.toString()
             when {
@@ -92,35 +89,61 @@ class CreateDebtFragment: BaseFragment() {
                         .show()
                 }
                 else -> {
-                    var userTo: User? = null
-                    createDebtViewModel.users.observe(viewLifecycleOwner, {
-                        it.forEach { user->
-                            if (user.username == binding.toUserName.text.toString()){
-                                userTo = user
-                            }
+                    createDebtViewModel.users.forEach { user ->
+                        if (user.username == binding.toUserName.text.toString()) {
+                            userTo = user
                         }
-                    })
-                    createDebtViewModel.createDebt(debtFor,debtAmount.toInt(), this.userFrom!!, userTo!!)
-                    createDebtViewModel.addExpenseResult.observe(viewLifecycleOwner, {
-                        if (it == CreateDebtResult.Success) {
+                    }
+                }
+            }
+
+            createDebtViewModel.createDebt(
+                debtFor,
+                debtAmount.toInt(),
+                this.userFrom!!,
+                userTo!!
+            )
+            createDebtViewModel.createDebtLiveData.observe(
+                viewLifecycleOwner,
+                { createDebtResponse ->
+                    when (createDebtResponse.status) {
+                        Status.ERROR -> {
+                            Toast.makeText(
+                                requireContext(),
+                                createDebtResponse.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        Status.LOADING -> {
+                        }// TODO: 20.08.2021 Create progressBar
+                        Status.SUCCESS -> {
                             Toast.makeText(
                                 requireContext(),
                                 "Debt was successfully created",
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                             findNavController().navigateUp()
                         }
-                    })
-
-                }
-            }
+                    }
+                })
         }
     }
 
+
     private fun getUsersFromGroup() {
         createDebtViewModel.group.observe(viewLifecycleOwner, {
-            createDebtViewModel.getUsersFromGroup(it)
+            when(it.status) {
+                Status.LOADING -> {
+
+                }
+                Status.ERROR -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
+                Status.SUCCESS -> {
+                    createDebtViewModel.getUsersFromGroup(it.data!!)
+                }
+            }
+
         })
     }
 
@@ -128,16 +151,20 @@ class CreateDebtFragment: BaseFragment() {
         createDebtViewModel.user.observe(
             viewLifecycleOwner,
             {
-                if (it == null) {
-                    findNavController()
-                        .navigate(
-                            DashboardFragmentDirections.actionDashboardFragmentToLoginFragment()
-                        )
-                    FirebaseAuth.getInstance().signOut()
-                } else {
-                    binding.fromUserName.setText(it.username)
-                    this.userFrom = it
-                    Picasso.with(this.context).load(it.avatar).into(binding.fromUserAvatar)
+                when(it.status) {
+                    Status.SUCCESS -> {
+                        binding.fromUserName.setText(it.data!!.username)
+                        this.userFrom = it.data
+                        Picasso.with(this.context).load(it.data!!.avatar)
+                            .into(binding.fromUserAvatar)
+                    }
+                    Status.LOADING -> {
+
+                    }
+                    Status.ERROR -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        findNavController().navigateUp()
+                    }
                 }
             }
         )
