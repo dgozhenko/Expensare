@@ -146,6 +146,24 @@ class RepositoryModule {
     return GetGroupDetailedDebt(groupRepository)
   }
 
+  @Singleton
+  @Provides
+  fun providesSendInvite(groupRepository: GroupRepository): CreateGroupInvite {
+    return CreateGroupInvite(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetAllInvite(groupRepository: GroupRepository): GetAllInvites {
+    return GetAllInvites(groupRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesDeclineInvite(groupRepository: GroupRepository): DeclineInvite {
+    return DeclineInvite(groupRepository)
+  }
+
   // Debt
 
   @Singleton

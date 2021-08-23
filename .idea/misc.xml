@@ -11,6 +11,14 @@
         <entry key="presentation/src/main/res/layout/dialog_email.xml" value="0.33" />
         <entry key="presentation/src/main/res/layout/fragment_add_additional_list_item.xml" value="0.32083333333333336" />
         <entry key="presentation/src/main/res/layout/fragment_add_store.xml" value="0.11510416666666666" />
+        <entry key="presentation/src/main/res/layout/fragment_avatar_picker.xml" value="0.32083333333333336" />
+        <entry key="presentation/src/main/res/layout/fragment_group_invites.xml" value="0.22708333333333333" />
+        <entry key="presentation/src/main/res/layout/fragment_room_choose.xml" value="0.22708333333333333" />
+        <entry key="presentation/src/main/res/layout/recycler_view_group_invite.xml" value="0.5" />
+        <entry key="presentation/src/main/res/layout/recycler_view_history_expanded_item.xml" value="0.22708333333333333" />
+        <entry key="presentation/src/main/res/layout/recycler_view_list_item.xml" value="0.22708333333333333" />
+        <entry key="presentation/src/main/res/layout/recycler_view_pending_request_item.xml" value="0.22708333333333333" />
+        <entry key="presentation/src/main/res/layout/recycler_view_requested_request_item.xml" value="0.22708333333333333" />
       </map>
     </option>
   </component>

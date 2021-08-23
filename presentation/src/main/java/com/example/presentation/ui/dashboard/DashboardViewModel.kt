@@ -47,7 +47,11 @@ constructor(
     val refreshedExpenses: LiveData<Response<ArrayList<Expense>>>
         get() = _refreshedExpenses
 
+    private val _groupId = MutableLiveData<String>()
+    val groupId: LiveData<String> get() = _groupId
+
     init {
+        getStoredGroupId()
         getUserInfo()
     }
 
@@ -75,5 +79,13 @@ constructor(
         viewModelScope.launch(Dispatchers.Main) {
             downloadExpenses.invoke().observeForever { _expenses.postValue(it) }
         }
+    }
+
+    private fun getStoredGroupId() {
+        _groupId.postValue(storage.groupId)
+    }
+
+    fun deleteStoredGroupId() {
+        storage.groupId = "def"
     }
 }

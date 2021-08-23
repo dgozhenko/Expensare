@@ -22,7 +22,7 @@ class ChooseNameDataSource @Inject constructor(): ChooseNameInterface {
         val response: SingleLiveEvent<Response<String>> = SingleLiveEvent()
         response.value = Response.loading(null)
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val user = User(uid = uid,username = username, email = email, avatar = avatarUri, groups = null)
+        val user = User(uid = uid,username = username, email = email, avatar = avatarUri, groups = null, null)
         val users =
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("/users/$uid")

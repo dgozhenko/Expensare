@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.models.Group
 import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.dialog.AddUserByEmailDialog
@@ -21,6 +22,9 @@ class GroupMembersFragment : BaseFragment() {
     private var _binding: FragmentGroupMembersBinding? = null
     private val binding
         get() = _binding!!
+
+    private var _group: Group? = null
+    private val group get() = _group
 
     private val groupMembersViewModel: GroupMembersViewModel by viewModels()
 
@@ -70,20 +74,6 @@ class GroupMembersFragment : BaseFragment() {
         })
     }
     private fun listenToObservers() {
-        groupMembersViewModel.addUserToGroupResult.observe(viewLifecycleOwner, {
-            when(it.status) {
-                Status.LOADING -> {
-
-                }
-                Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-                }
-                Status.SUCCESS -> {
-                    groupMembersViewModel.createUserInGroup(it.data!!)
-                }
-            }
-        })
-
         groupMembersViewModel.userByEmail.observe(viewLifecycleOwner, { user ->
                 when (user.status) {
                     Status.LOADING -> {
@@ -93,29 +83,16 @@ class GroupMembersFragment : BaseFragment() {
                         Toast.makeText(requireContext(), user.message, Toast.LENGTH_LONG).show()
                     }
                     Status.SUCCESS -> {
-                        groupMembersViewModel.addUserToGroup(user.data!!)
+                        groupMembersViewModel.sendInvite(user = user.data!!, group = group!!)
                     }
                 }
             })
-
-        groupMembersViewModel.createUserInGroupResult.observe(viewLifecycleOwner, {
-            when(it.status) {
-                Status.SUCCESS -> {
-                    Toast.makeText(requireContext(), it.data!!, Toast.LENGTH_LONG).show()
-                }
-                Status.LOADING -> {
-
-                }
-                Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        })
 
         groupMembersViewModel.group.observe(
             viewLifecycleOwner, {
                 when(it.status) {
                     Status.SUCCESS -> {
+                        _group = it.data!!
                         groupMembersViewModel.getUsersFromGroup(it.data!!)
                     }
                     Status.ERROR -> {

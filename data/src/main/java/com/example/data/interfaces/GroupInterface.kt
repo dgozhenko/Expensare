@@ -18,11 +18,17 @@ interface GroupInterface {
 
   suspend fun getUserByEmail(email: String): LiveData<Response<User>>
 
-  suspend fun addUserToGroup(user: User): LiveData<Response<UserGroupData>>
+  suspend fun addUserToGroup(user: User, group: Group): LiveData<Response<UserGroupData>>
 
   suspend fun createUserInGroup(userGroupData: UserGroupData): LiveData<Response<String>>
 
   suspend fun getGroupDebts(users: ArrayList<User>, debtToMe: Boolean): LiveData<Response<ArrayList<GroupDebt>>>
 
   suspend fun getGroupDetailedDebt(user: User, debtToMe: Boolean): LiveData<Response<ArrayList<GroupDebt>>>
+
+  suspend fun createGroupInvite(user: User, group: Group, dateTime: String): LiveData<Response<String>>
+
+  suspend fun getAllInvites(user: User): LiveData<Response<GroupInvites>>
+
+  suspend fun declineInvite(user: User, group: Group): LiveData<Response<String>>
 }

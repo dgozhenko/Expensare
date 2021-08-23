@@ -44,9 +44,16 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
   override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View {
     _binding = FragmentDashboardBinding.inflate(inflater)
     _navigationView = requireActivity().findViewById(R.id.test_nav_view)
-    getUserInfo()
-    bindToolbarAndNavDrawer()
-    bindExpensesRecyclerView()
+    dashboardViewModel.groupId.observe(viewLifecycleOwner, {
+      if (it != "def" && it.isNotBlank()) {
+        getUserInfo()
+        bindToolbarAndNavDrawer()
+        bindExpensesRecyclerView()
+      } else {
+        findNavController()
+          .navigate(DashboardFragmentDirections.actionDashboardFragmentToChooseGroupFragment())
+      }
+    })
     return binding.root
   }
 
@@ -153,6 +160,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
       }
       R.id.change_group -> {
         drawer.closeDrawer(GravityCompat.START)
+        dashboardViewModel.deleteStoredGroupId()
         findNavController()
           .navigate(DashboardFragmentDirections.actionDashboardFragmentToChooseGroupFragment())
       }
@@ -171,6 +179,7 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
       R.id.log_out -> {
         drawer.closeDrawer(GravityCompat.START)
         FirebaseAuth.getInstance().signOut()
+        dashboardViewModel.deleteStoredGroupId()
         findNavController()
           .navigate(DashboardFragmentDirections.actionDashboardFragmentToLoginFragment())
       }
@@ -220,8 +229,6 @@ class DashboardFragment : BaseFragment(), NavigationView.OnNavigationItemSelecte
           }
           Status.ERROR -> {
             binding.progressCircular.visibility = View.GONE
-            findNavController()
-              .navigate(DashboardFragmentDirections.actionDashboardFragmentToChooseGroupFragment())
             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
           }
           Status.LOADING -> {

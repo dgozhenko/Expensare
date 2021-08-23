@@ -251,6 +251,13 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_chooseGroupFragment_to_groupInvitesFragment"
+            app:destination="@id/groupInvitesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/createGroupFragment"
@@ -528,4 +535,12 @@
         android:name="com.example.presentation.ui.splash.SplashScreen"
         android:label="activity_splash_screen"
         tools:layout="@layout/activity_splash_screen" />
+    <fragment
+        android:id="@+id/groupInvitesFragment"
+        android:name="com.example.presentation.ui.group.invite.GroupInvitesFragment"
+        android:label="GroupInvitesFragment" >
+        <argument
+            android:name="groupInvites"
+            app:argType="com.example.domain.models.GroupInvites"/>
+    </fragment>
 </navigation>

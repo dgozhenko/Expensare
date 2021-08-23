@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.models.GroupInvite
 import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.inner_circles_apps.myapplication.R
@@ -42,6 +43,7 @@ class ChooseGroupFragment : BaseFragment() {
         else -> false
       }
     }
+    listenForObservers()
   }
 
   override fun onResume() {
@@ -67,6 +69,7 @@ class ChooseGroupFragment : BaseFragment() {
         when (it.status) {
           Status.SUCCESS -> {
             chooseGroupViewModel.listenForGroups(it.data!!)
+            chooseGroupViewModel.getAllInvites(it.data!!)
           }
           Status.ERROR -> {
               Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
@@ -104,6 +107,30 @@ class ChooseGroupFragment : BaseFragment() {
       }
     }
 
+    })
+  }
+
+  private fun listenForObservers() {
+    chooseGroupViewModel.invites.observe(viewLifecycleOwner, { result ->
+      when(result.status) {
+        Status.LOADING -> {
+
+        }
+        Status.ERROR -> {
+          Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
+          binding.invitesCount.text = "0"
+        }
+        Status.SUCCESS -> {
+          if (result.data != null) {
+            binding.invitesCount.text = result.data!!.size.toString()
+          } else {
+            binding.invitesCount.text = "0"
+          }
+          binding.inviteDisplay.setOnClickListener {
+            findNavController().navigate(ChooseGroupFragmentDirections.actionChooseGroupFragmentToGroupInvitesFragment(result.data!!))
+          }
+        }
+      }
     })
   }
 }

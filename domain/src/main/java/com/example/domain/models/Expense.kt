@@ -13,5 +13,5 @@ data class Expense(
   val date: String,
   val uploaded: Boolean
 ) : Parcelable {
-  constructor() : this("","", 0, User("", "", "", null, null), "", "", false)
+  constructor() : this("","", 0, User("", "", "", null, null, null), "", "", false)
 }

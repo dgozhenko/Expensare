@@ -9,6 +9,7 @@ import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.*
 import com.example.domain.models.util.Response
 import com.example.domain.models.util.UserGroupData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -79,7 +80,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
       .addOnCompleteListener {
         groupsId.add(groupId)
         userRef.setValue(
-          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = groupsId)
+          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = groupsId, groupInvites = null)
         )
           .addOnSuccessListener {
             response.value = Response.success("Group created.")
@@ -119,6 +120,66 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
 
       })
     return response
+  }
+
+  override suspend fun createGroupInvite(
+    user: User,
+    group: Group,
+    dateTime: String
+  ): LiveData<Response<String>> {
+    val response = MutableLiveData<Response<String>> ()
+    response.value = Response.loading(null)
+
+    val userRef = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+      .getReference("users/${user.uid}/")
+    val uid = FirebaseAuth.getInstance().uid
+    var fromUser = User()
+    var userAlreadyInGroup = false
+
+    group.users.forEach {
+      if (it.uid == uid) {
+        fromUser = it
+      } else if (it.uid == user.uid) {
+        userAlreadyInGroup = true
+      }
+    }
+    if (!userAlreadyInGroup) {
+      val groupInvites: java.util.ArrayList<GroupInvite>
+      var userAlreadyInvited = false
+      val invite = GroupInvite(message = "You was invited", fromUser = fromUser, group = group, dateTime = dateTime)
+      if (user.groupInvites != null) {
+        groupInvites = user.groupInvites!!
+        groupInvites.forEach { groupInvite ->
+        if (groupInvite.group.groupID == group.groupID) {
+          userAlreadyInvited = true
+         }
+        }
+        groupInvites.add(invite)
+      } else {
+        groupInvites = arrayListOf()
+        groupInvites.add(invite)
+      }
+
+      if (!userAlreadyInvited) {
+        userRef.setValue(
+          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = user.groups, groupInvites = groupInvites)
+        )
+          .addOnSuccessListener {
+            response.value = Response.success("User invited to group")
+          }
+          .addOnFailureListener { response.value =  Response.error(it.message!!, null) }
+          .addOnCanceledListener { response.value = Response.error("Invite canceled", null) }
+      } else {
+        response.value = Response.error("User already invited in ${group.groupName}", null)
+      }
+
+    } else {
+      response.value = Response.error("User already in ${group.groupName}", null)
+    }
+
+
+    return response
+
   }
 
   override suspend fun getAllGroups(groupIds: ArrayList<String>): LiveData<Response<ArrayList<Group>>> {
@@ -186,27 +247,25 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     return response
   }
 
-  override suspend fun addUserToGroup(user: User): LiveData<Response<UserGroupData>> {
+  override suspend fun addUserToGroup(user: User, group: Group): LiveData<Response<UserGroupData>> {
     val response = MutableLiveData<Response<UserGroupData>>()
     response.value = Response.loading(null)
-    val groupId = storage.groupId
-    val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
+    val groupId = group.groupID
+    val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/$groupId")
     reference.addListenerForSingleValueEvent((object : ValueEventListener{
       override fun onDataChange(snapshot: DataSnapshot) {
         if (snapshot.exists()) {
-          snapshot.children.forEach {
-            val group = it.getValue(Group::class.java)
+            val group = snapshot.getValue(Group::class.java)
             if (group != null) {
               if (group.groupID == groupId) {
-                val groupKey = it.key
+                val groupKey = snapshot.key
                 val usersIdArray = group.users
-                val userGroupData = UserGroupData(user = user, groupKey = groupKey!!, groupId = usersIdArray)
+                val userGroupData = UserGroupData(user = user, groupKey = groupKey!!, groupId = usersIdArray, group = group)
                 response.value = Response.success(userGroupData)
               }
             }
-          }
         } else {
-          response.value = Response.error("There no groups", null)
+          response.value = Response.error("There no group", null)
         }
       }
 
@@ -227,6 +286,13 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
     val user = userGroupData.user
     val groupKey = userGroupData.groupKey
     val groupsId = arrayListOf<String>()
+    val refreshedInvites = arrayListOf<GroupInvite>()
+    val groupInvites = user.groupInvites
+    groupInvites?.forEach {
+      if (it.group.groupID != userGroupData.group.groupID) {
+          refreshedInvites.add(it)
+      }
+    }
     if (user.groups != null) {
       val userGroupIds = user.groups!!
       userGroupIds.forEach {
@@ -241,7 +307,7 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
       .addOnSuccessListener {
         groupsId.add(groupKey)
         userRef.setValue(
-          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = groupsId)
+          User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = groupsId, groupInvites = refreshedInvites)
         )
           .addOnSuccessListener {
             response.value = Response.success("User added to group")
@@ -389,6 +455,56 @@ class GroupDataSource @Inject constructor(private val database: ExpensareDatabas
         }
       )
     }
+    return response
+  }
+
+  override suspend fun getAllInvites(user: User): LiveData<Response<GroupInvites>> {
+    val response = MutableLiveData<Response<GroupInvites>>()
+    response.value = Response.loading(null)
+    val userRef = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+      .getReference("users/${user.uid}").child("groupInvites")
+    val invitesArray = GroupInvites()
+    userRef.addListenerForSingleValueEvent(object : ValueEventListener{
+      override fun onDataChange(snapshot: DataSnapshot) {
+        if (snapshot.exists()) {
+            snapshot.children.forEach {
+              val result = it.getValue(GroupInvite::class.java)!!
+              invitesArray.add(result)
+            }
+          response.value = Response.success(invitesArray)
+        } else {
+          response.value = Response.error("There no invites", null)
+        }
+      }
+
+      override fun onCancelled(error: DatabaseError) {
+        response.value = Response.error(error.message, null)
+      }
+    })
+    return response
+  }
+
+  override suspend fun declineInvite(user: User, group: Group): LiveData<Response<String>> {
+    val response = MutableLiveData<Response<String>>()
+    response.value = Response.loading(null)
+    val refreshedInvites = arrayListOf<GroupInvite>()
+    val groupInvites = user.groupInvites
+    groupInvites?.forEach {
+      if (it.group.groupID != group.groupID) {
+          refreshedInvites.add(it)
+      }
+    }
+
+    val userRef = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+      .getReference("users/${user.uid}/")
+    userRef.setValue(
+      User(username = user.username, email = user.email, uid = user.uid, avatar = user.avatar, groups = user.groups, groupInvites = refreshedInvites)
+    )
+      .addOnSuccessListener {
+        response.value = Response.success("User declined invite to group")
+      }
+      .addOnFailureListener { response.value =  Response.error(it.message!!, null) }
+      .addOnCanceledListener { response.value = Response.error("Group creation canceled", null) }
     return response
   }
 }

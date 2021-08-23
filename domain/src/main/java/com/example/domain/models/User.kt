@@ -8,7 +8,8 @@ data class User(
   val username: String,
   val email: String,
   val avatar: String?,
-  val groups: ArrayList<String>?
+  val groups: ArrayList<String>?,
+  val groupInvites: ArrayList<GroupInvite>?
   ) : Parcelable {
-  constructor() : this("", "", "", null, null)
+  constructor() : this("", "", "", null, null, null)
 }

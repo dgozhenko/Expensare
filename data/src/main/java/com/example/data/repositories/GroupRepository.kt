@@ -22,11 +22,17 @@ class GroupRepository(private val groupInterface: GroupInterface) {
 
   suspend fun getUserByEmail(email: String): LiveData<Response<User>> = groupInterface.getUserByEmail(email)
 
-  suspend fun addUserToGroup(user: User): LiveData<Response<UserGroupData>> = groupInterface.addUserToGroup(user)
+  suspend fun addUserToGroup(user: User, group: Group): LiveData<Response<UserGroupData>> = groupInterface.addUserToGroup(user, group)
 
   suspend fun createUserInGroup(userGroupData: UserGroupData): LiveData<Response<String>> = groupInterface.createUserInGroup(userGroupData)
 
   suspend fun getGroupDebts(users: ArrayList<User>, debtToMe: Boolean): LiveData<Response<ArrayList<GroupDebt>>> = groupInterface.getGroupDebts(users, debtToMe)
 
   suspend fun getGroupDetailedDebt(user: User, debtToMe: Boolean): LiveData<Response<ArrayList<GroupDebt>>> = groupInterface.getGroupDetailedDebt(user, debtToMe)
+
+  suspend fun createGroupInvite(user: User, group: Group, dateTime: String): LiveData<Response<String>> = groupInterface.createGroupInvite(user, group, dateTime)
+
+  suspend fun getAllInvites(user: User): LiveData<Response<GroupInvites>> = groupInterface.getAllInvites(user)
+
+  suspend fun declineInvite(user: User, group: Group): LiveData<Response<String>> = groupInterface.declineInvite(user, group)
 }
