@@ -5,13 +5,13 @@ import com.example.data.interactors.auth.LoginUser
 import com.example.data.interactors.auth.RegisterUser
 import com.example.data.interactors.auth.avatar.CreateUserInDatabase
 import com.example.data.interactors.auth.avatar.UploadImage
-import com.example.data.interactors.debt.CreateDebt
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
 import com.example.data.interactors.group.*
 import com.example.data.interactors.list.CreateListItem
 import com.example.data.interactors.list.DeleteListItem
 import com.example.data.interactors.list.GetList
+import com.example.data.interactors.manual_debts.*
 import com.example.data.interactors.user.CreateUser
 import com.example.data.interactors.user.DownloadUser
 import com.example.data.interfaces.*
@@ -186,8 +186,8 @@ class RepositoryModule {
 
   @Singleton
   @Provides
-  fun providesCreateDebt(debtRepository: DebtRepository): CreateDebt {
-    return CreateDebt(debtRepository)
+  fun providesCreateDebt(debtRepository: DebtRepository): com.example.data.interactors.debt.CreateDebt {
+    return com.example.data.interactors.debt.CreateDebt(debtRepository)
   }
 
   // User
@@ -322,5 +322,56 @@ class RepositoryModule {
   @Provides
   fun providesGetList(listItemRepository: ListItemRepository): GetList {
     return GetList(listItemRepository)
+  }
+
+
+  //Manual Debts
+
+  @Singleton
+  @Provides
+  fun providesManualDebtsInterface(): ManualDebtInterface {
+    return ManualDebtDataSource()
+  }
+
+  @Singleton
+  @Provides
+  fun providesManualDebtDataSource(): ManualDebtDataSource {
+    return ManualDebtDataSource()
+  }
+
+  @Singleton
+  @Provides
+  fun providesManualDebtRepository(manualDebtInterface: ManualDebtInterface): ManualDebtRepository {
+    return ManualDebtRepository(manualDebtInterface)
+  }
+
+  @Singleton
+  @Provides
+  fun providesCreateManualDebt(manualDebtRepository: ManualDebtRepository): CreateDebt {
+    return CreateDebt(manualDebtRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetLentDebts(manualDebtRepository: ManualDebtRepository): GetLentDebts {
+    return GetLentDebts(manualDebtRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesGetOweDebts(manualDebtRepository: ManualDebtRepository): GetOweDebts {
+    return GetOweDebts(manualDebtRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesRefreshLentDebts(manualDebtRepository: ManualDebtRepository): RefreshLentDebts {
+    return RefreshLentDebts(manualDebtRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesRefreshOweDebts(manualDebtRepository: ManualDebtRepository): RefreshOweDebts {
+    return RefreshOweDebts(manualDebtRepository)
   }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.Debt
+import com.example.domain.models.util.Response
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
@@ -12,6 +13,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.ArrayList
 
 
 class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
@@ -38,10 +40,8 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
     }
 
     fun getDebts(debts: ArrayList<Debt>) {
-        list.clear()
+        list = debts
         notifyDataSetChanged()
-        list.addAll(debts)
-        notifyItemRangeChanged(0, list.size)
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -52,11 +52,11 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
 
-            userName.text = debt.oweUser.username
-            money.text = "-$${debt.oweAmount}"
+            userName.text = debt.lentUser.username
+            money.text = "$${debt.lentAmount}"
             debtFor.text = debt.name
             date.text = debt.date
-            Picasso.with(itemView.context).load(debt.oweUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(debt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 

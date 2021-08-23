@@ -1,49 +1,45 @@
 package com.example.presentation.ui.mydebts.create_debt
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.domain.models.Group
-import com.example.domain.models.User
-import com.example.data.storage.Storage
-import com.example.domain.models.Debt
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import androidx.lifecycle.*
+import com.example.data.interactors.group.GetAllUsersFromGroup
+import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.manual_debts.CreateDebt
+import com.example.data.interactors.user.DownloadUser
+import com.example.domain.models.*
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-sealed class CreateDebtResult {
-    object Success : CreateDebtResult()
-    data class Error(val exception: Exception) : CreateDebtResult()
-}
 
 @HiltViewModel
-class CreateDebtViewModel @Inject constructor(private val getApplication: Application) : AndroidViewModel(getApplication) {
+class CreateDebtViewModel @Inject constructor(
+    private val getGroupByGroupId: GetGroupByGroupId,
+    private val downloadUser: DownloadUser,
+    private val createDebtUseCase: CreateDebt,
+    private val getAllUsersFromGroup: GetAllUsersFromGroup
+) : ViewModel() {
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
+    private val _user = MutableLiveData<Response<User>>()
+    val user: LiveData<Response<User>>
         get() = _user
 
-    private val _group = MutableLiveData<Group>()
-    val group: LiveData<Group> get() = _group
+    private val _group = MutableLiveData<Response<Group>>()
+    val
+            group: LiveData<Response<Group>>
+        get() = _group
 
-    private val _users = MutableLiveData<ArrayList<User>>()
-    val users: LiveData<ArrayList<User>>
+    private var _users = ArrayList<User>()
+    val users: ArrayList<User>
         get() = _users
 
-    private val _createDebtResult = MutableLiveData<CreateDebtResult>()
-    val addExpenseResult: LiveData<CreateDebtResult>
-        get() = _createDebtResult
+    private val _createDebtLiveData: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    val createDebtLiveData: LiveData<Response<String>>
+        get() = _createDebtLiveData
+
 
     init {
         getUserInfo()
@@ -52,97 +48,26 @@ class CreateDebtViewModel @Inject constructor(private val getApplication: Applic
 
     // TODO: 17.08.2021 Repository
     private fun getUserInfo() {
-        val userId = FirebaseAuth.getInstance().uid
-        val reference =
-            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("/users/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            var userIsExist = false
-                            snapshot.children.forEach {
-                                val userInfo = it.getValue(User::class.java)
-                                if (userInfo != null) {
-                                    if (userInfo.uid == userId) {
-                                        userIsExist = true
-                                        _user.postValue(userInfo)
-                                        Log.d("userInfo", user.value.toString())
-                                    }
-                                }
-                                if (!userIsExist) {
-                                    _user.postValue(null)
-                                }
-                            }
-                        } else {
-                            _user.postValue(null)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                })
+        viewModelScope.launch(Dispatchers.Main) {
+            downloadUser.invoke().observeForever { _user.postValue(it) }
         }
     }
 
     // TODO: 17.08.2021 Repository
     private fun getGroupByGroupId() {
-        val storage = Storage(getApplication.baseContext)
-        val groupId = storage.groupId
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/groups/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val groupInfo = it.getValue(Group::class.java)
-                            if (groupInfo != null) {
-                                if (groupInfo.groupID == groupId) {
-                                    _group.postValue(groupInfo)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+        viewModelScope.launch(Dispatchers.Main) {
+            getGroupByGroupId.invoke().observeForever { _group.postValue(it) }
         }
     }
 
     // TODO: 17.08.2021 Repository
-    fun getUsersFromGroup(group: Group) {
-
+    fun createDebt(debtFor: String, amount: Int, fromUser: User, toUser: User) {
+        viewModelScope.launch(Dispatchers.Main) {
+            createDebtUseCase.invoke(debtFor, amount, fromUser, toUser).observeForever { _createDebtLiveData.postValue(it) }
+        }
     }
 
-    // TODO: 17.08.2021 Repository
-    fun createDebt(debtFor: String, amount: Int, oweUser: User, lentUser: User) {
-        val pattern = "dd.MM.yyyy"
-        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-        val newCalendar = Calendar.getInstance(Locale.getDefault())
-        val neededDate = simpleDateFormat.format(newCalendar.time)
-        val debtId = UUID.randomUUID().toString()
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val referenceCheck = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${oweUser.uid}/")
-            val referenceAddLent = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${oweUser.uid}/lent/$debtId")
-            val referenceAddOwe = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("manual_debts/${lentUser.uid}/owe/$debtId")
-            referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    referenceAddLent.setValue(Debt(id = debtId, lentUser = lentUser, oweUser = oweUser, lentAmount = amount, oweAmount = amount, name = debtFor, date = neededDate))
-                    referenceAddOwe.setValue(Debt(id = debtId, lentUser = oweUser, oweUser = lentUser, lentAmount = amount, oweAmount = amount, name = debtFor, date = neededDate))
-                    _createDebtResult.postValue(CreateDebtResult.Success)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        }
+      fun getUsersFromGroup(group: Group) {
+          _users = group.users
     }
 }
