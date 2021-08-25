@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.presentation.ui.auth.login.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_bottom"
+            app:exitAnim="@anim/to_top"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.presentation.ui.auth.registration.RegistrationFragment"
+        android:label="RegistrationFragment" >
+        <action
+            android:id="@+id/action_registrationFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/registrationFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registrationFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"
+            app:popUpTo="@id/registrationFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseNameFragment"
+        android:name="com.example.presentation.ui.auth.avatar.ChooseNameFragment"
+        android:label="ChooseNameFragment" >
+        <action
+            android:id="@+id/action_chooseNameFragment_to_avatarPickerFragment"
+            app:destination="@id/avatarPickerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_chooseNameFragment_to_chooseGroupFragment"
+            app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/chooseNameFragment"
+            app:popUpToInclusive="true" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/avatarPickerFragment"
+        android:name="com.example.presentation.ui.auth.avatar.AvatarPickerFragment"
+        android:label="AvatarPickerFragment" >
+        <action
+            android:id="@+id/action_avatarPickerFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/avatarPickerFragment"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.example.presentation.ui.dashboard.DashboardFragment"
+        android:label="DashboardFragment" >
+        <action
+            android:id="@+id/action_dashboardFragment_to_addExpensesFragment"
+            app:destination="@id/addExpensesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_myDebtsFragment"
+            app:destination="@id/myDebtsFragment"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_addToListFragment"
+            app:destination="@id/addToListFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_finishShopSessionFragment"
+            app:destination="@id/finishShopSessionFragment"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_groupManagementFragment"
+            app:destination="@id/groupManagementFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_chooseGroupFragment"
+            app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/dashboardFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_chooseNameFragment"
+            app:destination="@id/chooseNameFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addExpensesFragment"
+        android:name="com.example.presentation.ui.addexpense.AddExpenseFragment"
+        android:label="AddExpensesFragment" />
+    <fragment
+        android:id="@+id/myDebtsFragment"
+        android:name="com.example.presentation.ui.mydebts.MyDebtsFragment"
+        android:label="MyDebtsFragment" >
+        <action
+            android:id="@+id/action_myDebtsFragment_to_createDebtFragment"
+            app:destination="@id/createDebtFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_myDebtsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_myDebtsFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+        <action
+            android:id="@+id/action_myDebtsFragment_to_listFragment2"
+            app:destination="@id/listFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createDebtFragment"
+        android:name="com.example.presentation.ui.mydebts.create_debt.CreateDebtFragment"
+        android:label="CreateDebtFragment" />
+    <fragment
+        android:id="@+id/addToListFragment"
+        android:name="com.example.presentation.ui.dashboard.list.AddToListFragment"
+        android:label="AddToListFragment" />
+    <fragment
+        android:id="@+id/finishShopSessionFragment"
+        android:name="com.example.presentation.ui.dashboard.finish_shop.FinishShopSessionFragment"
+        android:label="FinishShopSessionFragment" >
+        <action
+            android:id="@+id/action_finishShopSessionFragment_to_addAdditionalItemFragment"
+            app:destination="@id/addAdditionalItemFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_finishShopSessionFragment_to_finishShopDebtDividerFragment"
+            app:destination="@id/finishShopDebtDividerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/finishShopSessionFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAdditionalItemFragment"
+        android:name="com.example.presentation.ui.dashboard.finish_shop.AddAdditionalItemFragment"
+        android:label="AddAdditionalItemFragment" />
+    <fragment
+        android:id="@+id/finishShopDebtDividerFragment"
+        android:name="com.example.presentation.ui.dashboard.finish_shop.FinishShopDebtDividerFragment"
+        android:label="FinishShopDebtDividerFragment" >
+        <action
+            android:id="@+id/action_finishShopDebtDividerFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/finishShopDebtDividerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseGroupFragment"
+        android:name="com.example.presentation.ui.group.ChooseGroupFragment"
+        android:label="ChooseGroupFragment" >
+        <action
+            android:id="@+id/action_chooseGroupFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_bottom"
+            app:exitAnim="@anim/to_top"
+            app:popUpTo="@id/chooseGroupFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_chooseGroupFragment_to_createGroupFragment"
+            app:destination="@id/createGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_chooseGroupFragment_to_groupInvitesFragment"
+            app:destination="@id/groupInvitesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/createGroupFragment"
+        android:name="com.example.presentation.ui.group.CreateGroupFragment"
+        android:label="CreateGroupFragment" />
+    <fragment
+        android:id="@+id/groupManagementFragment"
+        android:name="com.example.presentation.ui.manage_group.GroupManagementFragment"
+        android:label="GroupManagementFragment" >
+        <action
+            android:id="@+id/action_groupManagementFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_groupMembersFragment"
+            app:destination="@id/groupMembersFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_groupSettingsFragment"
+            app:destination="@id/groupSettingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_groupDebtFragment"
+            app:destination="@id/groupDebtFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_chooseGroupFragment"
+            app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupManagementFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/groupManagementFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupMembersFragment"
+        android:name="com.example.presentation.ui.manage_group.members.GroupMembersFragment"
+        android:label="GroupMembersFragment" />
+    <fragment
+        android:id="@+id/groupSettingsFragment"
+        android:name="com.example.presentation.ui.manage_group.GroupSettingsFragment"
+        android:label="GroupSettingsFragment" />
+    <fragment
+        android:id="@+id/groupDebtFragment"
+        android:name="com.example.presentation.ui.manage_group.debts.GroupDebtFragment"
+        android:label="GroupDebtFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.presentation.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_groupManagementFragment"
+            app:destination="@id/groupManagementFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_chooseGroupFragment"
+            app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestsViewPagerFragment"
+        android:name="com.example.presentation.ui.requests.RequestsViewPagerFragment"
+        android:label="RequestsViewPagerFragment" >
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_groupManagementFragment"
+            app:destination="@id/groupManagementFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_savedStoreFragment"
+            app:destination="@id/savedStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_to_chooseGroupFragment"
+            app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/requestsViewPagerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedStoreFragment"
+        android:name="com.example.presentation.ui.grocery_items.store.SavedStoreFragment"
+        android:label="SavedStoreFragment" >
+        <action
+            android:id="@+id/action_savedStoreFragment_to_requestsViewPagerFragment"
+            app:destination="@id/requestsViewPagerFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_groupManagementFragment"
+            app:destination="@id/groupManagementFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_addStoreFragment"
+            app:destination="@id/addStoreFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_savedStoreFragment_to_chooseGroupFragment"
+            app:destination="@id/chooseGroupFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/savedStoreFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/addStoreFragment"
+        android:name="com.example.presentation.ui.grocery_items.store.AddStoreFragment"
+        android:label="AddStoreFragment" />
+    <fragment
+        android:id="@+id/addGroceryItemFromCategoryFragment"
+        android:name="com.example.presentation.ui.grocery_items.category.AddGroceryItemFromCategoryFragment"
+        android:label="AddGroceryItemFromCategoryFragment" />
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.example.presentation.ui.grocery_items.category.CategoryFragment"
+        android:label="CategoryFragment" >
+        <action
+            android:id="@+id/action_categoryFragment_to_addGroceryItemFromCategoryFragment"
+            app:destination="@id/addGroceryItemFromCategoryFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_categoryFragment_to_groceryItemsFragment"
+            app:destination="@id/groceryItemsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/addGroceryItemFragment"
+        android:name="com.example.presentation.ui.grocery_items.item.AddGroceryItemFragment"
+        android:label="AddGroceryItemFragment" />
+    <fragment
+        android:id="@+id/groceryItemsFragment"
+        android:name="com.example.presentation.ui.grocery_items.item.GroceryItemsFragment"
+        android:label="GroceryItemsFragment" >
+        <action
+            android:id="@+id/action_groceryItemsFragment_to_addGroceryItemFragment"
+            app:destination="@id/addGroceryItemFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.presentation.ui.dashboard.list.ListFragment"
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/action_listFragment_to_myDebtsFragment"
+            app:destination="@id/myDebtsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_addToListFragment"
+            app:destination="@id/addToListFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_finishShopSessionFragment"
+            app:destination="@id/finishShopSessionFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/splashScreen"
+        android:name="com.example.presentation.ui.splash.SplashScreen"
+        android:label="activity_splash_screen"
+        tools:layout="@layout/activity_splash_screen" />
+    <fragment
+        android:id="@+id/groupInvitesFragment"
+        android:name="com.example.presentation.ui.group.invite.GroupInvitesFragment"
+        android:label="GroupInvitesFragment" >
+        <argument
+            android:name="groupInvites"
+            app:argType="com.example.domain.models.GroupInvites"/>
+    </fragment>
+</navigation>
