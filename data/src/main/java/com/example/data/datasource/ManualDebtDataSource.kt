@@ -104,7 +104,7 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
                     debtsArrayList.reverse()
                     response.value = Response.success(debtsArrayList)
                 } else {
-                    response.value = Response.error("No lent manunnnnnal debts", null)
+                    response.value = Response.error("No lent manual debts", null)
                 }
             }
 

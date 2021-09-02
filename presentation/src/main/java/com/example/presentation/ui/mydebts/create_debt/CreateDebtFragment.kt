@@ -44,11 +44,13 @@ class CreateDebtFragment : BaseFragment() {
 
         binding.toUserName.setOnClickListener {
             var arraySize = createDebtViewModel.users.size
-            var singleItems = Array<String>(arraySize) { "" }
+            var singleItems = Array<String>(arraySize - 1) { "" }
             arraySize = 0
             createDebtViewModel.users.forEach { user ->
-                singleItems[arraySize] = user.username
-                arraySize++
+                if (user.uid != userFrom!!.uid) {
+                    singleItems[arraySize] = user.username
+                    arraySize++
+                }
             }
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Choose debtor")

@@ -1,7 +1,9 @@
 package com.example.presentation.ui.mydebts.lent
 
+import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -39,19 +41,23 @@ class LentDebtsFragment : BaseFragment() {
 
                 }
                 Status.SUCCESS ->  {
+                    binding.noLentManualDebtsText.visibility = View.GONE
                     adapter.getDebts(it)
                 }
                 Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    //Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    binding.noLentManualDebtsText.text = it.message
                 }
             }
         })
         myDebtsViewModel.refreshedLentDebts.observe(viewLifecycleOwner, {
             when(it.status) {
                 Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    //Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    binding.noLentManualDebtsText.text = it.message
                 }
                 Status.SUCCESS -> {
+                    binding.noLentManualDebtsText.visibility = View.GONE
                     adapter.getDebts(it)
                 }
                 Status.LOADING -> {

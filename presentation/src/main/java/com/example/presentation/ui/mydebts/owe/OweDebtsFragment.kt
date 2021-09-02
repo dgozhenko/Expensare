@@ -37,9 +37,11 @@ class OweDebtsFragment : BaseFragment() {
         myDebtsViewModel.oweDebts.observe(viewLifecycleOwner, {
             when(it.status) {
                 Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    //Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    binding.noOweManualDebtsText.text = it.message
                 }
                 Status.SUCCESS -> {
+                    binding.noOweManualDebtsText.visibility = View.GONE
                     adapter.getDebts(it.data!!)
                 }
                 Status.LOADING -> {
@@ -51,10 +53,11 @@ class OweDebtsFragment : BaseFragment() {
         myDebtsViewModel.refreshedOweDebts.observe(viewLifecycleOwner, {
             when(it.status) {
                 Status.ERROR -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    //Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    binding.noOweManualDebtsText.text = it.message
                 }
                 Status.SUCCESS -> {
-                    binding.debtsFromMeRecyclerView.visibility = View.VISIBLE
+                    binding.noOweManualDebtsText.visibility = View.GONE
                     adapter.getDebts(it.data!!)
                 }
                 Status.LOADING -> {
