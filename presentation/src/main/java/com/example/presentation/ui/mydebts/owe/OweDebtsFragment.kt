@@ -29,7 +29,7 @@ class OweDebtsFragment : BaseFragment() {
 
     private fun bindDebtsRecyclerView() {
         _adapter = OweRecyclerViewAdapter(OweRecyclerViewAdapter.OnClickListener { manualDebt ->
-            //myDebtsViewModel.createRequest(manualDebt)
+            myDebtsViewModel.createRequest(manualDebt)
         })
         binding.debtsFromMeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.debtsFromMeRecyclerView.adapter = adapter

@@ -28,4 +28,7 @@ class ManualDebtRepository(private val manualDebtInterface: ManualDebtInterface)
 
     suspend fun refreshOweDebts(): LiveData<Response<ArrayList<Debt>>> =
         manualDebtInterface.refreshOweDebts()
+
+    suspend fun createRequest(debt: Debt): SingleLiveEvent<Response<String>> =
+        manualDebtInterface.createRequest(debt)
 }

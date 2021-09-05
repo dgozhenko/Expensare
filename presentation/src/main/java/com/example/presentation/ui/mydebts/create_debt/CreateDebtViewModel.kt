@@ -28,8 +28,7 @@ class CreateDebtViewModel @Inject constructor(
         get() = _user
 
     private val _group = MutableLiveData<Response<Group>>()
-    val
-            group: LiveData<Response<Group>>
+    val group: LiveData<Response<Group>>
         get() = _group
 
     private var _users = ArrayList<User>()

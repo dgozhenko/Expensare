@@ -374,4 +374,10 @@ class RepositoryModule {
   fun providesRefreshOweDebts(manualDebtRepository: ManualDebtRepository): RefreshOweDebts {
     return RefreshOweDebts(manualDebtRepository)
   }
+
+  @Singleton
+  @Provides
+  fun providesCreateRequest(manualDebtRepository: ManualDebtRepository): CreateRequest {
+    return CreateRequest(manualDebtRepository)
+  }
 }

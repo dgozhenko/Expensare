@@ -2,6 +2,7 @@ package com.example.presentation.ui.mydebts
 
 import androidx.lifecycle.*
 import com.example.data.interactors.group.GetGroupByGroupId
+import com.example.data.interactors.manual_debts.CreateRequest
 import com.example.data.interactors.manual_debts.GetLentDebts
 import com.example.data.interactors.manual_debts.GetOweDebts
 import com.example.data.interactors.user.DownloadUser
@@ -11,6 +12,7 @@ import com.example.domain.database.entities.ManualDebtEntity
 import com.example.domain.models.Debt
 import com.example.domain.models.User
 import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +24,8 @@ class MyDebtsViewModel @Inject constructor(
     private val getGroupByGroupId: GetGroupByGroupId,
     private val downloadUser: DownloadUser,
     private val getLentDebts: GetLentDebts,
-    private val getOweDebts: GetOweDebts
+    private val getOweDebts: GetOweDebts,
+    private val createRequest: CreateRequest
 ) :
     ViewModel() {
 
@@ -49,6 +52,10 @@ class MyDebtsViewModel @Inject constructor(
     private val _refreshedOweDebts = MutableLiveData<Response<ArrayList<Debt>>>()
     val refreshedOweDebts: LiveData<Response<ArrayList<Debt>>>
         get() = _refreshedOweDebts
+
+    private val _createRequestLiveData: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    val createRequestLiveData: LiveData<Response<String>>
+        get() = _createRequestLiveData
 
     init {
         getUserInfo()
@@ -100,34 +107,9 @@ class MyDebtsViewModel @Inject constructor(
         }
     }
 
-    /*// TODO: 17.08.2021 Repository
-    fun createRequest(debtEntity: ManualDebtEntity) {
-        val pattern = "dd.MM.yyyy"
-        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-        val newCalendar = Calendar.getInstance(Locale.getDefault())
-        val neededDate = simpleDateFormat.format(newCalendar.time)
-        viewModelScope.launch(Dispatchers.IO) {
-            val lentReference =
-                FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("/manual_debts/${debtEntity.fromUser.uid}/lent/")
-            val oweReference =
-                FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("/manual_debts/${debtEntity.toUser.uid}/owe/")
-            val referenceAddRequested =
-                FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("requests/${debtEntity.fromUser.uid}/requested")
-            val referenceAddPending =
-                FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("requests/${debtEntity.toUser.uid}/pending")
-
-            oweReference.child(debtEntity.debtId).removeValue().apply {
-                updateOweDebts()
-            }
-            lentReference.child(debtEntity.debtId).removeValue().apply {
-                updateLentDebts()
-            }
-            referenceAddPending.push().setValue(Request(debtEntity, neededDate))
-            referenceAddRequested.push().setValue(Request(debtEntity, neededDate))
+    fun createRequest(debt: Debt) {
+        viewModelScope.launch(Dispatchers.Main) {
+            createRequest.invoke(debt).observeForever { _createRequestLiveData.postValue(it) }
         }
-    }*/
+    }
 }

@@ -7,6 +7,7 @@ import com.example.domain.database.entities.ManualDebtEntity
 import com.example.domain.database.entities.SecondUserEntity
 import com.example.domain.database.entities.UserEntity
 import com.example.domain.models.Debt
+import com.example.domain.models.Request
 import com.example.domain.models.User
 import com.example.domain.models.util.Response
 import com.example.domain.models.util.SingleLiveEvent
@@ -132,7 +133,7 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
                     snapshot.children.forEach {
                         val oweDebt =
                             it.getValue(Debt::class.java)!!
-                        if (oweDebt.oweUser.uid== userId) {
+                        if (oweDebt.oweUser.uid == userId) {
                             debtsArrayList.add(oweDebt)
                         }
                     }
@@ -200,7 +201,7 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
                     snapshot.children.forEach {
                         val oweDebt =
                             it.getValue(Debt::class.java)!!
-                        if (oweDebt.oweUser.uid== userId) {
+                        if (oweDebt.oweUser.uid == userId) {
                             debtsArrayList.add(oweDebt)
                         }
                     }
@@ -215,6 +216,39 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
                 response.value = Response.error(error.message, null)
             }
         })
+        return response
+    }
+
+    override suspend fun createRequest(debtEntity: Debt): SingleLiveEvent<Response<String>> {
+        val response = SingleLiveEvent<Response<String>>()
+        response.value = Response.loading(null)
+
+        val pattern = "dd.MM.yyyy"
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+        val newCalendar = Calendar.getInstance(Locale.getDefault())
+        val neededDate = simpleDateFormat.format(newCalendar.time)
+        val lentReference =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/manual_debts/${debtEntity.lentUser.uid}/lent/")
+        val oweReference =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/manual_debts/${debtEntity.oweUser.uid}/owe/")
+        val referenceAddRequested =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("requests/${debtEntity.lentUser.uid}/requested")
+        val referenceAddPending =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("requests/${debtEntity.oweUser.uid}/pending")
+
+        oweReference.child(debtEntity.id).removeValue().apply {
+            refreshOweDebts()
+        }
+        lentReference.child(debtEntity.id).removeValue().apply {
+            refreshLentDebts()
+        }
+        referenceAddPending.push().setValue(Request(debtEntity, neededDate))
+        referenceAddRequested.push().setValue(Request(debtEntity, neededDate))
+        response.value = Response.success(null)
         return response
     }
 }
