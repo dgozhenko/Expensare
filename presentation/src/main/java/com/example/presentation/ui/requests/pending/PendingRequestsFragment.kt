@@ -42,7 +42,7 @@ class PendingRequestsFragment: BaseFragment() {
         binding.pendingRequestsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.pendingRequestsRecyclerView.adapter = adapter
         requestsViewModel.pendingRequests.observe(viewLifecycleOwner, {
-            if (it != null) {
+            if (it.data != null) {
                 adapter.getRequests(it)
             }
         })

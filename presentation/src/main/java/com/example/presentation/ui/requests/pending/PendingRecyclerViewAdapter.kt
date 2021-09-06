@@ -5,12 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.Request
+import com.example.domain.models.util.Response
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.*
 
 class PendingRecyclerViewAdapter: RecyclerView.Adapter<PendingRecyclerViewAdapter.ViewHolder>() {
 
@@ -29,8 +31,8 @@ class PendingRecyclerViewAdapter: RecyclerView.Adapter<PendingRecyclerViewAdapte
         return list.size
     }
 
-    fun getRequests(requests: ArrayList<Request>) {
-        list = requests
+    fun getRequests(requests: Response<ArrayList<Request>>) {
+        list = requests.data!!
         notifyDataSetChanged()
     }
 

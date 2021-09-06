@@ -43,7 +43,7 @@ class RequestedRequestsFragment: BaseFragment() {
         val adapter = RequestedRecyclerViewAdapter(RequestedRecyclerViewAdapter.OnClickListener{ request, choice ->
             requestsViewModel.acceptHandler(request, choice)
             requestsViewModel.handlerResult.observe(viewLifecycleOwner, {
-                if (it == acceptHandlerResult.Success) {
+                if (it.message == "Success") {
                     if (choice == true) {
                         Toast.makeText(
                             requireContext(),
@@ -70,8 +70,8 @@ class RequestedRequestsFragment: BaseFragment() {
         binding.requestedRequestsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.requestedRequestsRecyclerView.adapter = adapter
         requestsViewModel.requestedRequests.observe(viewLifecycleOwner, {
-            if (it != null) {
-                adapter.getRequests(it)
+            if (it.data != null) {
+                adapter.getRequests(it.data!!)
             }
         })
     }

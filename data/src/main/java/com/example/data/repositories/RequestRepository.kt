@@ -1,21 +1,23 @@
 package com.example.data.repositories
 
-import com.example.domain.database.ExpensareDatabase
-import com.example.domain.database.entities.RequestEntity
+import androidx.lifecycle.LiveData
+import com.example.data.interfaces.RequestInterface
+import com.example.domain.models.Request
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
+import java.util.ArrayList
 
-class RequestRepository(database: ExpensareDatabase) {
+class RequestRepository(private val requestInterface: RequestInterface) {
 
-  private val requestDao = database.requestDao()
+    suspend fun getPendingRequests(): LiveData<Response<ArrayList<Request>>> =
+        requestInterface.getPendingRequests()
 
-  fun createRequest(requestEntity: RequestEntity) {
-    requestDao.createRequest(requestEntity)
-  }
+    suspend fun getRequestedRequests(): LiveData<Response<ArrayList<Request>>> =
+        requestInterface.getRequestedRequests()
 
-  fun deleteRequest(requestEntity: RequestEntity) {
-    requestDao.deleteRequest(requestEntity)
-  }
-
-  fun getAllRequests(): ArrayList<RequestEntity> {
-    return requestDao.getAllRequests() as ArrayList<RequestEntity>
-  }
+    suspend fun acceptHandler(
+        request: Request,
+        choice: Boolean
+    ): SingleLiveEvent<Response<String>> =
+        requestInterface.acceptHandler(request, choice)
 }

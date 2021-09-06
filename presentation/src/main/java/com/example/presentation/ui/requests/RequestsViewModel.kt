@@ -1,12 +1,15 @@
 package com.example.presentation.ui.requests
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.data.interactors.requests.acceptHandler
+import com.example.data.interactors.requests.getPendingRequests
+import com.example.data.interactors.requests.getRequestedRequests
+import com.example.data.interactors.user.DownloadUser
+import com.example.domain.models.Debt
 import com.example.domain.models.Request
 import com.example.domain.models.User
+import com.example.domain.models.util.Response
+import com.example.domain.models.util.SingleLiveEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
+import java.util.*
+
 
 sealed class acceptHandlerResult {
     object Success : acceptHandlerResult()
@@ -24,164 +29,60 @@ sealed class acceptHandlerResult {
 }
 
 @HiltViewModel
-class RequestsViewModel @Inject constructor(private val getApplication: Application) : AndroidViewModel(getApplication) {
+class RequestsViewModel @Inject constructor(
+    private val downloadUser: DownloadUser,
+    private val getPendingRequests: getPendingRequests,
+    private val getRequestedRequests: getRequestedRequests,
+    private val acceptHandler: acceptHandler
+) : ViewModel() {
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
+    private val _user = MutableLiveData<Response<User>>()
+    val user: LiveData<Response<User>>
         get() = _user
 
-    private val _requestedRequests = MutableLiveData<ArrayList<Request>>()
-    val requestedRequests: LiveData<ArrayList<Request>>
+    private val _requestedRequests = MutableLiveData<Response<ArrayList<Request>>>()
+    val requestedRequests: LiveData<Response<ArrayList<Request>>>
         get() = _requestedRequests
 
-    private val _pendingRequests = MutableLiveData<ArrayList<Request>>()
-    val pendingRequests: LiveData<ArrayList<Request>>
+    private val _pendingRequests = MutableLiveData<Response<ArrayList<Request>>>()
+    val pendingRequests: LiveData<Response<ArrayList<Request>>>
         get() = _pendingRequests
 
-    private val _acceptHandlerResult = MutableLiveData<acceptHandlerResult>()
-    val handlerResult: LiveData<acceptHandlerResult>
+    private val _acceptHandlerResult: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    val handlerResult: LiveData<Response<String>>
         get() = _acceptHandlerResult
 
     init {
         getUserInfo()
+        getPendingRequests()
+        getRequestedRequests()
     }
 
     // TODO: 17.08.2021 Repository
     private fun getUserInfo() {
-        val userId = FirebaseAuth.getInstance().uid
-        val reference =
-            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("/users/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            var userIsExist = false
-                            snapshot.children.forEach {
-                                val userInfo = it.getValue(User::class.java)
-                                if (userInfo != null) {
-                                    if (userInfo.uid == userId) {
-                                        userIsExist = true
-                                        _user.postValue(userInfo)
-                                    }
-                                }
-                                if (!userIsExist) {
-                                    _user.postValue(null)
-                                }
-                            }
-                        } else {
-                            _user.postValue(null)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                })
+        viewModelScope.launch(Dispatchers.Main) {
+            downloadUser.invoke().observeForever { _user.postValue(it) }
         }
     }
 
     // TODO: 17.08.2021 Repository
     fun getPendingRequests() {
-        val userId = FirebaseAuth.getInstance().uid
-        val requestsArrayList = arrayListOf<Request>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/requests/$userId/pending/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val request = it.getValue(Request::class.java)!!
-                            requestsArrayList.add(request)
-                        }
-                        _pendingRequests.postValue(requestsArrayList)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+        viewModelScope.launch(Dispatchers.Main) {
+            getPendingRequests.invoke().observeForever { _pendingRequests.postValue(it) }
         }
     }
 
     // TODO: 17.08.2021 Repository
     fun getRequestedRequests() {
-        val userId = FirebaseAuth.getInstance().uid
-        val requestsArrayList = arrayListOf<Request>()
-        val reference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/requests/$userId/requested/")
-        viewModelScope.launch(Dispatchers.IO) {
-            reference.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach {
-                            val request = it.getValue(Request::class.java)!!
-                            requestsArrayList.add(request)
-                        }
-                        _requestedRequests.postValue(requestsArrayList)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+        viewModelScope.launch(Dispatchers.Main) {
+            getRequestedRequests.invoke().observeForever { _requestedRequests.postValue(it) }
         }
     }
 
     // TODO: 17.08.2021 Repository
     fun acceptHandler(request: Request, choice: Boolean) {
-        val userId = FirebaseAuth.getInstance().uid
-        var requestedKey = ""
-        var pendingKey = ""
-        val lentReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/$userId/lent/")
-        val oweReference = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/manual_debts/${request.debt.lentUser.uid}/owe/")
-        val referenceDeleteRequested = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/$userId/requested")
-        val referenceDeletePending = FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/").getReference("requests/${request.debt.lentUser.uid}/pending")
-
-        viewModelScope.launch(Dispatchers.IO) {
-            referenceDeleteRequested.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach{
-                            val requestedRequest = it.getValue(Request::class.java)!!
-                            if (requestedRequest.debt.id == request.debt.id) {
-                                requestedKey = it.key!!
-                            }
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            referenceDeletePending.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.children.forEach{
-                            val pendingRequest = it.getValue(Request::class.java)!!
-                            if (pendingRequest.debt.id == request.debt.id) {
-                                pendingKey = it.key!!
-                            }
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        }
-
-        referenceDeletePending.child("$pendingKey/").removeValue()
-        referenceDeleteRequested.child("$requestedKey/").removeValue()
-        if (choice == false) {
-            oweReference.push().setValue(request.debt)
-            lentReference.push().setValue(request.debt)
+        viewModelScope.launch(Dispatchers.Main) {
+            acceptHandler.invoke(request, choice).observeForever { _acceptHandlerResult.postValue(it) }
         }
     }
 
