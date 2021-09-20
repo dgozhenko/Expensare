@@ -19,6 +19,7 @@ import java.util.ArrayList
 class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<Debt>()
+    private var secondList = arrayListOf<Debt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_from_me_debt_item, parent, false)
@@ -40,6 +41,11 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
     }
 
     fun getDebts(debts: ArrayList<Debt>) {
+        list = debts
+        notifyDataSetChanged()
+    }
+
+    fun getSecondDebts(debts: ArrayList<Debt>) {
         list = debts
         notifyDataSetChanged()
     }

@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class RequestDataSource @Inject constructor() : RequestInterface {
@@ -87,12 +87,17 @@ class RequestDataSource @Inject constructor() : RequestInterface {
         val userId = FirebaseAuth.getInstance().uid
         var requestedKey = ""
         var pendingKey = ""
+        val debtId = UUID.randomUUID().toString()
+
+        val referenceCheck =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("manual_debts/$userId/")
         val lentReference =
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("/manual_debts/$userId/lent/")
+                .getReference("/manual_debts/$userId/lent/${request.debt.id}")
         val oweReference =
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("/manual_debts/${request.debt.oweUser.uid}/owe/")
+                .getReference("/manual_debts/${request.debt.oweUser.uid}/owe/${request.debt.id}")
         val referenceDeleteRequested =
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("requests/$userId/requested")
@@ -141,10 +146,37 @@ class RequestDataSource @Inject constructor() : RequestInterface {
         referenceDeletePending.child("$pendingKey/").removeValue()
         referenceDeleteRequested.child("$requestedKey/").removeValue()
         if (choice == false) {
-            oweReference.push().setValue(request.debt)
-            lentReference.push().setValue(request.debt)
+            referenceCheck.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    lentReference.setValue(
+                        Debt(
+                            request.debt.lentUser,
+                            request.debt.oweUser,
+                            request.debt.lentAmount,
+                            "",
+                            request.debt.date,
+                            request.debt.id
+                        )
+                    )
+                    oweReference.setValue(
+                        Debt(
+                            request.debt.lentUser,
+                            request.debt.oweUser,
+                            request.debt.lentAmount,
+                            "",
+                            request.debt.date,
+                            request.debt.id
+                        )
+                    )
+                    response.value = Response.success("Success")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    response.value = Response.error(error.message, null)
+                }
+
+            })
         }
-        response.value = Response.success("Success")
         return response
     }
 }
