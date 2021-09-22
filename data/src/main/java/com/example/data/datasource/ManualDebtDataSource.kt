@@ -251,4 +251,24 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
         response.value = Response.success(null)
         return response
     }
+
+    override suspend fun deleteDebt(debt: Debt): SingleLiveEvent<Response<String>> {
+        val response = SingleLiveEvent<Response<String>>()
+        response.value = Response.loading(null)
+
+        val lentReference =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/manual_debts/${debt.lentUser.uid}/lent/")
+        val oweReference =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/manual_debts/${debt.oweUser.uid}/owe/")
+        oweReference.child(debt.id).removeValue().apply {
+            refreshOweDebts()
+        }
+        lentReference.child(debt.id).removeValue().apply {
+            refreshLentDebts()
+        }
+        response.value = Response.success(null)
+        return response
+    }
 }

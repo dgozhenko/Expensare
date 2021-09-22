@@ -384,6 +384,12 @@ class RepositoryModule {
         return CreateRequest(manualDebtRepository)
     }
 
+    @Singleton
+    @Provides
+    fun providesDeleteDebt(manualDebtRepository: ManualDebtRepository): DeleteDebt {
+        return DeleteDebt(manualDebtRepository)
+    }
+
     //Requests
 
     @Singleton

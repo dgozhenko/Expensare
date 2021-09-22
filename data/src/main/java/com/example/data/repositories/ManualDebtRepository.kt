@@ -31,4 +31,7 @@ class ManualDebtRepository(private val manualDebtInterface: ManualDebtInterface)
 
     suspend fun createRequest(debt: Debt): SingleLiveEvent<Response<String>> =
         manualDebtInterface.createRequest(debt)
+
+    suspend fun deleteDebt(debt: Debt): SingleLiveEvent<Response<String>> =
+        manualDebtInterface.deleteDebt(debt)
 }

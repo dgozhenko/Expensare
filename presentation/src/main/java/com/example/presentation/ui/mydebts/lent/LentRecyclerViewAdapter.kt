@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.Debt
 import com.example.domain.models.util.Response
+import com.example.presentation.ui.mydebts.owe.OweRecyclerViewAdapter
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.inner_circles_apps.myapplication.R
 import com.squareup.picasso.Callback
@@ -15,7 +17,7 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.ArrayList
 
-class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.ViewHolder>() {
+class LentRecyclerViewAdapter(private val onClickListener : OnClickListener): RecyclerView.Adapter<LentRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<Debt>()
 
@@ -25,6 +27,11 @@ class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.View
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val payButton = holder.itemView.findViewById<MaterialButton>(R.id.debt_payed_button)
+        payButton.setOnClickListener {
+            onClickListener.onClick(list[position])
+            payButton.isClickable = false
+        }
         return holder.bind(list[position])
     }
 
@@ -63,5 +70,9 @@ class LentRecyclerViewAdapter: RecyclerView.Adapter<LentRecyclerViewAdapter.View
 
             })
         }
+    }
+
+    class OnClickListener(val clickListener: (manualDebt: Debt) -> Unit) {
+        fun onClick(manualDebt: Debt) = clickListener(manualDebt)
     }
 }

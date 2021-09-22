@@ -3,6 +3,7 @@ package com.example.presentation.ui.mydebts
 import androidx.lifecycle.*
 import com.example.data.interactors.group.GetGroupByGroupId
 import com.example.data.interactors.manual_debts.CreateRequest
+import com.example.data.interactors.manual_debts.DeleteDebt
 import com.example.data.interactors.manual_debts.GetLentDebts
 import com.example.data.interactors.manual_debts.GetOweDebts
 import com.example.data.interactors.user.DownloadUser
@@ -25,7 +26,8 @@ class MyDebtsViewModel @Inject constructor(
     private val downloadUser: DownloadUser,
     private val getLentDebts: GetLentDebts,
     private val getOweDebts: GetOweDebts,
-    private val createRequest: CreateRequest
+    private val createRequest: CreateRequest,
+    private val deleteDebt: DeleteDebt
 ) :
     ViewModel() {
 
@@ -56,6 +58,10 @@ class MyDebtsViewModel @Inject constructor(
     private val _createRequestLiveData: SingleLiveEvent<Response<String>> = SingleLiveEvent()
     val createRequestLiveData: LiveData<Response<String>>
         get() = _createRequestLiveData
+
+    private val _deleteDebtLiveData: SingleLiveEvent<Response<String>> = SingleLiveEvent()
+    val deleteDebtLiveData: LiveData<Response<String>>
+        get() = _deleteDebtLiveData
 
     init {
         getUserInfo()
@@ -110,6 +116,12 @@ class MyDebtsViewModel @Inject constructor(
     fun createRequest(debt: Debt) {
         viewModelScope.launch(Dispatchers.Main) {
             createRequest.invoke(debt).observeForever { _createRequestLiveData.postValue(it) }
+        }
+    }
+
+    fun deleteDebt(debt: Debt) {
+        viewModelScope.launch(Dispatchers.Main) {
+            deleteDebt.invoke(debt).observeForever{ _deleteDebtLiveData.postValue(it) }
         }
     }
 }

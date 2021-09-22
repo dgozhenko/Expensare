@@ -1,5 +1,6 @@
 package com.example.presentation.ui.mydebts.lent
 
+import android.app.DownloadManager
 import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.models.Request
 import com.example.domain.models.util.Status
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.mydebts.MyDebtsViewModel
+import com.example.presentation.ui.requests.RequestsViewModel
 import com.inner_circles_apps.myapplication.databinding.FragmentMyDebtsToMeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,7 +35,22 @@ class LentDebtsFragment : BaseFragment() {
 
 
     private fun bindDebtsRecyclerView() {
-        _adapter = LentRecyclerViewAdapter()
+        _adapter = LentRecyclerViewAdapter(LentRecyclerViewAdapter.OnClickListener { manualDebt ->
+            myDebtsViewModel.deleteDebt(manualDebt)
+            myDebtsViewModel.deleteDebtLiveData.observe(viewLifecycleOwner, {
+                when(it.status) {
+                    Status.LOADING -> {
+
+                    }
+                    Status.ERROR -> {
+
+                    }
+                    Status.SUCCESS -> {
+                        Toast.makeText(requireContext(), "Debt was deleted successfully", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+        })
         binding.debtsToMeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.debtsToMeRecyclerView.adapter = adapter
         myDebtsViewModel.lentDebts.observe(viewLifecycleOwner, {

@@ -17,4 +17,5 @@ interface ManualDebtInterface {
     suspend fun refreshLentDebts(): LiveData<Response<ArrayList<Debt>>>
     suspend fun refreshOweDebts(): LiveData<Response<ArrayList<Debt>>>
     suspend fun createRequest(debt: Debt): SingleLiveEvent<Response<String>>
+    suspend fun deleteDebt(debt: Debt): SingleLiveEvent<Response<String>>
 }
