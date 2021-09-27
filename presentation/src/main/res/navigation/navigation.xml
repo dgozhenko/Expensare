@@ -184,6 +184,9 @@
             android:id="@+id/action_myDebtsFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <action
+            android:id="@+id/action_myDebtsFragment_to_myDebtsFragment"
+            app:destination="@id/myDebtsFragment" />
+        <action
             android:id="@+id/action_myDebtsFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment" />
         <action

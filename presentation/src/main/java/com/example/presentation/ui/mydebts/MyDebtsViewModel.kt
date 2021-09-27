@@ -101,13 +101,13 @@ class MyDebtsViewModel @Inject constructor(
         }
     }
 
-    private fun refreshLentDebts() {
+    fun refreshLentDebts() {
         viewModelScope.launch(Dispatchers.Main) {
             getLentDebts.invoke().observeForever { _refreshedLentDebts.postValue(it) }
         }
     }
 
-    private fun refreshOweDebts() {
+    fun refreshOweDebts() {
         viewModelScope.launch(Dispatchers.Main) {
             getOweDebts.invoke().observeForever { _refreshedOweDebts.postValue(it) }
         }
