@@ -24,6 +24,10 @@
             android:id="@+id/debt_request"
             android:icon="@drawable/ic_baseline_card_membership_24"
             android:title="@string/debt_requests_text" />
+        <item
+            android:id="@+id/debt_history"
+            android:icon="@drawable/ic_baseline_history_24"
+            android:title="@string/debt_history_text" />
     </group>
 
     <item android:title="@string/controls_title">

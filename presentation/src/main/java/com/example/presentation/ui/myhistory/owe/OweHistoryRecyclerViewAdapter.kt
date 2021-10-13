@@ -1,4 +1,4 @@
-package com.example.presentation.ui.mydebts.owe
+package com.example.presentation.ui.myhistory.owe
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +15,9 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.ArrayList
 
-
-class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<OweRecyclerViewAdapter.ViewHolder>() {
+class OweHistoryRecyclerViewAdapter(): RecyclerView.Adapter<OweHistoryRecyclerViewAdapter.ViewHolder>() {
 
     private var list = arrayListOf<Debt>()
-    private var secondList = arrayListOf<Debt>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_from_me_debt_item, parent, false)
@@ -27,56 +25,47 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val payMoneyButton = holder.itemView.findViewById<MaterialButton>(R.id.money_pay_button)
-
-            payMoneyButton.setOnClickListener {
-                onClickListener.onClick(list[position])
-                payMoneyButton.isClickable = false
-            }
-        return holder.bind(list[position])
+        holder.bind(list[position])
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    fun getDebts(debts: ArrayList<Debt>) {
-        list = debts
+    fun getDebts(debts: Response<ArrayList<Debt>>) {
+        list.clear()
         notifyDataSetChanged()
+        list.addAll(debts.data!!)
+        notifyItemRangeChanged(0, list.size)
     }
 
-    fun getSecondDebts(debts: ArrayList<Debt>) {
-        list = debts
-        notifyDataSetChanged()
-    }
-
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: android.view.View): RecyclerView.ViewHolder(itemView) {
         fun bind(debt: Debt) {
             val userName = itemView.findViewById<MaterialTextView>(R.id.name_user)
             val date = itemView.findViewById<MaterialTextView>(R.id.date)
             val money = itemView.findViewById<MaterialTextView>(R.id.debt_amount)
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
+            val payDebtButton = itemView.findViewById<MaterialButton>(R.id.debt_pay_button)
+            val payMoneyButton = itemView.findViewById<MaterialButton>(R.id.money_pay_button)
 
+            payDebtButton.visibility = View.GONE
+            payMoneyButton.visibility = View.GONE
             userName.text = debt.oweUser.username
             money.text = "$${debt.lentAmount}"
             debtFor.text = debt.name
             date.text = debt.date
-            Picasso.with(itemView.context).load(debt.oweUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(debt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(debt.oweUser.avatar).into(avatar)
+
                 }
 
             })
         }
-    }
-
-    class OnClickListener(val clickListener: (manualDebt: Debt) -> Unit) {
-        fun onClick(manualDebt: Debt) = clickListener(manualDebt)
     }
 }

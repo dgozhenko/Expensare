@@ -21,6 +21,7 @@
     <string name="group_management_text">Group Management</string>
     <string name="change_group_text">Change Group</string>
     <string name="debt_requests_text">Debt Requests</string>
+    <string name="debt_history_text">Debt History</string>
     <string name="controls_title">Controls</string>
     <string name="log_out_text">Log Out</string>
     <string name="name_text">Daniil Hozhenko</string>

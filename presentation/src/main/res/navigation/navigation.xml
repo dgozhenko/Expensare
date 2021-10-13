@@ -164,6 +164,9 @@
         <action
             android:id="@+id/action_dashboardFragment_to_listFragment"
             app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_myHistoryFragment"
+            app:destination="@id/myHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addExpensesFragment"
@@ -546,4 +549,8 @@
             android:name="groupInvites"
             app:argType="com.example.domain.models.GroupInvites"/>
     </fragment>
+    <fragment
+        android:id="@+id/myHistoryFragment"
+        android:name="com.example.presentation.ui.myhistory.MyHistoryFragment"
+        android:label="MyHistoryFragment" />
 </navigation>

@@ -8,6 +8,8 @@ import com.example.data.interactors.auth.avatar.UploadImage
 import com.example.data.interactors.expenses.CreateExpense
 import com.example.data.interactors.expenses.DownloadExpenses
 import com.example.data.interactors.group.*
+import com.example.data.interactors.history.GetLentHistory
+import com.example.data.interactors.history.GetOweHistory
 import com.example.data.interactors.list.CreateListItem
 import com.example.data.interactors.list.DeleteListItem
 import com.example.data.interactors.list.GetList
@@ -427,4 +429,36 @@ class RepositoryModule {
     fun providesGetRequestedRequests(requestRepository: RequestRepository): getRequestedRequests {
         return getRequestedRequests(requestRepository)
     }
+
+    //History
+    @Singleton
+    @Provides
+    fun providesHistoryInterface(): DebtHistoryInterface {
+        return DebtHistoryDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun providesHistoryDataSource(): DebtHistoryDataSource {
+        return DebtHistoryDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun providesHistoryRepository(historyInterface: DebtHistoryInterface): DebtHistoryRepository {
+        return DebtHistoryRepository(historyInterface)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGetLentHistory(debtHistoryRepository: DebtHistoryRepository): GetLentHistory {
+        return GetLentHistory(debtHistoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGetOweHistory(debtHistoryRepository: DebtHistoryRepository): GetOweHistory {
+        return GetOweHistory(debtHistoryRepository)
+    }
+
 }

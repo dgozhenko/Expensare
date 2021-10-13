@@ -105,6 +105,16 @@ class RequestDataSource @Inject constructor() : RequestInterface {
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("requests/${request.debt.oweUser.uid}/pending")
 
+        val referenceCreateHistory =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("history/$userId/")
+        val referenceHistoryLent =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/history/$userId/lent/${request.debt.id}")
+        val referenceHistoryOwe =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/history/${request.debt.oweUser.uid}/owe/${request.debt.id}")
+
         referenceDeleteRequested.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -153,7 +163,7 @@ class RequestDataSource @Inject constructor() : RequestInterface {
                             request.debt.lentUser,
                             request.debt.oweUser,
                             request.debt.lentAmount,
-                            "",
+                            request.debt.name,
                             request.debt.date,
                             request.debt.id
                         )
@@ -163,7 +173,7 @@ class RequestDataSource @Inject constructor() : RequestInterface {
                             request.debt.lentUser,
                             request.debt.oweUser,
                             request.debt.lentAmount,
-                            "",
+                            request.debt.name,
                             request.debt.date,
                             request.debt.id
                         )
@@ -175,6 +185,37 @@ class RequestDataSource @Inject constructor() : RequestInterface {
                     response.value = Response.error(error.message, null)
                 }
 
+            })
+        }
+        else {
+            referenceCreateHistory.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    referenceHistoryLent.setValue(
+                        Debt(
+                            request.debt.lentUser,
+                            request.debt.oweUser,
+                            request.debt.lentAmount,
+                            request.debt.name,
+                            request.debt.date,
+                            request.debt.id
+                        )
+                    )
+                    referenceHistoryOwe.setValue(
+                        Debt(
+                            request.debt.lentUser,
+                            request.debt.oweUser,
+                            request.debt.lentAmount,
+                            request.debt.name,
+                            request.debt.date,
+                            request.debt.id
+                        )
+                    )
+                    response.value = Response.success("Success")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    response.value = Response.error(error.message, null)
+                }
             })
         }
         return response
