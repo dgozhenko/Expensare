@@ -51,7 +51,7 @@ class OweHistoryRecyclerViewAdapter(): RecyclerView.Adapter<OweHistoryRecyclerVi
 
             payDebtButton.visibility = View.GONE
             payMoneyButton.visibility = View.GONE
-            userName.text = debt.oweUser.username
+            userName.text = debt.lentUser.username
             money.text = "$${debt.lentAmount}"
             debtFor.text = debt.name
             date.text = debt.date

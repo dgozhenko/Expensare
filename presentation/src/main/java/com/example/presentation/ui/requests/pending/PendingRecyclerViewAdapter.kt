@@ -44,18 +44,18 @@ class PendingRecyclerViewAdapter: RecyclerView.Adapter<PendingRecyclerViewAdapte
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
 
-            userName.text = request.debt.oweUser.username
+            userName.text = request.debt.lentUser.username
             money.text = "-$${request.debt.lentAmount}"
             debtFor.text = request.debt.name
             date.text = request.date
-            Picasso.with(itemView.context).load(request.debt.oweUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(request.debt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(request.debt.oweUser.avatar).into(avatar)
+                    Picasso.with(itemView.context).load(request.debt.lentUser.avatar).into(avatar)
                 }
 
             })

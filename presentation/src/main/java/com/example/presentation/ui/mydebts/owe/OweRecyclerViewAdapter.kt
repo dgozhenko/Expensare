@@ -28,7 +28,6 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payMoneyButton = holder.itemView.findViewById<MaterialButton>(R.id.money_pay_button)
-
             payMoneyButton.setOnClickListener {
                 onClickListener.onClick(list[position])
                 payMoneyButton.isClickable = false
@@ -58,18 +57,18 @@ class OweRecyclerViewAdapter(private val onClickListener: OnClickListener): Recy
             val avatar = itemView.findViewById<CircleImageView>(R.id.avatar)
             val debtFor = itemView.findViewById<MaterialTextView>(R.id.debt_for_content)
 
-            userName.text = debt.oweUser.username
+            userName.text = debt.lentUser.username
             money.text = "$${debt.lentAmount}"
             debtFor.text = debt.name
             date.text = debt.date
-            Picasso.with(itemView.context).load(debt.oweUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
+            Picasso.with(itemView.context).load(debt.lentUser.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(avatar, object :
                 Callback {
                 override fun onSuccess() {
 
                 }
 
                 override fun onError() {
-                    Picasso.with(itemView.context).load(debt.oweUser.avatar).into(avatar)
+                    Picasso.with(itemView.context).load(debt.lentUser.avatar).into(avatar)
                 }
 
             })

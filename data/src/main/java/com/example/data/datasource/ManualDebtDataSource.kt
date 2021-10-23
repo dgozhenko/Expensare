@@ -253,8 +253,19 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
     }
 
     override suspend fun deleteDebt(debt: Debt): SingleLiveEvent<Response<String>> {
+        val userId = FirebaseAuth.getInstance().uid
         val response = SingleLiveEvent<Response<String>>()
         response.value = Response.loading(null)
+
+        val referenceCreateHistory =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("history/$userId/")
+        val referenceHistoryLent =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/history/$userId/lent/${debt.id}")
+        val referenceHistoryOwe =
+            FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("/history/${debt.oweUser.uid}/owe/${debt.id}")
 
         val lentReference =
             FirebaseDatabase.getInstance("https://expensare-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -268,6 +279,37 @@ class ManualDebtDataSource @Inject constructor() : ManualDebtInterface {
         lentReference.child(debt.id).removeValue().apply {
             refreshLentDebts()
         }
+
+        //Create History
+        referenceCreateHistory.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                referenceHistoryLent.setValue(
+                    Debt(
+                        debt.lentUser,
+                        debt.oweUser,
+                        debt.lentAmount,
+                        debt.name,
+                        debt.date,
+                        debt.id
+                    )
+                )
+                referenceHistoryOwe.setValue(
+                    Debt(
+                        debt.lentUser,
+                        debt.oweUser,
+                        debt.lentAmount,
+                        debt.name,
+                        debt.date,
+                        debt.id
+                    )
+                )
+                response.value = Response.success("Success")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                response.value = Response.error(error.message, null)
+            }
+        })
         response.value = Response.success(null)
         return response
     }
