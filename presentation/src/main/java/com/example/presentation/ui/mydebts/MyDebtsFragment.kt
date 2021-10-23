@@ -40,6 +40,7 @@ class MyDebtsFragment : BaseFragment() {
     adapter.addFragment(LentDebtsFragment())
     adapter.addFragment(OweDebtsFragment())
     binding.debtsViewPager.adapter = adapter
+    tabLayout.getTabAt(1)?.select()
     binding.debtsViewPager.addOnPageChangeListener(
       TabLayout.TabLayoutOnPageChangeListener(tabLayout)
     )

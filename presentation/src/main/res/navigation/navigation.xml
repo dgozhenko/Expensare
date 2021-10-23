@@ -421,6 +421,9 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/requestsViewPagerFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_requestsViewPagerFragment_self"
+            app:destination="@id/requestsViewPagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/savedStoreFragment"
